@@ -15,7 +15,7 @@ export async function upsertReflection(
 ): Promise<ActionResult<{ logId: string; reflectionId: string }>> {
   const parsed = upsertReflectionSchema.safeParse(input);
   if (!parsed.success) {
-    return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
+    return fail(parsed.error.issues[0]?.message ?? "入力内容を確認してください");
   }
 
   try {

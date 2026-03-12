@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const createActivitySchema = z.object({
-  name: z.string().min(1, "名前を入力してください").max(20, "20文字以内で入力してください"),
+  name: z.string().min(1, "活動名を入力してください").max(20, "活動名は20文字以内で入力してください"),
   emoji: z.string().max(10).optional(),
   color: z.string().max(20).optional(),
 });
 
 export const updateActivitySchema = z.object({
   activityId: z.string().min(1),
-  name: z.string().min(1, "名前を入力してください").max(20, "20文字以内で入力してください"),
+  name: z.string().min(1, "活動名を入力してください").max(20, "活動名は20文字以内で入力してください"),
   emoji: z.string().max(10).optional(),
   color: z.string().max(20).optional(),
 });

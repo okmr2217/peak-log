@@ -24,13 +24,13 @@ export default function LoginPage() {
       if (mode === "signup") {
         const result = await signUp.email({ name, email, password });
         if (result.error) {
-          setError(result.error.message ?? "サインアップに失敗しました");
+          setError(result.error.message ?? "アカウントを作成できませんでした");
           return;
         }
       } else {
         const result = await signIn.email({ email, password });
         if (result.error) {
-          setError(result.error.message ?? "ログインに失敗しました");
+          setError(result.error.message ?? "ログインできませんでした");
           return;
         }
       }

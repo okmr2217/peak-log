@@ -19,7 +19,7 @@ import {
 export async function createActivity(input: CreateActivityInput): Promise<ActionResult> {
   const parsed = createActivitySchema.safeParse(input);
   if (!parsed.success) {
-    return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
+    return fail(parsed.error.issues[0]?.message ?? "入力内容を確認してください");
   }
 
   try {
@@ -39,7 +39,7 @@ export async function createActivity(input: CreateActivityInput): Promise<Action
 export async function updateActivity(input: UpdateActivityInput): Promise<ActionResult> {
   const parsed = updateActivitySchema.safeParse(input);
   if (!parsed.success) {
-    return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
+    return fail(parsed.error.issues[0]?.message ?? "入力内容を確認してください");
   }
 
   try {
@@ -53,7 +53,7 @@ export async function updateActivity(input: UpdateActivityInput): Promise<Action
     revalidatePath("/activities");
     return ok();
   } catch (e) {
-    return fail(toActionMessage(e));
+    return fail(toActionMessage(e, "更新できませんでした"));
   }
 }
 
@@ -73,7 +73,7 @@ export async function archiveActivity(input: ArchiveActivityInput): Promise<Acti
     revalidatePath("/activities");
     return ok();
   } catch (e) {
-    return fail(toActionMessage(e));
+    return fail(toActionMessage(e, "更新できませんでした"));
   }
 }
 
@@ -101,6 +101,6 @@ export async function reorderActivities(input: ReorderActivitiesInput): Promise<
     revalidatePath("/activities");
     return ok();
   } catch (e) {
-    return fail(toActionMessage(e));
+    return fail(toActionMessage(e, "更新できませんでした"));
   }
 }

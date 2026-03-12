@@ -12,11 +12,12 @@ import {
   type CreateLogInput,
   type UpdateLogPerformedAtInput,
 } from "@/server/validators/log";
+import { getLogsPageForCurrentUser, type LogsPage } from "@/server/queries/log";
 
 export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
   const parsed = createLogSchema.safeParse(input);
   if (!parsed.success) {
-    return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
+    return fail(parsed.error.issues[0]?.message ?? "入力内容を確認してください");
   }
 
   try {
@@ -40,7 +41,7 @@ export async function createLog(input: CreateLogInput): Promise<ActionResult<{ l
     revalidatePath("/history");
     return ok({ logId: log.id });
   } catch (e) {
-    return fail(toActionMessage(e));
+    return fail(toActionMessage(e, "記録できませんでした"));
   }
 }
 
@@ -59,8 +60,12 @@ export async function deleteLog(id: string): Promise<ActionResult> {
     revalidatePath("/history");
     return ok();
   } catch (e) {
-    return fail(toActionMessage(e));
+    return fail(toActionMessage(e, "削除できませんでした"));
   }
+}
+
+export async function fetchMoreLogs(cursor: string): Promise<LogsPage> {
+  return getLogsPageForCurrentUser({ cursor });
 }
 
 // TODO: Phase 6 - ログの実行日時を編集する

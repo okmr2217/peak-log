@@ -27,10 +27,13 @@ export class NotFoundError extends AppError {
  * 想定内エラーは message をそのまま返し、
  * 想定外エラーはログだけ出して汎用メッセージを返す。
  */
-export function toActionMessage(error: unknown): string {
+export function toActionMessage(
+  error: unknown,
+  fallback = "保存できませんでした。少し時間をおいてもう一度お試しください",
+): string {
   if (error instanceof AppError) {
     return error.message;
   }
   console.error("[unexpected error]", error);
-  return "予期しないエラーが発生しました";
+  return fallback;
 }
