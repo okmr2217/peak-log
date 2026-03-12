@@ -1,4 +1,6 @@
 import { AddReflectionButton } from "./add-reflection-button";
+import { DeleteLogButton } from "./delete-log-button";
+import { formatTime } from "@/lib/date-utils";
 
 type LogCardProps = {
   log: {
@@ -18,6 +20,8 @@ type LogCardProps = {
       note: string | null;
     } | null;
   };
+  timeOnly?: boolean;
+  showDelete?: boolean;
 };
 
 function formatPerformedAt(date: Date): string {
@@ -41,15 +45,17 @@ function RatingDots({ value, activeClass }: { value: number; activeClass: string
   );
 }
 
-export function LogCard({ log }: LogCardProps) {
+export function LogCard({ log, timeOnly = false, showDelete = false }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
+  const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
 
   return (
     <div className="bg-[#1A1A1A] rounded-2xl p-4 border border-white/5">
       <div className="flex items-center gap-2">
         {activity.emoji && <span className="text-lg leading-none">{activity.emoji}</span>}
         <span className="text-white font-medium text-sm">{activity.name}</span>
-        <span className="ml-auto text-zinc-500 text-xs shrink-0">{formatPerformedAt(performedAt)}</span>
+        <span className="ml-auto text-zinc-500 text-xs shrink-0">{timeLabel}</span>
+        {showDelete && <DeleteLogButton logId={log.id} />}
       </div>
 
       {reflection ? (
@@ -68,7 +74,9 @@ export function LogCard({ log }: LogCardProps) {
               </div>
             )}
             {reflection.wantAgain != null && (
-              <span className={`text-xs px-2 py-0.5 rounded-full ${reflection.wantAgain ? "bg-[#7C4DFF]/20 text-[#7C4DFF]" : "bg-white/5 text-zinc-500"}`}>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full ${reflection.wantAgain ? "bg-[#7C4DFF]/20 text-[#7C4DFF]" : "bg-white/5 text-zinc-500"}`}
+              >
                 {reflection.wantAgain ? "またやりたい" : "今回は十分"}
               </span>
             )}

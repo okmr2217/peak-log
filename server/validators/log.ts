@@ -9,4 +9,10 @@ export const deleteLogSchema = z.object({
   id: z.string().min(1),
 });
 
+export const updateLogPerformedAtSchema = z.object({
+  logId: z.string().min(1),
+  performedAt: z.coerce.date(),
+});
+
 export type CreateLogInput = z.infer<typeof createLogSchema>;
+export type UpdateLogPerformedAtInput = z.infer<typeof updateLogPerformedAtSchema>;

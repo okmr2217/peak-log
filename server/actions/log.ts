@@ -8,7 +8,9 @@ import { toActionMessage } from "@/lib/app-error";
 import {
   createLogSchema,
   deleteLogSchema,
+  updateLogPerformedAtSchema,
   type CreateLogInput,
+  type UpdateLogPerformedAtInput,
 } from "@/server/validators/log";
 
 export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
@@ -54,8 +56,20 @@ export async function deleteLog(id: string): Promise<ActionResult> {
       where: { id: parsed.data.id, userId },
     });
     revalidatePath("/");
+    revalidatePath("/history");
     return ok();
   } catch (e) {
     return fail(toActionMessage(e));
   }
+}
+
+// TODO: Phase 6 - ログの実行日時を編集する
+export async function updateLogPerformedAt(_input: UpdateLogPerformedAtInput): Promise<ActionResult> {
+  // TODO: Implement
+  // 1. Validate with updateLogPerformedAtSchema
+  // 2. requireUserId()
+  // 3. Check log ownership
+  // 4. prisma.log.update({ where: { id, userId }, data: { performedAt } })
+  // 5. revalidatePath("/history")
+  return fail("未実装です");
 }
