@@ -11,7 +11,7 @@ import {
   type CreateLogInput,
 } from "@/server/validators/log";
 
-export async function createLog(input: CreateLogInput): Promise<ActionResult> {
+export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
   const parsed = createLogSchema.safeParse(input);
   if (!parsed.success) {
     return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
@@ -19,7 +19,15 @@ export async function createLog(input: CreateLogInput): Promise<ActionResult> {
 
   try {
     const userId = await requireUserId();
-    await prisma.log.create({
+
+    const activity = await prisma.activity.findFirst({
+      where: { id: parsed.data.activityId, userId },
+    });
+    if (!activity) {
+      return fail("アクティビティが見つかりません");
+    }
+
+    const log = await prisma.log.create({
       data: {
         userId,
         activityId: parsed.data.activityId,
@@ -27,7 +35,8 @@ export async function createLog(input: CreateLogInput): Promise<ActionResult> {
       },
     });
     revalidatePath("/");
-    return ok();
+    revalidatePath("/history");
+    return ok({ logId: log.id });
   } catch (e) {
     return fail(toActionMessage(e));
   }

@@ -1,0 +1,91 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import Link from "next/link";
+import { createLog } from "@/server/actions/log";
+import { ActivityButton } from "./activity-button";
+
+type Activity = {
+  id: string;
+  name: string;
+  emoji: string | null;
+  color: string | null;
+};
+
+type Toast =
+  | { type: "success"; logId: string }
+  | { type: "error"; message: string };
+
+type ActivityGridProps = {
+  activities: Activity[];
+};
+
+export function ActivityGrid({ activities }: ActivityGridProps) {
+  const [toast, setToast] = useState<Toast | null>(null);
+
+  const handleQuickLog = useCallback(async (activityId: string) => {
+    const result = await createLog({ activityId });
+    if (result.ok) {
+      setToast({ type: "success", logId: result.data?.logId ?? "" });
+      setTimeout(() => setToast(null), 4000);
+    } else {
+      setToast({ type: "error", message: result.message });
+      setTimeout(() => setToast(null), 3000);
+    }
+  }, []);
+
+  if (activities.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-white font-semibold mb-1">最初の活動を作ろう</p>
+        <p className="text-zinc-500 text-sm mb-5">活動を作成すると、ここからピークを記録できます。</p>
+        <Link
+          href="/activities"
+          className="text-sm text-[#7C4DFF] hover:text-[#9E70FF] transition-colors"
+        >
+          活動を作成する →
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <div className="grid grid-cols-2 gap-3">
+        {activities.map((activity) => (
+          <ActivityButton key={activity.id} activity={activity} onQuickLog={handleQuickLog} />
+        ))}
+      </div>
+
+      {toast && (
+        <div className="fixed bottom-6 left-4 right-4 z-50 flex justify-center pointer-events-none">
+          <div
+            className={`
+              pointer-events-auto rounded-2xl px-5 py-4 shadow-xl
+              flex items-center justify-between gap-4 max-w-sm w-full
+              ${toast.type === "success" ? "bg-[#1A1A1A] border border-white/10" : "bg-red-950 border border-red-700/50"}
+            `}
+          >
+            {toast.type === "success" ? (
+              <>
+                <span className="text-white text-sm font-medium">記録しました</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // TODO: Phase 4 - open reflection modal with toast.logId
+                    setToast(null);
+                  }}
+                  className="text-[#00E5FF] text-sm font-medium hover:opacity-80 transition-opacity shrink-0"
+                >
+                  余韻を追加
+                </button>
+              </>
+            ) : (
+              <span className="text-red-300 text-sm">{toast.message}</span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

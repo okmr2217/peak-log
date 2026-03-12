@@ -17,6 +17,21 @@ export async function getActivitiesForCurrentUser() {
   });
 }
 
+export async function getActiveActivitiesForCurrentUser() {
+  const userId = await requireUserId();
+  return prisma.activity.findMany({
+    where: { userId, isArchived: false },
+    select: {
+      id: true,
+      name: true,
+      emoji: true,
+      color: true,
+      sortOrder: true,
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
 export async function getActivityById(id: string) {
   const userId = await requireUserId();
   return prisma.activity.findFirst({
