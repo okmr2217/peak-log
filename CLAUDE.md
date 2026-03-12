@@ -341,3 +341,15 @@ Always follow that document when implementing features.
 # コードスタイル
 - Prettierのprintwidthは120に設定済み（デフォルト80から変更）
 - フォーマットは `prettier --write` で行うこと
+
+---
+
+# 前提
+- プロダクト名: Peak Log
+- 文言トーン: 「ピーク」「余韻」「記録」
+- Reflection の UI名は「余韻」
+- Home が主導線
+- クイックログ後に「余韻を追加」
+- archived activity は Home に表示しない
+- Activity の物理削除は MVP ではしない
+- 

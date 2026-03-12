@@ -14,6 +14,10 @@ export function formatTime(date: Date): string {
   return dayjs(date).format("HH:mm");
 }
 
+export function formatPerformedAt(date: Date): string {
+  return dayjs(date).format("M/D HH:mm");
+}
+
 export function groupLogsByDate<T extends { performedAt: Date }>(
   logs: T[],
 ): Array<{ dateLabel: string; logs: T[] }> {

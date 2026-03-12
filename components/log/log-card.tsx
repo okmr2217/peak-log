@@ -1,6 +1,6 @@
 import { AddReflectionButton } from "./add-reflection-button";
 import { DeleteLogButton } from "./delete-log-button";
-import { formatTime } from "@/lib/date-utils";
+import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
 type LogCardProps = {
   log: {
@@ -23,15 +23,6 @@ type LogCardProps = {
   timeOnly?: boolean;
   showDelete?: boolean;
 };
-
-function formatPerformedAt(date: Date): string {
-  return new Intl.DateTimeFormat("ja-JP", {
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
 
 function RatingDots({ value, activeClass }: { value: number; activeClass: string }) {
   return (
