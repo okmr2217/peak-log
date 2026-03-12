@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Peak Log - Prisma Schema
+// DB: Supabase PostgreSQL
+// Auth: Better Auth (User model is kept compatible)
 
 generator client {
   provider = "prisma-client-js"
@@ -11,4 +9,98 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// User
+// Better Auth との連携を前提とした最小構成。
+// Better Auth は独自のテーブル (session, account, verification) を別途管理する。
+// ---------------------------------------------------------------------------
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activities  Activity[]
+  logs        Log[]
+  reflections Reflection[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Activity
+// ユーザーが自由に作成する記録対象（例: 筋トレ、勉強、デート）。
+// sortOrder で並び替え、isArchived で論理削除に対応。
+// ---------------------------------------------------------------------------
+model Activity {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  emoji      String?
+  color      String?
+  sortOrder  Int      @default(0)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs Log[]
+
+  @@index([userId])
+  @@index([userId, isArchived])
+  @@index([userId, sortOrder])
+  @@map("activities")
+}
+
+// ---------------------------------------------------------------------------
+// Log
+// 「ある活動を、ある日時に行った」という事実の記録。
+// クイックログ用途を想定し、Reflection は任意（0 or 1）。
+// ---------------------------------------------------------------------------
+model Log {
+  id          String   @id @default(cuid())
+  userId      String
+  activityId  String
+  performedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity   Activity    @relation(fields: [activityId], references: [id], onDelete: Restrict)
+  reflection Reflection?
+
+  @@index([userId])
+  @@index([userId, performedAt(sort: Desc)])
+  @@index([userId, activityId])
+  @@index([activityId])
+  @@map("logs")
+}
+
+// ---------------------------------------------------------------------------
+// Reflection
+// Log に対する余韻・感想・評価。Log とは分離した独立モデル。
+// Log 1件につき最大 1件（logId に @unique）。
+// 将来的な項目追加（mood, tags など）を想定してシンプルに保つ。
+// ---------------------------------------------------------------------------
+model Reflection {
+  id          String   @id @default(cuid())
+  userId      String
+  logId       String   @unique
+  excitement  Int?     // 高揚感 (1-5 など、バリデーションはアプリ層で)
+  achievement Int?     // 達成感 (1-5 など)
+  wantAgain   Boolean?
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  log  Log  @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("reflections")
 }
