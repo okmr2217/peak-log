@@ -33,28 +33,37 @@ export function HistoryList({ initialPage, q, from, to }: Props) {
 
   return (
     <>
-      <div className="space-y-7">
-        {groups.map(({ dateLabel, logs: groupLogs }) => (
-          <section key={dateLabel}>
-            <div className="flex items-center gap-3 mb-3">
-              <h3 className="text-xs font-medium text-zinc-500 shrink-0">{dateLabel}</h3>
-              <div className="flex-1 h-px bg-white/5" />
-            </div>
-            <div className="space-y-2.5">
-              {groupLogs.map((log) => (
-                <LogCard key={log.id} log={log} timeOnly showDelete showEditDate />
-              ))}
-            </div>
-          </section>
-        ))}
+      <div className="space-y-8">
+        {groups.map(({ dateLabel, logs: groupLogs }) => {
+          const isRecent = dateLabel === "今日" || dateLabel === "昨日";
+          return (
+            <section key={dateLabel}>
+              <div className="flex items-center gap-3 mb-3">
+                <h3
+                  className={`text-xs shrink-0 tabular-nums ${
+                    isRecent ? "font-semibold text-zinc-400" : "font-medium text-zinc-600"
+                  }`}
+                >
+                  {dateLabel}
+                </h3>
+                <div className="flex-1 h-px bg-gradient-to-r from-white/8 to-transparent" />
+              </div>
+              <div className="space-y-2">
+                {groupLogs.map((log) => (
+                  <LogCard key={log.id} log={log} timeOnly showDelete showEditDate />
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
 
       {hasMore && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-10 flex justify-center">
           <button
             onClick={loadMore}
             disabled={isPending}
-            className="text-sm text-zinc-400 hover:text-white disabled:text-zinc-600 transition-colors"
+            className="px-5 py-2 text-xs text-zinc-500 hover:text-zinc-300 disabled:text-zinc-700 transition-colors border border-white/8 hover:border-white/15 rounded-full"
           >
             {isPending ? "読み込み中..." : "もっと見る"}
           </button>
