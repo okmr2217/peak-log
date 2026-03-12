@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { updateLogPerformedAt } from "@/server/actions/log";
 import { toDatetimeLocalString } from "@/lib/date-utils";
-import { Dialog, BottomSheetContent } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -42,6 +43,10 @@ export function EditPerformedAtModal({ logId, performedAt, isOpen, onClose, onSa
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <BottomSheetContent>
+        <VisuallyHidden>
+          <DialogTitle>日時を編集</DialogTitle>
+          <DialogDescription>記録の実施日時を編集します。</DialogDescription>
+        </VisuallyHidden>
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-semibold text-base">日時を編集</h2>

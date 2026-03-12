@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { updateActivity } from "@/server/actions/activity";
-import { Dialog, BottomSheetContent } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -48,6 +49,10 @@ export function ActivityEditModal({ activity, onClose }: Props) {
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <BottomSheetContent>
+        <VisuallyHidden>
+          <DialogTitle>活動を編集</DialogTitle>
+          <DialogDescription>活動の名前、絵文字、カラーを編集します。</DialogDescription>
+        </VisuallyHidden>
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-semibold text-base">活動を編集</h2>
