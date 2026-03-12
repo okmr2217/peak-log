@@ -4,7 +4,15 @@ import { requireUserId } from "@/lib/session";
 export async function getActivitiesForCurrentUser() {
   const userId = await requireUserId();
   return prisma.activity.findMany({
-    where: { userId, isArchived: false },
+    where: { userId },
+    select: {
+      id: true,
+      name: true,
+      emoji: true,
+      color: true,
+      sortOrder: true,
+      isArchived: true,
+    },
     orderBy: { sortOrder: "asc" },
   });
 }

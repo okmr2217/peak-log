@@ -1,8 +1,7 @@
-export default function ActivitiesPage() {
-  return (
-    <div className="px-4 py-8">
-      <h2 className="text-lg font-semibold text-white mb-1">アクティビティ</h2>
-      <p className="text-zinc-500 text-sm">アクティビティ管理がここに表示されます</p>
-    </div>
-  );
+import { getActivitiesForCurrentUser } from "@/server/queries/activity";
+import { ActivityList } from "@/components/activity/activity-list";
+
+export default async function ActivitiesPage() {
+  const activities = await getActivitiesForCurrentUser();
+  return <ActivityList activities={activities} />;
 }

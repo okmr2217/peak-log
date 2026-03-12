@@ -8,9 +8,12 @@ import { toActionMessage } from "@/lib/app-error";
 import {
   createActivitySchema,
   updateActivitySchema,
-  deleteActivitySchema,
+  archiveActivitySchema,
+  reorderActivitiesSchema,
   type CreateActivityInput,
   type UpdateActivityInput,
+  type ArchiveActivityInput,
+  type ReorderActivitiesInput,
 } from "@/server/validators/activity";
 
 export async function createActivity(input: CreateActivityInput): Promise<ActionResult> {
@@ -25,6 +28,7 @@ export async function createActivity(input: CreateActivityInput): Promise<Action
     await prisma.activity.create({
       data: { ...parsed.data, userId, sortOrder: count },
     });
+    revalidatePath("/");
     revalidatePath("/activities");
     return ok();
   } catch (e) {
@@ -40,11 +44,12 @@ export async function updateActivity(input: UpdateActivityInput): Promise<Action
 
   try {
     const userId = await requireUserId();
-    const { id, ...data } = parsed.data;
+    const { activityId, ...data } = parsed.data;
     await prisma.activity.updateMany({
-      where: { id, userId },
+      where: { id: activityId, userId },
       data,
     });
+    revalidatePath("/");
     revalidatePath("/activities");
     return ok();
   } catch (e) {
@@ -52,17 +57,47 @@ export async function updateActivity(input: UpdateActivityInput): Promise<Action
   }
 }
 
-export async function deleteActivity(id: string): Promise<ActionResult> {
-  const parsed = deleteActivitySchema.safeParse({ id });
+export async function archiveActivity(input: ArchiveActivityInput): Promise<ActionResult> {
+  const parsed = archiveActivitySchema.safeParse(input);
   if (!parsed.success) {
     return fail("無効なIDです");
   }
 
   try {
     const userId = await requireUserId();
-    await prisma.activity.deleteMany({
-      where: { id: parsed.data.id, userId },
+    await prisma.activity.updateMany({
+      where: { id: parsed.data.activityId, userId },
+      data: { isArchived: parsed.data.isArchived },
     });
+    revalidatePath("/");
+    revalidatePath("/activities");
+    return ok();
+  } catch (e) {
+    return fail(toActionMessage(e));
+  }
+}
+
+export async function reorderActivities(input: ReorderActivitiesInput): Promise<ActionResult> {
+  const parsed = reorderActivitiesSchema.safeParse(input);
+  if (!parsed.success) {
+    return fail("無効なデータです");
+  }
+
+  try {
+    const userId = await requireUserId();
+    const owned = await prisma.activity.findMany({
+      where: { id: { in: parsed.data.activityIds }, userId },
+      select: { id: true },
+    });
+    if (owned.length !== parsed.data.activityIds.length) {
+      return fail("権限がありません");
+    }
+    await prisma.$transaction(
+      parsed.data.activityIds.map((id, index) =>
+        prisma.activity.update({ where: { id }, data: { sortOrder: index } }),
+      ),
+    );
+    revalidatePath("/");
     revalidatePath("/activities");
     return ok();
   } catch (e) {
