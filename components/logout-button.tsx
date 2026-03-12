@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
+import { LogOut } from "lucide-react";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -15,8 +16,9 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="text-xs text-zinc-400 hover:text-white transition-colors"
+      className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors w-full"
     >
+      <LogOut size={16} />
       ログアウト
     </button>
   );
