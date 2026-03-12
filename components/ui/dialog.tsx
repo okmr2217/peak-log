@@ -75,6 +75,40 @@ const DialogDescription = React.forwardRef<
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
+// Bottom-sheet on mobile, centered dialog on sm+
+// No built-in close button — modals manage their own header/close
+const BottomSheetContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "fixed bottom-0 left-0 right-0 z-50 w-full rounded-t-3xl border border-white/8 bg-[#1C1C1C] shadow-2xl duration-200",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+        "sm:bottom-auto sm:left-[50%] sm:right-auto sm:top-[50%] sm:w-full sm:max-w-lg",
+        "sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-2xl",
+        "data-[state=closed]:sm:zoom-out-95 data-[state=open]:sm:zoom-in-95",
+        "data-[state=closed]:sm:slide-out-to-bottom-[unset] data-[state=open]:sm:slide-in-from-bottom-[unset]",
+        "data-[state=closed]:sm:slide-out-to-top-[48%] data-[state=open]:sm:slide-in-from-top-[48%]",
+        className
+      )}
+      {...props}
+    >
+      {/* Drag handle — mobile only */}
+      <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="w-10 h-1 rounded-full bg-white/15" />
+      </div>
+      {children}
+    </DialogPrimitive.Content>
+  </DialogPortal>
+));
+BottomSheetContent.displayName = "BottomSheetContent";
+
 export {
   Dialog,
   DialogPortal,
@@ -82,6 +116,7 @@ export {
   DialogClose,
   DialogTrigger,
   DialogContent,
+  BottomSheetContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,

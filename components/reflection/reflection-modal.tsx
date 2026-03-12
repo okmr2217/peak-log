@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { X } from "lucide-react";
 import { upsertReflection } from "@/server/actions/reflection";
+import { Dialog, BottomSheetContent } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 type InitialValues = {
   excitement?: number | null;
@@ -54,8 +59,6 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose }: Refle
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  if (!isOpen) return null;
-
   function handleSubmit() {
     setError(null);
     startTransition(async () => {
@@ -75,46 +78,29 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose }: Refle
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" onClick={onClose} />
-
-      {/* Sheet */}
-      <div className="relative bg-[#1C1C1C] w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-white/8 shadow-2xl">
-        {/* Drag handle (mobile only) */}
-        <div className="flex justify-center pt-3 pb-1 sm:hidden">
-          <div className="w-10 h-1 rounded-full bg-white/15" />
-        </div>
-
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <BottomSheetContent>
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
-          {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-semibold text-base">{isEdit ? "余韻を編集" : "余韻を追加"}</h2>
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-colors text-sm"
-            >
-              ✕
-            </button>
+            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-zinc-500 hover:text-white">
+              <X className="h-4 w-4" />
+            </Button>
           </div>
 
           <div className="space-y-5">
-            {/* 興奮 */}
             <div>
-              <label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">興奮</label>
+              <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">興奮</Label>
               <RatingButtons value={excitement} onChange={setExcitement} activeClass="bg-[#7C4DFF] text-white" />
             </div>
 
-            {/* 達成感 */}
             <div>
-              <label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">達成感</label>
+              <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">達成感</Label>
               <RatingButtons value={achievement} onChange={setAchievement} activeClass="bg-[#00E5FF]/80 text-black" />
             </div>
 
-            {/* またやりたい */}
             <div>
-              <label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">またやりたい</label>
+              <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">またやりたい</Label>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -137,33 +123,35 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose }: Refle
               </div>
             </div>
 
-            {/* メモ */}
             <div>
-              <label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">メモ</label>
-              <textarea
+              <Label htmlFor="reflection-note" className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">
+                メモ
+              </Label>
+              <Textarea
+                id="reflection-note"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 maxLength={200}
                 rows={3}
                 placeholder="体験の余韻を残しておこう..."
-                className="w-full bg-white/5 rounded-xl px-3.5 py-3 text-white text-sm placeholder:text-zinc-600 resize-none focus:outline-none focus:ring-1 focus:ring-[#7C4DFF]/50 leading-relaxed"
+                className="bg-white/5 border-0 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 resize-none focus-visible:ring-[#7C4DFF]/50 leading-relaxed"
               />
               <p className="text-zinc-700 text-xs text-right mt-1">{note.length}/200</p>
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
 
-            <button
+            <Button
               type="button"
               onClick={handleSubmit}
               disabled={isPending}
-              className="w-full bg-[#7C4DFF] hover:bg-[#8D5FFF] disabled:opacity-50 text-white text-sm font-semibold rounded-xl py-3.5 transition-all active:scale-[0.98]"
+              className="w-full rounded-xl h-auto py-3.5"
             >
               {isPending ? "保存中..." : "保存する"}
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </BottomSheetContent>
+    </Dialog>
   );
 }
