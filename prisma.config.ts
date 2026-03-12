@@ -8,4 +8,12 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") }); // fallback
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
+  migrate: {
+    adapter: async () => {
+      const { PrismaPg } = await import("@prisma/adapter-pg");
+      const { Pool } = await import("pg");
+      const pool = new Pool({ connectionString: process.env.DIRECT_URL });
+      return new PrismaPg(pool);
+    },
+  },
 });
