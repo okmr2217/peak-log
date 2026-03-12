@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/session";
 import LogoutButton from "@/components/logout-button";
+import ChangePasswordCard from "@/components/settings/change-password-card";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -18,6 +19,9 @@ export default async function SettingsPage() {
           </div>
         </div>
       </section>
+
+      {/* パスワード変更 */}
+      <ChangePasswordCard />
 
       {/* ログアウト */}
       <section className="space-y-3">
