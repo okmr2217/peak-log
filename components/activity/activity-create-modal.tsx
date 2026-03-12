@@ -3,10 +3,11 @@
 import { useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { createActivity } from "@/server/actions/activity";
-import { Dialog, BottomSheetContent } from "@/components/ui/dialog";
+import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
 
 const PRESET_COLORS = [
   "#7C4DFF", "#00E5FF", "#FF4081", "#FF6D00", "#FFD740",
@@ -46,6 +47,8 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <BottomSheetContent>
+        <DialogTitle className="sr-only">活動を追加</DialogTitle>
+        <DialogDescription className="sr-only">新しい活動を作成します。名前、絵文字、カラーを設定してください。</DialogDescription>
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-white font-semibold text-base">活動を追加</h2>
@@ -71,20 +74,7 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
                 className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="activity-emoji" className="text-zinc-500 text-xs uppercase tracking-wide">
-                絵文字
-              </Label>
-              <Input
-                id="activity-emoji"
-                type="text"
-                value={emoji}
-                onChange={(e) => setEmoji(e.target.value)}
-                placeholder="🏋️"
-                maxLength={10}
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
-              />
-            </div>
+            <EmojiPickerField value={emoji} onChange={setEmoji} />
             <div className="space-y-2">
               <Label className="text-zinc-500 text-xs uppercase tracking-wide">カラー</Label>
               <div className="flex flex-wrap gap-2.5">
