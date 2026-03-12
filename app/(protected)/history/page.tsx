@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { getLogsForCurrentUser } from "@/server/queries/log";
-import { LogCard } from "@/components/log/log-card";
-import { groupLogsByDate } from "@/lib/date-utils";
+import { getLogsPageForCurrentUser } from "@/server/queries/log";
+import { HistoryList } from "@/components/history/history-list";
 
 export default async function HistoryPage() {
-  let logs;
+  let initialPage;
   try {
-    logs = await getLogsForCurrentUser(200);
+    initialPage = await getLogsPageForCurrentUser();
   } catch {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
@@ -16,7 +15,7 @@ export default async function HistoryPage() {
     );
   }
 
-  if (logs.length === 0) {
+  if (initialPage.items.length === 0) {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
         <h1 className="text-xl font-bold text-white mb-5">記録</h1>
@@ -31,26 +30,10 @@ export default async function HistoryPage() {
     );
   }
 
-  const groups = groupLogsByDate(logs);
-
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
       <h1 className="text-xl font-bold text-white mb-5">記録</h1>
-      <div className="space-y-7">
-        {groups.map(({ dateLabel, logs: groupLogs }) => (
-          <section key={dateLabel}>
-            <div className="flex items-center gap-3 mb-3">
-              <h3 className="text-xs font-medium text-zinc-500 shrink-0">{dateLabel}</h3>
-              <div className="flex-1 h-px bg-white/5" />
-            </div>
-            <div className="space-y-2.5">
-              {groupLogs.map((log) => (
-                <LogCard key={log.id} log={log} timeOnly showDelete />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+      <HistoryList initialPage={initialPage} />
     </div>
   );
 }
