@@ -16,11 +16,20 @@ type InitialValues = {
   note?: string | null;
 };
 
+type SavedReflection = {
+  id: string;
+  excitement: number | null;
+  achievement: number | null;
+  wantAgain: boolean | null;
+  note: string | null;
+};
+
 type ReflectionModalProps = {
   logId: string;
   initialValues?: InitialValues;
   isOpen: boolean;
   onClose: () => void;
+  onSaved?: (reflection: SavedReflection) => void;
 };
 
 function RatingButtons({
@@ -50,7 +59,7 @@ function RatingButtons({
   );
 }
 
-export function ReflectionModal({ logId, initialValues, isOpen, onClose }: ReflectionModalProps) {
+export function ReflectionModal({ logId, initialValues, isOpen, onClose, onSaved }: ReflectionModalProps) {
   const isEdit = !!initialValues;
 
   const [excitement, setExcitement] = useState<number | undefined>(initialValues?.excitement ?? undefined);
@@ -71,6 +80,13 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose }: Refle
         note: note.trim() || undefined,
       });
       if (result.ok) {
+        onSaved?.({
+          id: result.data.reflectionId,
+          excitement: excitement ?? null,
+          achievement: achievement ?? null,
+          wantAgain: wantAgain ?? null,
+          note: note.trim() || null,
+        });
         onClose();
       } else {
         setError(result.message);

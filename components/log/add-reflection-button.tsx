@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ReflectionModal } from "@/components/reflection/reflection-modal";
 
 type ReflectionValues = {
+  id: string;
   excitement: number | null;
   achievement: number | null;
   wantAgain: boolean | null;
@@ -13,11 +14,18 @@ type ReflectionValues = {
 type AddReflectionButtonProps = {
   logId: string;
   initialValues?: ReflectionValues;
+  onSaved?: (reflection: ReflectionValues) => void;
 };
 
-export function AddReflectionButton({ logId, initialValues }: AddReflectionButtonProps) {
+export function AddReflectionButton({ logId, initialValues, onSaved }: AddReflectionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const hasReflection = !!initialValues;
+  const [currentValues, setCurrentValues] = useState<ReflectionValues | undefined>(initialValues);
+  const hasReflection = !!currentValues;
+
+  function handleSaved(reflection: ReflectionValues) {
+    setCurrentValues(reflection);
+    onSaved?.(reflection);
+  }
 
   return (
     <>
@@ -32,7 +40,13 @@ export function AddReflectionButton({ logId, initialValues }: AddReflectionButto
       >
         {hasReflection ? "余韻を編集" : "+ 余韻を追加"}
       </button>
-      <ReflectionModal logId={logId} initialValues={initialValues ?? undefined} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <ReflectionModal
+        logId={logId}
+        initialValues={currentValues ?? undefined}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onSaved={handleSaved}
+      />
     </>
   );
 }

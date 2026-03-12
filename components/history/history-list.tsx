@@ -19,6 +19,17 @@ export function HistoryList({ initialPage, q, from, to }: Props) {
   const [hasMore, setHasMore] = useState(initialPage.hasMore);
   const [isPending, startTransition] = useTransition();
 
+  function handlePerformedAtSaved(logId: string, newDate: Date) {
+    setItems((prev) => prev.map((item) => (item.id === logId ? { ...item, performedAt: newDate } : item)));
+  }
+
+  function handleReflectionSaved(
+    logId: string,
+    reflection: { id: string; excitement: number | null; achievement: number | null; wantAgain: boolean | null; note: string | null },
+  ) {
+    setItems((prev) => prev.map((item) => (item.id === logId ? { ...item, reflection } : item)));
+  }
+
   function loadMore() {
     if (!nextCursor) return;
     startTransition(async () => {
@@ -50,7 +61,7 @@ export function HistoryList({ initialPage, q, from, to }: Props) {
               </div>
               <div className="space-y-2">
                 {groupLogs.map((log) => (
-                  <LogCard key={log.id} log={log} timeOnly showDelete showEditDate />
+                  <LogCard key={log.id} log={log} timeOnly showDelete showEditDate onPerformedAtSaved={handlePerformedAtSaved} onReflectionSaved={handleReflectionSaved} />
                 ))}
               </div>
             </section>

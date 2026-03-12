@@ -25,6 +25,8 @@ type LogCardProps = {
   timeOnly?: boolean;
   showDelete?: boolean;
   showEditDate?: boolean;
+  onPerformedAtSaved?: (logId: string, newDate: Date) => void;
+  onReflectionSaved?: (logId: string, reflection: { id: string; excitement: number | null; achievement: number | null; wantAgain: boolean | null; note: string | null }) => void;
 };
 
 function RatingDots({ value, activeClass }: { value: number; activeClass: string }) {
@@ -40,7 +42,7 @@ function RatingDots({ value, activeClass }: { value: number; activeClass: string
   );
 }
 
-export function LogCard({ log, timeOnly = false, showDelete = false, showEditDate = false }: LogCardProps) {
+export function LogCard({ log, timeOnly = false, showDelete = false, showEditDate = false, onPerformedAtSaved, onReflectionSaved }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
   const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
   const accentColor = activity.color;
@@ -63,7 +65,12 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
           <Sparkles size={11} className="flex-shrink-0 text-[#00E5FF]/50" aria-label="余韻あり" />
         )}
         {showEditDate ? (
-          <EditPerformedAtButton logId={log.id} performedAt={performedAt} label={timeLabel} />
+          <EditPerformedAtButton
+            logId={log.id}
+            performedAt={performedAt}
+            timeOnly={timeOnly}
+            onSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
+          />
         ) : (
           <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
         )}
@@ -105,11 +112,11 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
             {reflection.note && (
               <p className="text-zinc-500 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>
             )}
-            <AddReflectionButton logId={log.id} initialValues={reflection} />
+            <AddReflectionButton logId={log.id} initialValues={reflection} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
           </div>
         ) : (
           <div className="pt-2.5">
-            <AddReflectionButton logId={log.id} />
+            <AddReflectionButton logId={log.id} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
           </div>
         )}
       </div>

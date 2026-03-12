@@ -2,16 +2,24 @@
 
 import { useState } from "react";
 import { EditPerformedAtModal } from "./edit-performed-at-modal";
+import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
 type Props = {
   logId: string;
   performedAt: Date;
-  label: string;
+  timeOnly?: boolean;
+  onSaved?: (newDate: Date) => void;
 };
 
-export function EditPerformedAtButton({ logId, performedAt, label }: Props) {
+export function EditPerformedAtButton({ logId, performedAt, timeOnly = false, onSaved }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(performedAt);
+  const label = timeOnly ? formatTime(currentDate) : formatPerformedAt(currentDate);
+
+  function handleSaved(newDate: Date) {
+    setCurrentDate(newDate);
+    onSaved?.(newDate);
+  }
 
   return (
     <>
@@ -28,7 +36,7 @@ export function EditPerformedAtButton({ logId, performedAt, label }: Props) {
         performedAt={currentDate}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onSaved={(newDate) => setCurrentDate(newDate)}
+        onSaved={handleSaved}
       />
     </>
   );
