@@ -8,6 +8,7 @@ import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/co
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
 
 interface Activity {
   id: string;
@@ -78,20 +79,7 @@ export function ActivityEditModal({ activity, onClose }: Props) {
                 className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-activity-emoji" className="text-zinc-500 text-xs uppercase tracking-wide">
-                絵文字
-              </Label>
-              <Input
-                id="edit-activity-emoji"
-                type="text"
-                value={emoji}
-                onChange={(e) => setEmoji(e.target.value)}
-                placeholder="🏋️"
-                maxLength={10}
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
-              />
-            </div>
+            <EmojiPickerField value={emoji} onChange={setEmoji} />
             <div className="space-y-2">
               <Label htmlFor="edit-activity-color" className="text-zinc-500 text-xs uppercase tracking-wide">
                 カラー
