@@ -38,11 +38,14 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
 
   if (activities.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-white font-semibold mb-1">最初の活動を作ろう</p>
-        <p className="text-zinc-500 text-sm mb-5">活動を作成すると、ここからピークを記録できます。</p>
-        <Link href="/activities" className="text-sm text-[#7C4DFF] hover:text-[#9E70FF] transition-colors">
-          活動を作成する →
+      <div className="flex flex-col items-center justify-center py-14 text-center">
+        <p className="text-white font-semibold mb-1.5">まだ活動がありません</p>
+        <p className="text-zinc-500 text-sm mb-5">最初の活動を追加して、ピークを記録しよう</p>
+        <Link
+          href="/activities"
+          className="text-sm bg-[#7C4DFF] text-white px-4 py-2 rounded-xl hover:bg-[#6B3FE0] active:scale-95 transition-all"
+        >
+          活動を追加
         </Link>
       </div>
     );
@@ -57,24 +60,27 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 left-4 right-4 z-50 flex justify-center pointer-events-none">
+        <div className="fixed bottom-20 left-4 right-4 z-50 flex justify-center pointer-events-none">
           <div
             className={`
-              pointer-events-auto rounded-2xl px-5 py-4 shadow-xl
+              pointer-events-auto rounded-2xl px-4 py-3.5 shadow-2xl
               flex items-center justify-between gap-4 max-w-sm w-full
-              ${toast.type === "success" ? "bg-[#1A1A1A] border border-white/10" : "bg-red-950 border border-red-700/50"}
+              ${toast.type === "success" ? "bg-[#232323] border border-white/8" : "bg-red-950/90 border border-red-700/40"}
             `}
           >
             {toast.type === "success" ? (
               <>
-                <span className="text-white text-sm font-medium">記録しました</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
+                  <span className="text-white text-sm font-medium">記録しました</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     setReflectionLogId(toast.logId);
                     setToast(null);
                   }}
-                  className="text-[#00E5FF] text-sm font-medium hover:opacity-80 transition-opacity shrink-0"
+                  className="text-[#00E5FF] text-xs font-medium hover:opacity-80 transition-opacity shrink-0 px-3 py-1.5 rounded-lg bg-[#00E5FF]/10"
                 >
                   余韻を追加
                 </button>

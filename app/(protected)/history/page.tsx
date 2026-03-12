@@ -10,7 +10,7 @@ export default async function HistoryPage() {
   } catch {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
-        <h2 className="text-xl font-bold text-white mb-5">記録</h2>
+        <h1 className="text-xl font-bold text-white mb-5">記録</h1>
         <p className="text-zinc-500 text-sm">記録の読み込みに失敗しました</p>
       </div>
     );
@@ -19,14 +19,12 @@ export default async function HistoryPage() {
   if (logs.length === 0) {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
-        <h2 className="text-xl font-bold text-white mb-5">記録</h2>
-        <div className="flex flex-col items-center justify-center py-16 text-center gap-4">
-          <p className="text-zinc-500 text-sm">まだピークは記録されていません</p>
-          <Link
-            href="/"
-            className="text-xs text-[#7C4DFF] hover:text-[#9E70FF] transition-colors"
-          >
-            最初のピークを記録しに行く →
+        <h1 className="text-xl font-bold text-white mb-5">記録</h1>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <p className="text-zinc-400 text-sm mb-1">まだピークはありません</p>
+          <p className="text-zinc-600 text-xs mb-6">記録した内容はここに並びます</p>
+          <Link href="/" className="text-sm text-[#7C4DFF] hover:text-[#9E70FF] transition-colors">
+            ピークを記録 →
           </Link>
         </div>
       </div>
@@ -37,12 +35,15 @@ export default async function HistoryPage() {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <h2 className="text-xl font-bold text-white mb-5">記録</h2>
-      <div className="space-y-6">
+      <h1 className="text-xl font-bold text-white mb-5">記録</h1>
+      <div className="space-y-7">
         {groups.map(({ dateLabel, logs: groupLogs }) => (
           <section key={dateLabel}>
-            <h3 className="text-xs text-zinc-500 mb-2 px-0.5">{dateLabel}</h3>
-            <div className="space-y-3">
+            <div className="flex items-center gap-3 mb-3">
+              <h3 className="text-xs font-medium text-zinc-500 shrink-0">{dateLabel}</h3>
+              <div className="flex-1 h-px bg-white/5" />
+            </div>
+            <div className="space-y-2.5">
               {groupLogs.map((log) => (
                 <LogCard key={log.id} log={log} timeOnly showDelete />
               ))}

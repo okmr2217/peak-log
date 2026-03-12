@@ -36,21 +36,22 @@ export function ActivityList({ activities }: Props) {
   }
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-white font-semibold">活動一覧</h2>
+    <div className="px-4 py-6 max-w-lg mx-auto">
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-xl font-bold text-white">活動</h1>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-1.5 bg-[#7C4DFF] text-white px-3 py-1.5 rounded-lg text-sm hover:bg-[#6B3FE0] transition-colors"
+          className="flex items-center gap-1.5 bg-[#7C4DFF] text-white px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-[#6B3FE0] active:scale-95 transition-all"
         >
-          <Plus size={16} />
+          <Plus size={15} />
           追加
         </button>
       </div>
 
       {activities.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-zinc-500 text-sm">最初の活動を作ろう</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <p className="text-zinc-300 text-sm font-medium mb-1.5">活動を作成しよう</p>
+          <p className="text-zinc-600 text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -65,7 +66,7 @@ export function ActivityList({ activities }: Props) {
       )}
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1A1A1A] border border-zinc-700 text-white text-sm px-4 py-2.5 rounded-full shadow-lg z-50">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#232323] border border-white/8 text-white text-sm px-4 py-2.5 rounded-full shadow-lg z-50 whitespace-nowrap">
           {toast}
         </div>
       )}

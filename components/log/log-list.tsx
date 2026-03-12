@@ -26,7 +26,8 @@ export function LogList({ logs }: LogListProps) {
   if (logs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-center">
-        <p className="text-zinc-500 text-sm">最初のピークを記録しよう</p>
+        <p className="text-zinc-300 text-sm font-medium mb-1">まだ記録がありません</p>
+        <p className="text-zinc-600 text-xs">今日のピークをひとつ残してみよう</p>
       </div>
     );
   }
