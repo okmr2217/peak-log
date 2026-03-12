@@ -35,19 +35,19 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
       onClick={handleClick}
       disabled={pending || disabled}
       className={cn(
-        "flex flex-col items-center justify-center gap-2 rounded-2xl p-4 min-h-[88px] w-full",
-        "bg-[#1A1A1A] border border-white/5 text-white",
-        "transition-all duration-150 active:scale-95",
-        "hover:border-white/15 hover:bg-white/5",
+        "relative flex flex-col items-center justify-center gap-2 rounded-2xl p-4 min-h-[96px] w-full",
+        "bg-[#1A1A1A] border text-white",
+        "transition-all duration-150 active:scale-[0.96]",
+        "hover:bg-[#242424]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        activity.color && `shadow-[0_0_12px_-4px_${activity.color}40]`,
+        activity.color && `shadow-[0_0_16px_-4px_${activity.color}30]`,
       )}
-      style={activity.color ? { borderColor: `${activity.color}30` } : undefined}
+      style={activity.color ? { borderColor: `${activity.color}35` } : { borderColor: "rgba(255,255,255,0.06)" }}
     >
       {activity.emoji && <span className="text-2xl leading-none">{activity.emoji}</span>}
-      <span className="text-sm font-medium text-center leading-tight">{activity.name}</span>
+      <span className="text-xs font-medium text-center leading-tight text-zinc-200">{activity.name}</span>
       {pending && (
-        <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/30">
+        <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         </span>
       )}

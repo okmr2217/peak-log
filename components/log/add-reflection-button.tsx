@@ -26,11 +26,11 @@ export function AddReflectionButton({ logId, initialValues }: AddReflectionButto
         onClick={() => setIsOpen(true)}
         className={
           hasReflection
-            ? "text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-            : "text-xs text-[#00E5FF]/60 hover:text-[#00E5FF] transition-colors"
+            ? "text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors"
+            : "text-[11px] text-[#00E5FF]/50 hover:text-[#00E5FF]/80 transition-colors"
         }
       >
-        {hasReflection ? "余韻を編集" : "余韻を追加"}
+        {hasReflection ? "余韻を編集" : "+ 余韻を追加"}
       </button>
       <ReflectionModal logId={logId} initialValues={initialValues ?? undefined} isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>

@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { X } from "lucide-react";
 import { createActivity } from "@/server/actions/activity";
 
 interface Props {
   onClose: () => void;
   onSuccess: () => void;
 }
+
+const inputClass =
+  "w-full bg-white/5 border border-white/8 rounded-xl px-3.5 py-3 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:border-[#7C4DFF]/60 transition-colors";
+const labelClass = "block text-zinc-500 text-xs mb-2 uppercase tracking-wide";
 
 export function ActivityCreateModal({ onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
@@ -34,59 +37,71 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-end sm:items-center justify-center z-50 p-4">
-      <div className="bg-[#1A1A1A] rounded-2xl w-full max-w-md p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white font-semibold">活動を追加</h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
-            <X size={20} />
-          </button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[2px] flex items-end sm:items-center justify-center z-50">
+      <div className="bg-[#1C1C1C] rounded-t-3xl sm:rounded-2xl w-full max-w-md border border-white/8 shadow-2xl">
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-white/15" />
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs text-zinc-400 mb-1">名前 *</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="例: 筋トレ"
-              maxLength={20}
-              className="w-full bg-[#0A0A0A] border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-[#7C4DFF]"
-              required
-              autoFocus
-            />
+
+        <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-white font-semibold text-base">活動を追加</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-colors text-sm"
+            >
+              ✕
+            </button>
           </div>
-          <div>
-            <label className="block text-xs text-zinc-400 mb-1">絵文字</label>
-            <input
-              type="text"
-              value={emoji}
-              onChange={(e) => setEmoji(e.target.value)}
-              placeholder="🏋️"
-              maxLength={10}
-              className="w-full bg-[#0A0A0A] border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-[#7C4DFF]"
-            />
-          </div>
-          <div>
-            <label className="block text-xs text-zinc-400 mb-1">カラー</label>
-            <input
-              type="text"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              placeholder="#7C4DFF"
-              maxLength={20}
-              className="w-full bg-[#0A0A0A] border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-[#7C4DFF]"
-            />
-          </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-[#7C4DFF] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-[#6B3FE0] disabled:opacity-50 transition-colors"
-          >
-            {isPending ? "追加中..." : "追加する"}
-          </button>
-        </form>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className={labelClass}>名前 *</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="例: 筋トレ"
+                maxLength={20}
+                className={inputClass}
+                required
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className={labelClass}>絵文字</label>
+              <input
+                type="text"
+                value={emoji}
+                onChange={(e) => setEmoji(e.target.value)}
+                placeholder="🏋️"
+                maxLength={10}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>カラー</label>
+              <input
+                type="text"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                placeholder="#7C4DFF"
+                maxLength={20}
+                className={inputClass}
+              />
+            </div>
+            {error && <p className="text-red-400 text-xs">{error}</p>}
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full bg-[#7C4DFF] text-white rounded-xl py-3.5 text-sm font-semibold hover:bg-[#8D5FFF] disabled:opacity-50 transition-all active:scale-[0.98]"
+            >
+              {isPending ? "追加中..." : "追加する"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
