@@ -1,19 +1,38 @@
 "use client";
 
-type AddReflectionButtonProps = {
-  logId: string;
+import { useState } from "react";
+import { ReflectionModal } from "@/components/reflection/reflection-modal";
+
+type ReflectionValues = {
+  excitement: number | null;
+  achievement: number | null;
+  wantAgain: boolean | null;
+  note: string | null;
 };
 
-export function AddReflectionButton({ logId: _logId }: AddReflectionButtonProps) {
+type AddReflectionButtonProps = {
+  logId: string;
+  initialValues?: ReflectionValues;
+};
+
+export function AddReflectionButton({ logId, initialValues }: AddReflectionButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const hasReflection = !!initialValues;
+
   return (
-    <button
-      type="button"
-      onClick={() => {
-        // TODO: Phase 4 - open reflection modal with logId
-      }}
-      className="text-xs text-[#00E5FF]/60 hover:text-[#00E5FF] transition-colors"
-    >
-      余韻を追加
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className={
+          hasReflection
+            ? "text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+            : "text-xs text-[#00E5FF]/60 hover:text-[#00E5FF] transition-colors"
+        }
+      >
+        {hasReflection ? "余韻を編集" : "余韻を追加"}
+      </button>
+      <ReflectionModal logId={logId} initialValues={initialValues ?? undefined} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </>
   );
 }

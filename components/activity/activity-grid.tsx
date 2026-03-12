@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { createLog } from "@/server/actions/log";
 import { ActivityButton } from "./activity-button";
+import { ReflectionModal } from "@/components/reflection/reflection-modal";
 
 type Activity = {
   id: string;
@@ -22,6 +23,7 @@ type ActivityGridProps = {
 
 export function ActivityGrid({ activities }: ActivityGridProps) {
   const [toast, setToast] = useState<Toast | null>(null);
+  const [reflectionLogId, setReflectionLogId] = useState<string | null>(null);
 
   const handleQuickLog = useCallback(async (activityId: string) => {
     const result = await createLog({ activityId });
@@ -39,10 +41,7 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <p className="text-white font-semibold mb-1">最初の活動を作ろう</p>
         <p className="text-zinc-500 text-sm mb-5">活動を作成すると、ここからピークを記録できます。</p>
-        <Link
-          href="/activities"
-          className="text-sm text-[#7C4DFF] hover:text-[#9E70FF] transition-colors"
-        >
+        <Link href="/activities" className="text-sm text-[#7C4DFF] hover:text-[#9E70FF] transition-colors">
           活動を作成する →
         </Link>
       </div>
@@ -72,7 +71,7 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
                 <button
                   type="button"
                   onClick={() => {
-                    // TODO: Phase 4 - open reflection modal with toast.logId
+                    setReflectionLogId(toast.logId);
                     setToast(null);
                   }}
                   className="text-[#00E5FF] text-sm font-medium hover:opacity-80 transition-opacity shrink-0"
@@ -85,6 +84,14 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
             )}
           </div>
         </div>
+      )}
+
+      {reflectionLogId && (
+        <ReflectionModal
+          logId={reflectionLogId}
+          isOpen={true}
+          onClose={() => setReflectionLogId(null)}
+        />
       )}
     </div>
   );

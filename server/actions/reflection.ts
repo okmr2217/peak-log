@@ -12,7 +12,7 @@ import {
 
 export async function upsertReflection(
   input: UpsertReflectionInput,
-): Promise<ActionResult> {
+): Promise<ActionResult<{ logId: string; reflectionId: string }>> {
   const parsed = upsertReflectionSchema.safeParse(input);
   if (!parsed.success) {
     return fail("入力内容を確認してください", parsed.error.flatten().fieldErrors);
@@ -28,14 +28,15 @@ export async function upsertReflection(
       return fail("ログが見つかりません");
     }
 
-    await prisma.reflection.upsert({
+    const reflection = await prisma.reflection.upsert({
       where: { logId },
       create: { logId, userId, ...data },
       update: data,
     });
 
     revalidatePath("/");
-    return ok();
+    revalidatePath("/history");
+    return ok({ logId, reflectionId: reflection.id });
   } catch (e) {
     return fail(toActionMessage(e));
   }

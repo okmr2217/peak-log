@@ -5,7 +5,7 @@ export const upsertReflectionSchema = z.object({
   excitement: z.number().int().min(1).max(5).optional(),
   achievement: z.number().int().min(1).max(5).optional(),
   wantAgain: z.boolean().optional(),
-  note: z.string().max(500).optional(),
+  note: z.string().max(200).optional(),
 });
 
 export type UpsertReflectionInput = z.infer<typeof upsertReflectionSchema>;

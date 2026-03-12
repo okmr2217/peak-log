@@ -1,8 +1,13 @@
-export default function HistoryPage() {
+import { getLogsForCurrentUser } from "@/server/queries/log";
+import { LogList } from "@/components/log/log-list";
+
+export default async function HistoryPage() {
+  const logs = await getLogsForCurrentUser(50);
+
   return (
-    <div className="px-4 py-8">
-      <h2 className="text-lg font-semibold text-white mb-1">ログ履歴</h2>
-      <p className="text-zinc-500 text-sm">記録一覧がここに表示されます</p>
+    <div className="px-4 py-6 max-w-lg mx-auto">
+      <h2 className="text-xl font-bold text-white mb-5">ログ履歴</h2>
+      <LogList logs={logs} />
     </div>
   );
 }
