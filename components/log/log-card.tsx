@@ -1,5 +1,6 @@
 import { AddReflectionButton } from "./add-reflection-button";
 import { DeleteLogButton } from "./delete-log-button";
+import { EditPerformedAtButton } from "./edit-performed-at-button";
 import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
 type LogCardProps = {
@@ -22,6 +23,7 @@ type LogCardProps = {
   };
   timeOnly?: boolean;
   showDelete?: boolean;
+  showEditDate?: boolean;
 };
 
 function RatingDots({ value, activeClass }: { value: number; activeClass: string }) {
@@ -37,7 +39,7 @@ function RatingDots({ value, activeClass }: { value: number; activeClass: string
   );
 }
 
-export function LogCard({ log, timeOnly = false, showDelete = false }: LogCardProps) {
+export function LogCard({ log, timeOnly = false, showDelete = false, showEditDate = false }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
   const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
   const accentColor = activity.color;
@@ -53,7 +55,11 @@ export function LogCard({ log, timeOnly = false, showDelete = false }: LogCardPr
           <span className="text-base leading-none flex-shrink-0">{activity.emoji}</span>
         )}
         <span className="text-white font-semibold text-sm flex-1 min-w-0 truncate">{activity.name}</span>
-        <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
+        {showEditDate ? (
+          <EditPerformedAtButton logId={log.id} performedAt={performedAt} label={timeLabel} />
+        ) : (
+          <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
+        )}
         {showDelete && <DeleteLogButton logId={log.id} />}
       </div>
 

@@ -18,6 +18,11 @@ export function formatPerformedAt(date: Date): string {
   return dayjs(date).format("M/D HH:mm");
 }
 
+/** `datetime-local` input の value 形式 ("YYYY-MM-DDTHH:mm") に変換する */
+export function toDatetimeLocalString(date: Date): string {
+  return dayjs(date).format("YYYY-MM-DDTHH:mm");
+}
+
 export function groupLogsByDate<T extends { performedAt: Date }>(
   logs: T[],
 ): Array<{ dateLabel: string; logs: T[] }> {

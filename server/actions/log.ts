@@ -68,13 +68,32 @@ export async function fetchMoreLogs(cursor: string): Promise<LogsPage> {
   return getLogsPageForCurrentUser({ cursor });
 }
 
-// TODO: Phase 6 - ログの実行日時を編集する
-export async function updateLogPerformedAt(_input: UpdateLogPerformedAtInput): Promise<ActionResult> {
-  // TODO: Implement
-  // 1. Validate with updateLogPerformedAtSchema
-  // 2. requireUserId()
-  // 3. Check log ownership
-  // 4. prisma.log.update({ where: { id, userId }, data: { performedAt } })
-  // 5. revalidatePath("/history")
-  return fail("未実装です");
+export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Promise<ActionResult> {
+  const parsed = updateLogPerformedAtSchema.safeParse(input);
+  if (!parsed.success) {
+    return fail(parsed.error.issues[0]?.message ?? "正しい日時を入力してください");
+  }
+
+  try {
+    const userId = await requireUserId();
+
+    const existing = await prisma.log.findFirst({
+      where: { id: parsed.data.logId, userId },
+      select: { id: true },
+    });
+    if (!existing) {
+      return fail("記録が見つかりません");
+    }
+
+    await prisma.log.update({
+      where: { id: parsed.data.logId },
+      data: { performedAt: parsed.data.performedAt },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/history");
+    return ok();
+  } catch (e) {
+    return fail(toActionMessage(e, "更新できませんでした"));
+  }
 }

@@ -39,7 +39,7 @@ export function HistoryList({ initialPage }: Props) {
             </div>
             <div className="space-y-2.5">
               {groupLogs.map((log) => (
-                <LogCard key={log.id} log={log} timeOnly showDelete />
+                <LogCard key={log.id} log={log} timeOnly showDelete showEditDate />
               ))}
             </div>
           </section>
