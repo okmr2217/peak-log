@@ -8,9 +8,12 @@ import type { LogItem, LogsPage } from "@/server/queries/log";
 
 type Props = {
   initialPage: LogsPage;
+  q?: string;
+  from?: string;
+  to?: string;
 };
 
-export function HistoryList({ initialPage }: Props) {
+export function HistoryList({ initialPage, q, from, to }: Props) {
   const [items, setItems] = useState<LogItem[]>(initialPage.items);
   const [nextCursor, setNextCursor] = useState<string | null>(initialPage.nextCursor);
   const [hasMore, setHasMore] = useState(initialPage.hasMore);
@@ -19,7 +22,7 @@ export function HistoryList({ initialPage }: Props) {
   function loadMore() {
     if (!nextCursor) return;
     startTransition(async () => {
-      const page = await fetchMoreLogs(nextCursor);
+      const page = await fetchMoreLogs({ cursor: nextCursor, q, from, to });
       setItems((prev) => [...prev, ...page.items]);
       setNextCursor(page.nextCursor);
       setHasMore(page.hasMore);

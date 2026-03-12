@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import type { Prisma } from "@prisma/client";
 
 export async function getLogsForCurrentUser(limit = 20) {
   const userId = await requireUserId();
@@ -38,14 +39,42 @@ export type LogsPage = {
   hasMore: boolean;
 };
 
+export type LogsPageParams = {
+  limit?: number;
+  cursor?: string;
+  q?: string;
+  from?: string;
+  to?: string;
+};
+
 export async function getLogsPageForCurrentUser({
   limit = HISTORY_PAGE_SIZE,
   cursor,
-}: { limit?: number; cursor?: string } = {}): Promise<LogsPage> {
+  q,
+  from,
+  to,
+}: LogsPageParams = {}): Promise<LogsPage> {
   const userId = await requireUserId();
 
+  const where: Prisma.LogWhereInput = { userId };
+
+  if (from || to) {
+    where.performedAt = {
+      ...(from ? { gte: new Date(from) } : {}),
+      ...(to ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) } : {}),
+    };
+  }
+
+  const trimmedQ = q?.trim();
+  if (trimmedQ) {
+    where.OR = [
+      { activity: { name: { contains: trimmedQ, mode: "insensitive" } } },
+      { reflection: { note: { contains: trimmedQ, mode: "insensitive" } } },
+    ];
+  }
+
   const rows = await prisma.log.findMany({
-    where: { userId },
+    where,
     include: {
       activity: { select: { id: true, name: true, emoji: true, color: true } },
       reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },

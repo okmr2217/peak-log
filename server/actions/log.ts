@@ -64,8 +64,18 @@ export async function deleteLog(id: string): Promise<ActionResult> {
   }
 }
 
-export async function fetchMoreLogs(cursor: string): Promise<LogsPage> {
-  return getLogsPageForCurrentUser({ cursor });
+export async function fetchMoreLogs({
+  cursor,
+  q,
+  from,
+  to,
+}: {
+  cursor: string;
+  q?: string;
+  from?: string;
+  to?: string;
+}): Promise<LogsPage> {
+  return getLogsPageForCurrentUser({ cursor, q, from, to });
 }
 
 export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Promise<ActionResult> {
