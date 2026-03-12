@@ -20,3 +20,8 @@ export async function requireUser() {
   }
   return user;
 }
+
+export async function requireUserId(): Promise<string> {
+  const user = await requireUser();
+  return user.id;
+}

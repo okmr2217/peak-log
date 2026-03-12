@@ -335,3 +335,9 @@ The product specification is defined in:
 docs/spec.md
 
 Always follow that document when implementing features.
+
+---
+
+# コードスタイル
+- Prettierのprintwidthは120に設定済み（デフォルト80から変更）
+- フォーマットは `prettier --write` で行うこと
