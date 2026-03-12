@@ -9,9 +9,10 @@ type Props = {
   q?: string;
   from?: string;
   to?: string;
+  month?: string;
 };
 
-export function HistoryFilter({ q, from, to }: Props) {
+export function HistoryFilter({ q, from, to, month }: Props) {
   const router = useRouter();
   const hasFilters = !!(q || from || to);
 
@@ -27,6 +28,7 @@ export function HistoryFilter({ q, from, to }: Props) {
     if (qVal) params.set("q", qVal);
     if (fromVal) params.set("from", fromVal);
     if (toVal) params.set("to", toVal);
+    if (month) params.set("month", month);
 
     const qs = params.toString();
     router.push(`/history${qs ? `?${qs}` : ""}`);
@@ -81,7 +83,7 @@ export function HistoryFilter({ q, from, to }: Props) {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/history")}
+            onClick={() => router.push(month ? `/history?month=${month}` : "/history")}
             className="text-zinc-500 hover:text-white"
           >
             条件をクリア

@@ -2,6 +2,101 @@ import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import type { Prisma } from "@prisma/client";
 
+export type MonthlySummary = {
+  month: string;
+  totalLogs: number;
+  reflectionCount: number;
+  activityCount: number;
+  topActivities: Array<{
+    activityId: string;
+    name: string;
+    emoji: string | null;
+    color: string | null;
+    count: number;
+  }>;
+  peakLogs: Array<{
+    id: string;
+    performedAt: Date;
+    activity: {
+      id: string;
+      name: string;
+      emoji: string | null;
+      color: string | null;
+    };
+    reflection: {
+      excitement: number | null;
+      achievement: number | null;
+      wantAgain: boolean | null;
+      note: string | null;
+    } | null;
+  }>;
+};
+
+export async function getMonthlySummaryForCurrentUser(month: string): Promise<MonthlySummary> {
+  const userId = await requireUserId();
+
+  const [yearStr, monthStr] = month.split("-");
+  const year = parseInt(yearStr, 10);
+  const monthNum = parseInt(monthStr, 10);
+  const start = new Date(year, monthNum - 1, 1);
+  const end = new Date(year, monthNum, 1);
+
+  const logs = await prisma.log.findMany({
+    where: { userId, performedAt: { gte: start, lt: end } },
+    include: {
+      activity: { select: { id: true, name: true, emoji: true, color: true } },
+      reflection: { select: { excitement: true, achievement: true, wantAgain: true, note: true } },
+    },
+    orderBy: [{ performedAt: "desc" }],
+  });
+
+  const totalLogs = logs.length;
+  const reflectionCount = logs.filter((l) => l.reflection !== null).length;
+
+  const activityMap = new Map<
+    string,
+    { activityId: string; name: string; emoji: string | null; color: string | null; count: number }
+  >();
+  for (const log of logs) {
+    const a = log.activity;
+    const existing = activityMap.get(a.id);
+    if (existing) {
+      existing.count++;
+    } else {
+      activityMap.set(a.id, { activityId: a.id, name: a.name, emoji: a.emoji, color: a.color, count: 1 });
+    }
+  }
+
+  const topActivities = Array.from(activityMap.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  const activityCount = activityMap.size;
+
+  // Score each log: reflection presence > excitement > note > recency
+  const scored = logs.map((log) => {
+    const r = log.reflection;
+    const hasReflection = r !== null ? 1000 : 0;
+    const excitement = (r?.excitement ?? 0) * 100;
+    const hasNote = r?.note ? 10 : 0;
+    return { log, score: hasReflection + excitement + hasNote };
+  });
+
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.log.performedAt.getTime() - a.log.performedAt.getTime();
+  });
+
+  const peakLogs = scored.slice(0, 3).map(({ log }) => ({
+    id: log.id,
+    performedAt: log.performedAt,
+    activity: log.activity,
+    reflection: log.reflection,
+  }));
+
+  return { month, totalLogs, reflectionCount, activityCount, topActivities, peakLogs };
+}
+
 export async function getLogsForCurrentUser(limit = 20) {
   const userId = await requireUserId();
   return prisma.log.findMany({
