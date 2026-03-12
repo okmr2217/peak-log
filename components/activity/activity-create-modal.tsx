@@ -8,6 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
+const PRESET_COLORS = [
+  "#7C4DFF", "#00E5FF", "#FF4081", "#FF6D00", "#FFD740",
+  "#69F0AE", "#40C4FF", "#E040FB", "#FF5252", "#CCFF90",
+  "#84FFFF", "#F8BBD0",
+];
+
 interface Props {
   onClose: () => void;
   onSuccess: () => void;
@@ -80,18 +86,24 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="activity-color" className="text-zinc-500 text-xs uppercase tracking-wide">
-                カラー
-              </Label>
-              <Input
-                id="activity-color"
-                type="text"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                placeholder="#7C4DFF"
-                maxLength={20}
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
-              />
+              <Label className="text-zinc-500 text-xs uppercase tracking-wide">カラー</Label>
+              <div className="flex flex-wrap gap-2.5">
+                {PRESET_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setColor(color === c ? "" : c)}
+                    className="w-8 h-8 rounded-full transition-transform focus:outline-none"
+                    style={{
+                      backgroundColor: c,
+                      boxShadow: color === c ? `0 0 0 2px #0A0A0A, 0 0 0 4px ${c}` : "none",
+                      transform: color === c ? "scale(1.15)" : "scale(1)",
+                    }}
+                    aria-label={c}
+                    aria-pressed={color === c}
+                  />
+                ))}
+              </div>
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             <Button
