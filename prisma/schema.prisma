@@ -14,21 +14,77 @@ datasource db {
 // ---------------------------------------------------------------------------
 // User
 // Better Auth との連携を前提とした最小構成。
-// Better Auth は独自のテーブル (session, account, verification) を別途管理する。
+// Better Auth は Session / Account / Verification テーブルを別途管理する。
 // ---------------------------------------------------------------------------
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id
+  email         String   @unique
+  name          String?
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  sessions    Session[]
+  accounts    Account[]
   activities  Activity[]
   logs        Log[]
   reflections Reflection[]
 
   @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Better Auth - Session
+// ---------------------------------------------------------------------------
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+// ---------------------------------------------------------------------------
+// Better Auth - Account
+// ---------------------------------------------------------------------------
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+// ---------------------------------------------------------------------------
+// Better Auth - Verification
+// ---------------------------------------------------------------------------
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
 
 // ---------------------------------------------------------------------------
@@ -90,8 +146,8 @@ model Reflection {
   id          String   @id @default(cuid())
   userId      String
   logId       String   @unique
-  excitement  Int?     // 高揚感 (1-5 など、バリデーションはアプリ層で)
-  achievement Int?     // 達成感 (1-5 など)
+  excitement  Int? // 高揚感 (1-5 など、バリデーションはアプリ層で)
+  achievement Int? // 達成感 (1-5 など)
   wantAgain   Boolean?
   note        String?
   createdAt   DateTime @default(now())
