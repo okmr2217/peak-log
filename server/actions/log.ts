@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import dayjs from "dayjs";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { type ActionResult, ok, fail } from "@/lib/action-result";
@@ -12,7 +13,7 @@ import {
   type CreateLogInput,
   type UpdateLogPerformedAtInput,
 } from "@/server/validators/log";
-import { getLogsPageForCurrentUser, type LogsPage } from "@/server/queries/log";
+import { getLogsPageForCurrentUser, getLogsRangePageForCurrentUser, type LogsPage, type LogItem } from "@/server/queries/log";
 
 export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
   const parsed = createLogSchema.safeParse(input);
@@ -76,6 +77,12 @@ export async function fetchMoreLogs({
   to?: string;
 }): Promise<LogsPage> {
   return getLogsPageForCurrentUser({ cursor, q, from, to });
+}
+
+export async function fetchMoreDays({ before }: { before: string }): Promise<{ logs: LogItem[]; hasMore: boolean }> {
+  const to = dayjs(before).startOf("day").toDate();
+  const from = dayjs(before).subtract(30, "day").startOf("day").toDate();
+  return getLogsRangePageForCurrentUser({ from, to });
 }
 
 export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Promise<ActionResult> {

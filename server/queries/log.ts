@@ -186,6 +186,38 @@ export async function getLogsPageForCurrentUser({
   return { items, nextCursor, hasMore };
 }
 
+export type HistoryDayItem = {
+  date: string; // YYYY-MM-DD
+  logs: LogItem[];
+};
+
+export async function getLogsRangePageForCurrentUser({
+  from,
+  to,
+}: {
+  from: Date;
+  to: Date;
+}): Promise<{ logs: LogItem[]; hasMore: boolean }> {
+  const userId = await requireUserId();
+
+  const [logs, olderLog] = await Promise.all([
+    prisma.log.findMany({
+      where: { userId, performedAt: { gte: from, lt: to } },
+      include: {
+        activity: { select: { id: true, name: true, emoji: true, color: true } },
+        reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+      },
+      orderBy: [{ performedAt: "asc" }],
+    }),
+    prisma.log.findFirst({
+      where: { userId, performedAt: { lt: from } },
+      select: { id: true },
+    }),
+  ]);
+
+  return { logs, hasMore: olderLog !== null };
+}
+
 export async function getLogById(id: string) {
   const userId = await requireUserId();
   return prisma.log.findFirst({
