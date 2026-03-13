@@ -40,7 +40,7 @@ export function DayDetailSheet({ date, logs, onClose, onReflectionSaved, onPerfo
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end">
+    <div className="fixed inset-0 z-[60] flex flex-col justify-end">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
