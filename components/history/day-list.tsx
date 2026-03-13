@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
 import { buildDayRange, formatDayShort } from "@/lib/date-utils";
+import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { DayDetailSheet } from "./day-detail-sheet";
 
 type ReflectionPayload = {
@@ -71,7 +72,9 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             onClick={() => setSelectedDate(day.date)}
             className="w-full flex items-center gap-4 py-3 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className="text-sm tabular-nums text-zinc-500 w-9 shrink-0">{formatDayShort(day.date)}</span>
+            <span className={`text-sm tabular-nums w-9 shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+              {formatDayShort(day.date)}
+            </span>
             <span className="flex-1 min-w-0">
               {day.logs.length === 0 ? (
                 <span className="text-zinc-700 text-sm">-</span>
