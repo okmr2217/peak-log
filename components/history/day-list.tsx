@@ -72,7 +72,7 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             onClick={() => setSelectedDate(day.date)}
             className="w-full flex items-center gap-4 py-3 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className={`text-sm tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+            <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
               {formatDayFull(day.date)}
             </span>
             <span className="flex-1 min-w-0">
