@@ -19,7 +19,7 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
       </div>
 
       {summary.totalLogs === 0 ? (
-        <div className="bg-[#1A1A1A] rounded-xl p-6 text-center">
+        <div className="bg-[#1A1A1A] rounded-xl p-6 text-center border border-white/[0.05]">
           <p className="text-zinc-400 text-sm mb-1">この月の記録はまだありません</p>
           <p className="text-zinc-600 text-xs">記録すると、ここに月のまとめが表示されます</p>
         </div>
@@ -32,9 +32,9 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
           </div>
 
           {summary.topActivities.length > 0 && (
-            <div className="bg-[#1A1A1A] rounded-xl p-4">
+            <div className="bg-[#1A1A1A] rounded-xl p-4 border border-white/[0.05]">
               <p className="text-xs text-zinc-500 mb-3">よく記録したこと</p>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {summary.topActivities.map((a) => (
                   <li key={a.activityId} className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-sm text-zinc-200">
@@ -49,12 +49,12 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
           )}
 
           {summary.peakLogs.length > 0 && (
-            <div className="bg-[#1A1A1A] rounded-xl p-4">
+            <div className="bg-[#1A1A1A] rounded-xl p-4 border border-white/[0.05]">
               <p className="text-xs text-zinc-500 mb-3">今月のピーク</p>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {summary.peakLogs.map((log, i) => (
                   <div key={log.id}>
-                    {i > 0 && <div className="border-t border-zinc-800 mb-3" />}
+                    {i > 0 && <div className="border-t border-white/[0.06] mb-4" />}
                     <PeakLogItem log={log} />
                   </div>
                 ))}
@@ -69,9 +69,9 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-[#1A1A1A] rounded-xl p-3 text-center">
+    <div className="bg-[#1A1A1A] rounded-xl p-4 text-center border border-white/[0.05]">
       <div className="text-2xl font-bold text-white">{value}</div>
-      <div className="text-xs text-zinc-600 mt-0.5">{label}</div>
+      <div className="text-xs text-zinc-500 mt-1">{label}</div>
     </div>
   );
 }
@@ -95,7 +95,7 @@ function PeakLogItem({ log }: { log: MonthlySummary["peakLogs"][number] }) {
           ))}
         </div>
       )}
-      {r?.note && <p className="text-xs text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed">{r.note}</p>}
+      {r?.note && <p className="text-xs text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">{r.note}</p>}
     </div>
   );
 }

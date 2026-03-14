@@ -77,9 +77,9 @@ export function LogCard({
       }
     >
       {/* Header row */}
-      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
+      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
         {activity.emoji && (
-          <span className="text-base leading-none flex-shrink-0">{activity.emoji}</span>
+          <span className="text-[17px] leading-none flex-shrink-0">{activity.emoji}</span>
         )}
         <span className="text-white font-semibold text-[15px] tracking-tight flex-1 min-w-0 truncate">
           {activity.name}
@@ -118,9 +118,9 @@ export function LogCard({
       </div>
 
       {/* Reflection area */}
-      <div className="px-4 pb-3.5 border-t border-white/5">
+      <div className="px-4 pb-4 border-t border-white/5">
         {reflection ? (
-          <div className="pt-2.5 space-y-2">
+          <div className="pt-3 space-y-2.5">
             {/* Ratings row */}
             {(reflection.excitement != null || reflection.achievement != null || reflection.wantAgain != null) && (
               <div className="flex items-center gap-3 flex-wrap">
@@ -155,12 +155,12 @@ export function LogCard({
               </div>
             )}
             {reflection.note && (
-              <p className="text-zinc-500 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>
+              <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>
             )}
             <AddReflectionButton logId={log.id} initialValues={reflection} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
           </div>
         ) : (
-          <div className="pt-2.5">
+          <div className="pt-3">
             <AddReflectionButton logId={log.id} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
           </div>
         )}

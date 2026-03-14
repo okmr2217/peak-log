@@ -70,20 +70,20 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
   return (
     <>
       <div
-        className={`flex flex-col px-4 py-3.5 bg-[#1A1A1A] rounded-2xl border border-white/5 transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
+        className={`flex flex-col px-4 py-4 bg-[#1A1A1A] rounded-2xl border border-white/[0.06] transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
       >
         {/* 情報エリア */}
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-            style={{ backgroundColor: activity.color ? `${activity.color}18` : "#7C4DFF18" }}
+            className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{ backgroundColor: activity.color ? `${activity.color}1A` : "#7C4DFF1A" }}
           >
             {activity.emoji ?? "⚡"}
           </div>
 
           <div className="flex-1 min-w-0">
-            <span className="text-white text-sm font-medium block truncate">{activity.name}</span>
-            <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-white text-sm font-semibold block truncate">{activity.name}</span>
+            <div className="flex items-center gap-2 mt-1">
               {activity.isArchived && <span className="text-[11px] text-zinc-600">アーカイブ済み</span>}
               {activity.stats.totalCount > 0 ? (
                 <>
@@ -125,17 +125,17 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
         </div>
 
         {/* アクションボタン行 */}
-        <div className="flex items-center gap-1 mt-2.5 pt-2.5 border-t border-white/5">
+        <div className="flex items-center gap-1 mt-3 pt-3 border-t border-white/[0.06]">
           <Link
             href={`/activities/${activity.id}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
           >
             <BarChart2 size={12} />
             <span>統計</span>
           </Link>
           <button
             onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
           >
             <Pencil size={12} />
             <span>編集</span>
@@ -143,7 +143,7 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
           <button
             onClick={handleArchive}
             disabled={isArchivePending}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 disabled:opacity-50 transition-colors ml-auto"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 disabled:opacity-50 transition-colors ml-auto"
           >
             {activity.isArchived ? <ArchiveRestore size={12} /> : <Archive size={12} />}
             <span>{activity.isArchived ? "解除" : "アーカイブ"}</span>
