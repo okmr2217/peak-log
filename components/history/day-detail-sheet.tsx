@@ -62,9 +62,7 @@ export function DayDetailSheet({ date, logs, onClose, onReflectionSaved, onPerfo
               >
                 <LogCard
                   log={log}
-                  timeOnly
-                  showDelete
-                  showEditDate
+                  usage="history"
                   onReflectionSaved={(logId, r) => onReflectionSaved(logId, r)}
                   onPerformedAtSaved={(logId, d) => onPerformedAtSaved(logId, d)}
                 />

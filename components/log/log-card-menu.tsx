@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, useTransition } from "react";
-import { MoreVertical, Clock, Sparkles, Trash2 } from "lucide-react";
+import { MoreVertical, Clock, Trash2 } from "lucide-react";
 import { deleteLog } from "@/server/actions/log";
 import { EditPerformedAtModal } from "./edit-performed-at-modal";
-import { ReflectionModal } from "@/components/reflection/reflection-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,35 +16,22 @@ import {
 } from "@/components/ui/alert-dialog";
 import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
-type ReflectionValues = {
-  id: string;
-  excitement: number | null;
-  achievement: number | null;
-  wantAgain: boolean | null;
-  note: string | null;
-};
-
 type Props = {
   logId: string;
   performedAt: Date;
   timeOnly?: boolean;
-  reflection: ReflectionValues | null;
   onPerformedAtSaved?: (newDate: Date) => void;
-  onReflectionSaved?: (reflection: ReflectionValues) => void;
 };
 
-export function LogCardMenu({ logId, performedAt, timeOnly, reflection, onPerformedAtSaved, onReflectionSaved }: Props) {
+export function LogCardMenu({ logId, performedAt, timeOnly, onPerformedAtSaved }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditDateOpen, setIsEditDateOpen] = useState(false);
-  const [isReflectionOpen, setIsReflectionOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(performedAt);
-  const [currentReflection, setCurrentReflection] = useState(reflection);
   const [isPending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const timeLabel = timeOnly ? formatTime(currentDate) : formatPerformedAt(currentDate);
-  const hasReflection = !!currentReflection;
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -61,11 +47,6 @@ export function LogCardMenu({ logId, performedAt, timeOnly, reflection, onPerfor
   function handlePerformedAtSaved(newDate: Date) {
     setCurrentDate(newDate);
     onPerformedAtSaved?.(newDate);
-  }
-
-  function handleReflectionSaved(r: ReflectionValues) {
-    setCurrentReflection(r);
-    onReflectionSaved?.(r);
   }
 
   function handleDelete() {
@@ -99,17 +80,6 @@ export function LogCardMenu({ logId, performedAt, timeOnly, reflection, onPerfor
             <Clock size={12} className="text-zinc-500 shrink-0" />
             時間を変更
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsMenuOpen(false);
-              setIsReflectionOpen(true);
-            }}
-            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left"
-          >
-            <Sparkles size={12} className="text-zinc-500 shrink-0" />
-            {hasReflection ? "余韻を編集" : "余韻を追加"}
-          </button>
           <div className="border-t border-white/[0.06] mx-2" />
           <button
             type="button"
@@ -131,14 +101,6 @@ export function LogCardMenu({ logId, performedAt, timeOnly, reflection, onPerfor
         isOpen={isEditDateOpen}
         onClose={() => setIsEditDateOpen(false)}
         onSaved={handlePerformedAtSaved}
-      />
-
-      <ReflectionModal
-        logId={logId}
-        initialValues={currentReflection ?? undefined}
-        isOpen={isReflectionOpen}
-        onClose={() => setIsReflectionOpen(false)}
-        onSaved={handleReflectionSaved}
       />
 
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>

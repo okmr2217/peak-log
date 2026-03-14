@@ -35,7 +35,7 @@ export function LogList({ logs }: LogListProps) {
   return (
     <div className="flex flex-col gap-3">
       {logs.map((log) => (
-        <LogCard key={log.id} log={log} showMenu />
+        <LogCard key={log.id} log={log} usage="home" />
       ))}
     </div>
   );

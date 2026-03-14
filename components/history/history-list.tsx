@@ -71,7 +71,7 @@ export function HistoryList({ initialPage, q, from, to }: Props) {
               </div>
               <div className="space-y-2">
                 {groupLogs.map((log) => (
-                  <LogCard key={log.id} log={log} timeOnly showDelete showEditDate onPerformedAtSaved={handlePerformedAtSaved} onReflectionSaved={handleReflectionSaved} />
+                  <LogCard key={log.id} log={log} usage="history" onPerformedAtSaved={handlePerformedAtSaved} onReflectionSaved={handleReflectionSaved} />
                 ))}
               </div>
             </section>
