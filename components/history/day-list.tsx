@@ -75,15 +75,28 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
               {formatDayFull(day.date)}
             </span>
-            <span className="flex-1 min-w-0">
+            <span className="flex-1 min-w-0 flex flex-wrap gap-1.5">
               {day.logs.length === 0 ? (
                 <span className="text-zinc-700 text-sm">-</span>
               ) : (
-                <span className="text-base leading-none tracking-wide">
-                  {day.logs.map((log, i) => (
-                    <span key={`${log.id}-${i}`}>{log.activity.emoji ?? "·"}</span>
-                  ))}
-                </span>
+                day.logs.map((log, i) => {
+                  const color = log.activity.color;
+                  return (
+                    <span
+                      key={`${log.id}-${i}`}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs text-zinc-300 shrink-0"
+                      style={{
+                        background: color ? `${color}22` : "rgba(255,255,255,0.06)",
+                        borderColor: color ? `${color}44` : "rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      <span className="text-sm leading-none">{log.activity.emoji ?? "·"}</span>
+                      <span className="tabular-nums text-zinc-500 leading-none">
+                        {dayjs(log.performedAt).format("H:mm")}
+                      </span>
+                    </span>
+                  );
+                })
               )}
             </span>
           </button>
