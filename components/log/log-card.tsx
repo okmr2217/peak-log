@@ -29,13 +29,18 @@ type LogCardProps = {
   onReflectionSaved?: (logId: string, reflection: { id: string; excitement: number | null; achievement: number | null; wantAgain: boolean | null; note: string | null }) => void;
 };
 
-function RatingDots({ value, activeClass }: { value: number; activeClass: string }) {
+function RatingDots({ value, activeColor }: { value: number; activeColor: string }) {
   return (
     <div className="flex items-center gap-1">
       {Array.from({ length: 5 }).map((_, i) => (
         <span
           key={i}
-          className={`inline-block w-1.5 h-1.5 rounded-full ${i < value ? activeClass : "bg-white/8"}`}
+          className="inline-block w-1.5 h-1.5 rounded-full transition-all duration-200"
+          style={
+            i < value
+              ? { background: activeColor, boxShadow: `0 0 4px 0 ${activeColor}` }
+              : { background: "rgba(255,255,255,0.08)" }
+          }
         />
       ))}
     </div>
@@ -50,8 +55,16 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
 
   return (
     <div
-      className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] overflow-hidden"
-      style={accentColor ? { borderLeftColor: `${accentColor}55`, borderLeftWidth: "2px" } : undefined}
+      className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] overflow-hidden transition-all animate-in fade-in-0 duration-300"
+      style={
+        accentColor
+          ? {
+              borderLeftColor: `${accentColor}66`,
+              borderLeftWidth: "2px",
+              boxShadow: `0 2px 16px -6px ${accentColor}30`,
+            }
+          : undefined
+      }
     >
       {/* Header row */}
       <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
@@ -62,7 +75,15 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
           {activity.name}
         </span>
         {hasReflection && (
-          <Sparkles size={11} className="flex-shrink-0 text-[#00E5FF]/50" aria-label="余韻あり" />
+          <Sparkles
+            size={12}
+            className="flex-shrink-0"
+            style={{
+              color: "#00E5FF",
+              filter: "drop-shadow(0 0 5px rgba(0,229,255,0.7))",
+            }}
+            aria-label="余韻あり"
+          />
         )}
         {showEditDate ? (
           <EditPerformedAtButton
@@ -86,23 +107,28 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
               <div className="flex items-center gap-3 flex-wrap">
                 {reflection.excitement != null && (
                   <div className="flex items-center gap-1.5">
-                    <RatingDots value={reflection.excitement} activeClass="bg-[#7C4DFF]" />
+                    <RatingDots value={reflection.excitement} activeColor="#7C4DFF" />
                     <span className="text-zinc-600 text-[11px]">興奮</span>
                   </div>
                 )}
                 {reflection.achievement != null && (
                   <div className="flex items-center gap-1.5">
-                    <RatingDots value={reflection.achievement} activeClass="bg-[#00E5FF]/70" />
+                    <RatingDots value={reflection.achievement} activeColor="#00E5FF" />
                     <span className="text-zinc-600 text-[11px]">達成感</span>
                   </div>
                 )}
                 {reflection.wantAgain != null && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                    className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                    style={
                       reflection.wantAgain
-                        ? "bg-[#7C4DFF]/15 text-[#7C4DFF]/80"
-                        : "bg-white/5 text-zinc-600"
-                    }`}
+                        ? {
+                            background: "rgba(124,77,255,0.18)",
+                            color: "rgba(167,139,250,0.9)",
+                            boxShadow: "0 0 8px -2px rgba(124,77,255,0.35)",
+                          }
+                        : { background: "rgba(255,255,255,0.05)", color: "rgb(82,82,91)" }
+                    }
                   >
                     {reflection.wantAgain ? "またやりたい" : "今回は十分"}
                   </span>

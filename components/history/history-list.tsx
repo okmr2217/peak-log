@@ -51,13 +51,23 @@ export function HistoryList({ initialPage, q, from, to }: Props) {
             <section key={dateLabel}>
               <div className="flex items-center gap-3 mb-3">
                 <h3
-                  className={`text-xs shrink-0 tabular-nums ${
-                    isRecent ? "font-semibold text-zinc-400" : "font-medium text-zinc-600"
-                  }`}
+                  className="text-xs shrink-0 tabular-nums font-semibold"
+                  style={
+                    isRecent
+                      ? { color: "#7C4DFF", filter: "drop-shadow(0 0 6px rgba(124,77,255,0.5))" }
+                      : { color: "rgb(82,82,91)" }
+                  }
                 >
                   {dateLabel}
                 </h3>
-                <div className="flex-1 h-px bg-gradient-to-r from-white/8 to-transparent" />
+                <div
+                  className="flex-1 h-px"
+                  style={{
+                    background: isRecent
+                      ? "linear-gradient(90deg, rgba(124,77,255,0.3), transparent)"
+                      : "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)",
+                  }}
+                />
               </div>
               <div className="space-y-2">
                 {groupLogs.map((log) => (

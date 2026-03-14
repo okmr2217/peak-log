@@ -35,26 +35,42 @@ type ReflectionModalProps = {
 function RatingButtons({
   value,
   onChange,
-  activeClass,
+  color,
+  shadowColor,
+  textClass,
 }: {
   value: number | undefined;
   onChange: (v: number | undefined) => void;
-  activeClass: string;
+  color: string;
+  shadowColor: string;
+  textClass: string;
 }) {
   return (
     <div className="flex gap-2">
-      {[1, 2, 3, 4, 5].map((v) => (
-        <button
-          key={v}
-          type="button"
-          onClick={() => onChange(value === v ? undefined : v)}
-          className={`w-10 h-10 rounded-full text-sm font-semibold transition-all active:scale-95 ${
-            value != null && value >= v ? activeClass : "bg-white/5 text-zinc-500 hover:bg-white/10"
-          }`}
-        >
-          {v}
-        </button>
-      ))}
+      {[1, 2, 3, 4, 5].map((v) => {
+        const isActive = value != null && value >= v;
+        return (
+          <button
+            key={v}
+            type="button"
+            onClick={() => onChange(value === v ? undefined : v)}
+            className={`w-10 h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-90 ${
+              isActive ? `${textClass}` : "bg-white/5 text-zinc-500 hover:bg-white/10 hover:text-zinc-300"
+            }`}
+            style={
+              isActive
+                ? {
+                    background: color,
+                    boxShadow: `0 0 18px 0 ${shadowColor}`,
+                    transform: "scale(1.08)",
+                  }
+                : undefined
+            }
+          >
+            {v}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -101,9 +117,19 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose, onSaved
           <DialogTitle>{isEdit ? "余韻を編集" : "余韻を追加"}</DialogTitle>
           <DialogDescription>興奮・達成感・またやりたいかどうかを記録します。</DialogDescription>
         </VisuallyHidden>
+
+        {/* Gradient accent line */}
+        <div
+          className="h-[2px] mx-8 rounded-full opacity-70 mb-1"
+          style={{ background: "linear-gradient(90deg, #7C4DFF, #00E5FF, #7C4DFF)" }}
+        />
+
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white font-semibold text-base">{isEdit ? "余韻を編集" : "余韻を追加"}</h2>
+            <div>
+              <h2 className="text-white font-semibold text-base">{isEdit ? "余韻を編集" : "余韻を追加"}</h2>
+              <p className="text-zinc-600 text-[11px] mt-0.5">この瞬間の余韻を残しておこう</p>
+            </div>
             <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-zinc-500 hover:text-white">
               <X className="h-4 w-4" />
             </Button>
@@ -112,12 +138,24 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose, onSaved
           <div className="space-y-5">
             <div>
               <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">興奮</Label>
-              <RatingButtons value={excitement} onChange={setExcitement} activeClass="bg-[#7C4DFF] text-white" />
+              <RatingButtons
+                value={excitement}
+                onChange={setExcitement}
+                color="#7C4DFF"
+                shadowColor="rgba(124,77,255,0.55)"
+                textClass="text-white"
+              />
             </div>
 
             <div>
               <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">達成感</Label>
-              <RatingButtons value={achievement} onChange={setAchievement} activeClass="bg-[#00E5FF]/80 text-black" />
+              <RatingButtons
+                value={achievement}
+                onChange={setAchievement}
+                color="rgba(0,229,255,0.75)"
+                shadowColor="rgba(0,229,255,0.4)"
+                textClass="text-[#0A0A0A] font-bold"
+              />
             </div>
 
             <div>
@@ -126,16 +164,23 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose, onSaved
                 <button
                   type="button"
                   onClick={() => setWantAgain(wantAgain === true ? undefined : true)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all active:scale-95 ${
-                    wantAgain === true ? "bg-[#7C4DFF] text-white" : "bg-white/5 text-zinc-500 hover:bg-white/10"
-                  }`}
+                  className="px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95"
+                  style={
+                    wantAgain === true
+                      ? {
+                          background: "linear-gradient(135deg, #7C4DFF, #9c6fff)",
+                          color: "#fff",
+                          boxShadow: "0 0 14px 0 rgba(124,77,255,0.45)",
+                        }
+                      : { background: "rgba(255,255,255,0.05)", color: "rgb(113,113,122)" }
+                  }
                 >
                   またやりたい
                 </button>
                 <button
                   type="button"
                   onClick={() => setWantAgain(wantAgain === false ? undefined : false)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all active:scale-95 ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95 ${
                     wantAgain === false ? "bg-white/15 text-zinc-300" : "bg-white/5 text-zinc-500 hover:bg-white/10"
                   }`}
                 >
@@ -162,14 +207,18 @@ export function ReflectionModal({ logId, initialValues, isOpen, onClose, onSaved
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
 
-            <Button
+            <button
               type="button"
               onClick={handleSubmit}
               disabled={isPending}
-              className="w-full rounded-xl h-auto py-3.5"
+              className="w-full rounded-xl py-3.5 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
+              style={{
+                background: isPending ? "rgba(124,77,255,0.5)" : "linear-gradient(135deg, #7C4DFF 0%, #5533cc 100%)",
+                boxShadow: isPending ? "none" : "0 4px 24px -4px rgba(124,77,255,0.5)",
+              }}
             >
               {isPending ? "保存中..." : "保存する"}
-            </Button>
+            </button>
           </div>
         </div>
       </BottomSheetContent>

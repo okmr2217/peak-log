@@ -18,6 +18,7 @@ type ActivityButtonProps = {
 
 export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButtonProps) {
   const [pending, setPending] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   async function handleClick() {
     if (pending || disabled) return;
@@ -29,20 +30,28 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
     }
   }
 
+  const glowShadow = activity.color
+    ? `0 0 ${hovered ? "28px" : "14px"} -4px ${activity.color}${hovered ? "70" : "35"}`
+    : undefined;
+
   return (
     <button
       type="button"
       onClick={handleClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       disabled={pending || disabled}
       className={cn(
         "relative flex flex-col items-center justify-center gap-2 rounded-2xl p-4 min-h-[96px] w-full",
         "bg-[#1A1A1A] border text-white",
-        "transition-all duration-150 active:scale-[0.96]",
+        "transition-all duration-200 active:scale-[0.96]",
         "hover:bg-[#242424]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        activity.color && `shadow-[0_0_16px_-4px_${activity.color}30]`,
       )}
-      style={activity.color ? { borderColor: `${activity.color}35` } : { borderColor: "rgba(255,255,255,0.06)" }}
+      style={{
+        borderColor: activity.color ? `${activity.color}35` : "rgba(255,255,255,0.06)",
+        boxShadow: glowShadow,
+      }}
     >
       {activity.emoji && <span className="text-2xl leading-none">{activity.emoji}</span>}
       <span className="text-xs font-medium text-center leading-tight text-zinc-200">{activity.name}</span>
