@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import { X } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import type { LogItem } from "@/server/queries/log";
 import { LogCard } from "@/components/log/log-card";
 import { formatDayFull } from "@/lib/date-utils";
+import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type ReflectionPayload = {
   id: string;
@@ -23,39 +24,16 @@ type Props = {
 };
 
 export function DayDetailSheet({ date, logs, onClose, onReflectionSaved, onPerformedAtSaved }: Props) {
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  // Body scroll lock
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col justify-end">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={onClose} />
-
-      {/* Sheet */}
-      <div className="relative bg-[#111111] rounded-t-2xl max-h-[82vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom duration-300">
-        {/* Gradient handle */}
-        <div className="flex justify-center pt-3 pb-1 shrink-0">
-          <div
-            className="w-10 h-1 rounded-full"
-            style={{ background: "linear-gradient(90deg, #7C4DFF88, #00E5FF88)" }}
-          />
-        </div>
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+      <BottomSheetContent className="flex flex-col max-h-[82vh] sm:max-h-[80vh]">
+        <VisuallyHidden>
+          <DialogTitle>{formatDayFull(date)}</DialogTitle>
+          <DialogDescription>この日のピーク記録一覧</DialogDescription>
+        </VisuallyHidden>
 
         {/* Header */}
-        <div className="flex items-start justify-between px-4 pt-2 pb-3 shrink-0 border-b border-white/[0.06]">
+        <div className="flex items-start justify-between px-4 pt-3 pb-3 shrink-0 border-b border-white/[0.06]">
           <div>
             <h2 className="text-white font-semibold">{formatDayFull(date)}</h2>
             {logs.length > 0 && (
@@ -94,7 +72,7 @@ export function DayDetailSheet({ date, logs, onClose, onReflectionSaved, onPerfo
             ))
           )}
         </div>
-      </div>
-    </div>
+      </BottomSheetContent>
+    </Dialog>
   );
 }
