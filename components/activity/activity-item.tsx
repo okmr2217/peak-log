@@ -70,25 +70,33 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
   const color = activity.color;
   const cardStyle = {
     background: color
-      ? `radial-gradient(ellipse at 0% 0%, ${color}0D 0%, transparent 60%), #1A1A1A`
+      ? `radial-gradient(ellipse at 0% 20%, ${color}15 0%, transparent 55%), #1A1A1A`
       : "#1A1A1A",
-    borderColor: color ? `${color}25` : "rgba(255,255,255,0.07)",
+    borderColor: color ? `${color}38` : "rgba(255,255,255,0.08)",
     boxShadow: color
-      ? `0 4px 20px -8px ${color}28, inset 0 1px 0 rgba(255,255,255,0.06)`
-      : `0 2px 12px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)`,
+      ? `0 6px 28px -8px ${color}45, inset 0 1px 0 rgba(255,255,255,0.07)`
+      : `0 4px 16px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)`,
   };
 
   return (
     <>
       <div
-        className={`flex flex-col px-4 py-4 rounded-2xl border transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
+        className={`relative flex flex-col px-4 py-4 rounded-2xl border overflow-hidden transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
         style={cardStyle}
       >
+        {/* Left accent bar */}
+        {color && (
+          <span
+            className="absolute left-0 inset-y-0 w-[3px] rounded-l-2xl"
+            style={{ background: `linear-gradient(180deg, ${color}EE 0%, ${color}44 100%)` }}
+          />
+        )}
+
         {/* 情報エリア */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3" style={{ paddingLeft: color ? "4px" : undefined }}>
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ backgroundColor: color ? `${color}22` : "#7C4DFF22" }}
+            style={{ backgroundColor: color ? `${color}28` : "#7C4DFF22" }}
           >
             {activity.emoji ?? "⚡"}
           </div>
@@ -139,7 +147,10 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
         {/* アクションボタン行 */}
         <div
           className="flex items-center gap-1 mt-3 pt-3 border-t"
-          style={{ borderColor: color ? `${color}18` : "rgba(255,255,255,0.06)" }}
+          style={{
+            borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
+            paddingLeft: color ? "4px" : undefined,
+          }}
         >
           <Link
             href={`/activities/${activity.id}`}

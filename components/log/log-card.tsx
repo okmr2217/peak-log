@@ -58,25 +58,33 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
   const color = activity.color;
   const cardStyle = {
     background: color
-      ? `radial-gradient(ellipse at 0% 0%, ${color}0D 0%, transparent 65%), #1A1A1A`
+      ? `radial-gradient(ellipse at 0% 20%, ${color}18 0%, transparent 55%), #1A1A1A`
       : "#1A1A1A",
-    borderColor: color ? `${color}28` : "rgba(255,255,255,0.07)",
+    borderColor: color ? `${color}38` : "rgba(255,255,255,0.08)",
     boxShadow: color
-      ? `0 4px 24px -8px ${color}30, inset 0 1px 0 rgba(255,255,255,0.06)`
-      : `0 2px 12px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)`,
+      ? `0 6px 32px -8px ${color}50, inset 0 1px 0 rgba(255,255,255,0.08)`
+      : `0 4px 16px -4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)`,
   };
 
   return (
     <div
-      className="rounded-2xl border transition-all animate-in fade-in-0 duration-300"
+      className="relative rounded-2xl border overflow-hidden transition-all animate-in fade-in-0 duration-300"
       style={cardStyle}
     >
+      {/* Left accent bar */}
+      {color && (
+        <span
+          className="absolute left-0 inset-y-0 w-[3px] rounded-l-2xl"
+          style={{ background: `linear-gradient(180deg, ${color}EE 0%, ${color}44 100%)` }}
+        />
+      )}
+
       {/* Header row */}
-      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
+      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5" style={{ paddingLeft: color ? "20px" : undefined }}>
         {activity.emoji && (
           <span
-            className="text-[17px] leading-none flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: color ? `${color}22` : "rgba(255,255,255,0.06)" }}
+            className="text-lg leading-none flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
           >
             {activity.emoji}
           </span>
@@ -94,8 +102,13 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
 
       {/* Reflection area */}
       <div
-        className="px-4 pb-4 border-t"
-        style={{ borderColor: color ? `${color}18` : "rgba(255,255,255,0.05)" }}
+        className="pb-4 border-t"
+        style={{
+          paddingLeft: color ? "20px" : "16px",
+          paddingRight: "16px",
+          borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
+          background: "rgba(0,0,0,0.18)",
+        }}
       >
         {reflection ? (
           <div className="pt-3 space-y-2.5">
