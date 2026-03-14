@@ -60,9 +60,7 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
     background: color
       ? `radial-gradient(ellipse at 0% 0%, ${color}1A 0%, transparent 60%), #1A1A1A`
       : "#1A1A1A",
-    border: `1px solid ${color ? `${color}28` : "rgba(255,255,255,0.07)"}`,
-    borderTopWidth: "2px",
-    borderTopColor: color ? `${color}AA` : "rgba(255,255,255,0.13)",
+    borderColor: color ? `${color}38` : "rgba(255,255,255,0.08)",
     boxShadow: color
       ? `0 4px 20px -8px ${color}38`
       : `0 2px 10px -4px rgba(0,0,0,0.4)`,
