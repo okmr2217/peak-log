@@ -1,4 +1,3 @@
-import { Sparkles } from "lucide-react";
 import { AddReflectionButton } from "./add-reflection-button";
 import { DeleteLogButton } from "./delete-log-button";
 import { EditPerformedAtButton } from "./edit-performed-at-button";
@@ -28,7 +27,16 @@ type LogCardProps = {
   showEditDate?: boolean;
   showMenu?: boolean;
   onPerformedAtSaved?: (logId: string, newDate: Date) => void;
-  onReflectionSaved?: (logId: string, reflection: { id: string; excitement: number | null; achievement: number | null; wantAgain: boolean | null; note: string | null }) => void;
+  onReflectionSaved?: (
+    logId: string,
+    reflection: {
+      id: string;
+      excitement: number | null;
+      achievement: number | null;
+      wantAgain: boolean | null;
+      note: string | null;
+    },
+  ) => void;
 };
 
 function RatingDots({ value, activeColor }: { value: number; activeColor: string }) {
@@ -60,7 +68,6 @@ export function LogCard({
 }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
   const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
-  const hasReflection = !!reflection;
 
   return (
     <div className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] transition-all animate-in fade-in-0 duration-300">
@@ -77,17 +84,6 @@ export function LogCard({
         <span className="text-white font-semibold text-[15px] tracking-tight flex-1 min-w-0 truncate">
           {activity.name}
         </span>
-        {hasReflection && (
-          <Sparkles
-            size={12}
-            className="flex-shrink-0"
-            style={{
-              color: "#00E5FF",
-              filter: "drop-shadow(0 0 5px rgba(0,229,255,0.7))",
-            }}
-            aria-label="余韻あり"
-          />
-        )}
         {showMenu ? (
           <LogCardMenu
             logId={log.id}
@@ -147,14 +143,19 @@ export function LogCard({
                 )}
               </div>
             )}
-            {reflection.note && (
-              <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>
-            )}
-            <AddReflectionButton logId={log.id} initialValues={reflection} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
+            {reflection.note && <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>}
+            <AddReflectionButton
+              logId={log.id}
+              initialValues={reflection}
+              onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
+            />
           </div>
         ) : (
           <div className="pt-3">
-            <AddReflectionButton logId={log.id} onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined} />
+            <AddReflectionButton
+              logId={log.id}
+              onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
+            />
           </div>
         )}
       </div>
