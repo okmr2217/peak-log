@@ -60,22 +60,10 @@ export function LogCard({
 }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
   const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
-  const accentColor = activity.color;
   const hasReflection = !!reflection;
 
   return (
-    <div
-      className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] transition-all animate-in fade-in-0 duration-300"
-      style={
-        accentColor
-          ? {
-              borderLeftColor: `${accentColor}66`,
-              borderLeftWidth: "2px",
-              boxShadow: `0 2px 16px -6px ${accentColor}30`,
-            }
-          : undefined
-      }
-    >
+    <div className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] transition-all animate-in fade-in-0 duration-300">
       {/* Header row */}
       <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
         {activity.emoji && (
