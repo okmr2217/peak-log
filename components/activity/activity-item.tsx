@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Pencil, Archive, ArchiveRestore, ArrowUp, ArrowDown } from "lucide-react";
+import { Pencil, Archive, ArchiveRestore, ArrowUp, ArrowDown, BarChart2 } from "lucide-react";
 import { archiveActivity, reorderActivities } from "@/server/actions/activity";
 import { ActivityEditModal } from "./activity-edit-modal";
 import dayjs from "dayjs";
@@ -70,13 +70,10 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
   return (
     <>
       <div
-        className={`flex items-center gap-3 px-4 py-3.5 bg-[#1A1A1A] rounded-2xl border border-white/5 transition-opacity ${activity.isArchived ? "opacity-40" : ""}`}
+        className={`flex flex-col px-4 py-3.5 bg-[#1A1A1A] rounded-2xl border border-white/5 transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
       >
-        {/* 情報エリア: タップで詳細へ */}
-        <Link
-          href={`/activities/${activity.id}`}
-          className="flex items-center gap-3 flex-1 min-w-0 group"
-        >
+        {/* 情報エリア */}
+        <div className="flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
             style={{ backgroundColor: activity.color ? `${activity.color}18` : "#7C4DFF18" }}
@@ -85,13 +82,9 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
           </div>
 
           <div className="flex-1 min-w-0">
-            <span className="text-white text-sm font-medium block truncate group-hover:text-zinc-200 transition-colors">
-              {activity.name}
-            </span>
+            <span className="text-white text-sm font-medium block truncate">{activity.name}</span>
             <div className="flex items-center gap-2 mt-0.5">
-              {activity.isArchived && (
-                <span className="text-[11px] text-zinc-600">アーカイブ済み</span>
-              )}
+              {activity.isArchived && <span className="text-[11px] text-zinc-600">アーカイブ済み</span>}
               {activity.stats.totalCount > 0 ? (
                 <>
                   <span className="text-[11px] text-zinc-500 tabular-nums">{activity.stats.totalCount}回</span>
@@ -109,40 +102,51 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
               )}
             </div>
           </div>
-        </Link>
 
-        {/* アクションボタン */}
-        <div className="flex items-center flex-shrink-0">
-          <button
-            onClick={handleMoveUp}
-            disabled={isReorderPending || currentIndex === 0}
-            className="p-2 text-zinc-600 hover:text-zinc-300 disabled:opacity-20 transition-colors"
-            aria-label="上に移動"
+          {/* 並び替えボタン */}
+          <div className="flex items-center gap-0.5 flex-shrink-0">
+            <button
+              onClick={handleMoveUp}
+              disabled={isReorderPending || currentIndex === 0}
+              className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+              aria-label="上に移動"
+            >
+              <ArrowUp size={13} />
+            </button>
+            <button
+              onClick={handleMoveDown}
+              disabled={isReorderPending || currentIndex === allActivityIds.length - 1}
+              className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+              aria-label="下に移動"
+            >
+              <ArrowDown size={13} />
+            </button>
+          </div>
+        </div>
+
+        {/* アクションボタン行 */}
+        <div className="flex items-center gap-1 mt-2.5 pt-2.5 border-t border-white/5">
+          <Link
+            href={`/activities/${activity.id}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
           >
-            <ArrowUp size={14} />
-          </button>
-          <button
-            onClick={handleMoveDown}
-            disabled={isReorderPending || currentIndex === allActivityIds.length - 1}
-            className="p-2 text-zinc-600 hover:text-zinc-300 disabled:opacity-20 transition-colors"
-            aria-label="下に移動"
-          >
-            <ArrowDown size={14} />
-          </button>
+            <BarChart2 size={12} />
+            <span>統計</span>
+          </Link>
           <button
             onClick={() => setShowEditModal(true)}
-            className="p-2 text-zinc-600 hover:text-zinc-300 transition-colors"
-            aria-label="編集"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
           >
-            <Pencil size={14} />
+            <Pencil size={12} />
+            <span>編集</span>
           </button>
           <button
             onClick={handleArchive}
             disabled={isArchivePending}
-            className="p-2 text-zinc-600 hover:text-zinc-300 disabled:opacity-50 transition-colors"
-            aria-label={activity.isArchived ? "アーカイブ解除" : "アーカイブ"}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 disabled:opacity-50 transition-colors ml-auto"
           >
-            {activity.isArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
+            {activity.isArchived ? <ArchiveRestore size={12} /> : <Archive size={12} />}
+            <span>{activity.isArchived ? "解除" : "アーカイブ"}</span>
           </button>
         </div>
       </div>
