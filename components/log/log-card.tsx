@@ -1,8 +1,5 @@
 import { AddReflectionButton } from "./add-reflection-button";
-import { DeleteLogButton } from "./delete-log-button";
-import { EditPerformedAtButton } from "./edit-performed-at-button";
 import { LogCardMenu } from "./log-card-menu";
-import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
 type LogCardProps = {
   log: {
@@ -22,10 +19,7 @@ type LogCardProps = {
       note: string | null;
     } | null;
   };
-  timeOnly?: boolean;
-  showDelete?: boolean;
-  showEditDate?: boolean;
-  showMenu?: boolean;
+  usage: "home" | "history";
   onPerformedAtSaved?: (logId: string, newDate: Date) => void;
   onReflectionSaved?: (
     logId: string,
@@ -57,26 +51,32 @@ function RatingDots({ value, activeColor }: { value: number; activeColor: string
   );
 }
 
-export function LogCard({
-  log,
-  timeOnly = false,
-  showDelete = false,
-  showEditDate = false,
-  showMenu = false,
-  onPerformedAtSaved,
-  onReflectionSaved,
-}: LogCardProps) {
+export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: LogCardProps) {
   const { activity, reflection, performedAt } = log;
-  const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
+  const timeOnly = usage === "history";
+
+  const color = activity.color;
+  const cardStyle = {
+    background: color
+      ? `radial-gradient(ellipse at 0% 0%, ${color}0D 0%, transparent 65%), #1A1A1A`
+      : "#1A1A1A",
+    borderColor: color ? `${color}28` : "rgba(255,255,255,0.07)",
+    boxShadow: color
+      ? `0 4px 24px -8px ${color}30, inset 0 1px 0 rgba(255,255,255,0.06)`
+      : `0 2px 12px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)`,
+  };
 
   return (
-    <div className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] transition-all animate-in fade-in-0 duration-300">
+    <div
+      className="rounded-2xl border transition-all animate-in fade-in-0 duration-300"
+      style={cardStyle}
+    >
       {/* Header row */}
       <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
         {activity.emoji && (
           <span
-            className="text-[17px] leading-none flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: activity.color ? `${activity.color}1A` : "rgba(255,255,255,0.04)" }}
+            className="text-[17px] leading-none flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
+            style={{ backgroundColor: color ? `${color}22` : "rgba(255,255,255,0.06)" }}
           >
             {activity.emoji}
           </span>
@@ -84,30 +84,19 @@ export function LogCard({
         <span className="text-white font-semibold text-[15px] tracking-tight flex-1 min-w-0 truncate">
           {activity.name}
         </span>
-        {showMenu ? (
-          <LogCardMenu
-            logId={log.id}
-            performedAt={performedAt}
-            timeOnly={timeOnly}
-            reflection={reflection}
-            onPerformedAtSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
-            onReflectionSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
-          />
-        ) : showEditDate ? (
-          <EditPerformedAtButton
-            logId={log.id}
-            performedAt={performedAt}
-            timeOnly={timeOnly}
-            onSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
-          />
-        ) : (
-          <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
-        )}
-        {!showMenu && showDelete && <DeleteLogButton logId={log.id} />}
+        <LogCardMenu
+          logId={log.id}
+          performedAt={performedAt}
+          timeOnly={timeOnly}
+          onPerformedAtSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
+        />
       </div>
 
       {/* Reflection area */}
-      <div className="px-4 pb-4 border-t border-white/5">
+      <div
+        className="px-4 pb-4 border-t"
+        style={{ borderColor: color ? `${color}18` : "rgba(255,255,255,0.05)" }}
+      >
         {reflection ? (
           <div className="pt-3 space-y-2.5">
             {/* Ratings row */}

@@ -30,9 +30,12 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
     }
   }
 
-  const glowShadow = activity.color
-    ? `0 0 ${hovered ? "28px" : "14px"} -4px ${activity.color}${hovered ? "70" : "35"}`
-    : undefined;
+  const color = activity.color;
+  const glowIntensity = hovered ? "40" : "22";
+  const glowSize = hovered ? "28px" : "16px";
+  const glowShadow = color ? `0 0 ${glowSize} -4px ${color}${glowIntensity}` : undefined;
+  const insetHighlight = "inset 0 1px 0 rgba(255,255,255,0.08)";
+  const boxShadow = [glowShadow, insetHighlight].filter(Boolean).join(", ");
 
   return (
     <button
@@ -43,14 +46,20 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
       disabled={pending || disabled}
       className={cn(
         "relative flex flex-col items-center justify-center gap-2 rounded-2xl p-4 min-h-[96px] w-full",
-        "bg-[#1A1A1A] border text-white",
+        "border text-white",
         "transition-all duration-200 active:scale-[0.96]",
-        "hover:bg-[#242424]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
       )}
       style={{
-        borderColor: activity.color ? `${activity.color}35` : "rgba(255,255,255,0.06)",
-        boxShadow: glowShadow,
+        background: color
+          ? hovered
+            ? `radial-gradient(ellipse at 50% 0%, ${color}18 0%, ${color}0C 60%), #1E1E1E`
+            : `radial-gradient(ellipse at 50% 0%, ${color}12 0%, ${color}07 60%), #1A1A1A`
+          : hovered
+            ? "#222222"
+            : "#1A1A1A",
+        borderColor: color ? `${color}35` : "rgba(255,255,255,0.07)",
+        boxShadow,
       }}
     >
       {activity.emoji && <span className="text-2xl leading-none">{activity.emoji}</span>}

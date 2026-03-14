@@ -67,16 +67,28 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
     });
   }
 
+  const color = activity.color;
+  const cardStyle = {
+    background: color
+      ? `radial-gradient(ellipse at 0% 0%, ${color}0D 0%, transparent 60%), #1A1A1A`
+      : "#1A1A1A",
+    borderColor: color ? `${color}25` : "rgba(255,255,255,0.07)",
+    boxShadow: color
+      ? `0 4px 20px -8px ${color}28, inset 0 1px 0 rgba(255,255,255,0.06)`
+      : `0 2px 12px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)`,
+  };
+
   return (
     <>
       <div
-        className={`flex flex-col px-4 py-4 bg-[#1A1A1A] rounded-2xl border border-white/[0.06] transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
+        className={`flex flex-col px-4 py-4 rounded-2xl border transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
+        style={cardStyle}
       >
         {/* 情報エリア */}
         <div className="flex items-center gap-3">
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ backgroundColor: activity.color ? `${activity.color}1A` : "#7C4DFF1A" }}
+            style={{ backgroundColor: color ? `${color}22` : "#7C4DFF22" }}
           >
             {activity.emoji ?? "⚡"}
           </div>
@@ -125,7 +137,10 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
         </div>
 
         {/* アクションボタン行 */}
-        <div className="flex items-center gap-1 mt-3 pt-3 border-t border-white/[0.06]">
+        <div
+          className="flex items-center gap-1 mt-3 pt-3 border-t"
+          style={{ borderColor: color ? `${color}18` : "rgba(255,255,255,0.06)" }}
+        >
           <Link
             href={`/activities/${activity.id}`}
             className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
