@@ -2,6 +2,7 @@ import { Sparkles } from "lucide-react";
 import { AddReflectionButton } from "./add-reflection-button";
 import { DeleteLogButton } from "./delete-log-button";
 import { EditPerformedAtButton } from "./edit-performed-at-button";
+import { LogCardMenu } from "./log-card-menu";
 import { formatTime, formatPerformedAt } from "@/lib/date-utils";
 
 type LogCardProps = {
@@ -25,6 +26,7 @@ type LogCardProps = {
   timeOnly?: boolean;
   showDelete?: boolean;
   showEditDate?: boolean;
+  showMenu?: boolean;
   onPerformedAtSaved?: (logId: string, newDate: Date) => void;
   onReflectionSaved?: (logId: string, reflection: { id: string; excitement: number | null; achievement: number | null; wantAgain: boolean | null; note: string | null }) => void;
 };
@@ -47,7 +49,15 @@ function RatingDots({ value, activeColor }: { value: number; activeColor: string
   );
 }
 
-export function LogCard({ log, timeOnly = false, showDelete = false, showEditDate = false, onPerformedAtSaved, onReflectionSaved }: LogCardProps) {
+export function LogCard({
+  log,
+  timeOnly = false,
+  showDelete = false,
+  showEditDate = false,
+  showMenu = false,
+  onPerformedAtSaved,
+  onReflectionSaved,
+}: LogCardProps) {
   const { activity, reflection, performedAt } = log;
   const timeLabel = timeOnly ? formatTime(performedAt) : formatPerformedAt(performedAt);
   const accentColor = activity.color;
@@ -85,7 +95,16 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
             aria-label="余韻あり"
           />
         )}
-        {showEditDate ? (
+        {showMenu ? (
+          <LogCardMenu
+            logId={log.id}
+            performedAt={performedAt}
+            timeOnly={timeOnly}
+            reflection={reflection}
+            onPerformedAtSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
+            onReflectionSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
+          />
+        ) : showEditDate ? (
           <EditPerformedAtButton
             logId={log.id}
             performedAt={performedAt}
@@ -95,7 +114,7 @@ export function LogCard({ log, timeOnly = false, showDelete = false, showEditDat
         ) : (
           <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
         )}
-        {showDelete && <DeleteLogButton logId={log.id} />}
+        {!showMenu && showDelete && <DeleteLogButton logId={log.id} />}
       </div>
 
       {/* Reflection area */}
