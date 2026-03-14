@@ -67,7 +67,12 @@ export function LogCard({
       {/* Header row */}
       <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
         {activity.emoji && (
-          <span className="text-[17px] leading-none flex-shrink-0">{activity.emoji}</span>
+          <span
+            className="text-[17px] leading-none flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: activity.color ? `${activity.color}1A` : "rgba(255,255,255,0.04)" }}
+          >
+            {activity.emoji}
+          </span>
         )}
         <span className="text-white font-semibold text-[15px] tracking-tight flex-1 min-w-0 truncate">
           {activity.name}
