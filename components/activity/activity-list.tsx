@@ -6,18 +6,10 @@ import { toast } from "sonner";
 import { ActivityItem } from "./activity-item";
 import { ActivityCreateModal } from "./activity-create-modal";
 import { Button } from "@/components/ui/button";
-
-interface Activity {
-  id: string;
-  name: string;
-  emoji: string | null;
-  color: string | null;
-  sortOrder: number;
-  isArchived: boolean;
-}
+import type { ActivityWithStats } from "@/server/queries/activity";
 
 interface Props {
-  activities: Activity[];
+  activities: ActivityWithStats[];
 }
 
 export function ActivityList({ activities }: Props) {
