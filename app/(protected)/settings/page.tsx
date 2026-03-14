@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/session";
 import LogoutButton from "@/components/logout-button";
 import ChangePasswordCard from "@/components/settings/change-password-card";
+import { APP_VERSION } from "@/lib/app-version";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -58,7 +59,7 @@ export default async function SettingsPage() {
           <div className="border-t border-zinc-800" />
           <div className="flex items-center justify-between">
             <span className="text-sm text-zinc-400">バージョン</span>
-            <span className="text-sm text-zinc-500">MVP</span>
+            <span className="text-sm text-zinc-500">v{APP_VERSION}</span>
           </div>
         </div>
       </section>
