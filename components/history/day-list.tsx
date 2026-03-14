@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import dayjs from "dayjs";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
-import { buildDayRange, formatDayShort } from "@/lib/date-utils";
+import { buildDayRange, formatDayFull } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { DayDetailSheet } from "./day-detail-sheet";
 
@@ -72,8 +72,8 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             onClick={() => setSelectedDate(day.date)}
             className="w-full flex items-center gap-4 py-3 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className={`text-sm tabular-nums w-9 shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
-              {formatDayShort(day.date)}
+            <span className={`text-sm tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+              {formatDayFull(day.date)}
             </span>
             <span className="flex-1 min-w-0">
               {day.logs.length === 0 ? (
