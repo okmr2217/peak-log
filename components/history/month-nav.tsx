@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type Props = {
   month: string; // "YYYY-MM"
   baseParams: string; // query string without 'month'
+  basePath?: string; // default "/history"
 };
 
 function shiftMonth(month: string, delta: number): string {
@@ -22,7 +23,7 @@ function getCurrentMonth(): string {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-export function MonthNav({ month, baseParams }: Props) {
+export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
   const prevMonth = shiftMonth(month, -1);
   const nextMonth = shiftMonth(month, 1);
   const isCurrentMonth = month === getCurrentMonth();
@@ -31,7 +32,7 @@ export function MonthNav({ month, baseParams }: Props) {
   const buildHref = (m: string) => {
     const params = new URLSearchParams(baseParams || "");
     params.set("month", m);
-    return `/history?${params.toString()}`;
+    return `${basePath}?${params.toString()}`;
   };
 
   return (

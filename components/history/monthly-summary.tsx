@@ -7,14 +7,15 @@ type Props = {
   summary: MonthlySummary;
   month: string;
   baseParams: string;
+  basePath?: string;
 };
 
-export function MonthlySummarySection({ summary, month, baseParams }: Props) {
+export function MonthlySummarySection({ summary, month, baseParams, basePath }: Props) {
   return (
     <section className="mb-2 space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-xs text-zinc-600 uppercase tracking-wider font-medium">今月の概要</span>
-        <MonthNav month={month} baseParams={baseParams} />
+        <MonthNav month={month} baseParams={baseParams} basePath={basePath} />
       </div>
 
       {summary.totalLogs === 0 ? (

@@ -1,30 +1,21 @@
 import Link from "next/link";
+import { BarChart2 } from "lucide-react";
 import dayjs from "dayjs";
-import { getLogsRangePageForCurrentUser, getMonthlySummaryForCurrentUser } from "@/server/queries/log";
+import { getLogsRangePageForCurrentUser } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
 import { DayList } from "@/components/history/day-list";
-import { MonthlySummarySection } from "@/components/history/monthly-summary";
 
 const RANGE_DAYS = 30;
-
-function getCurrentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
 
 export default async function HistoryPage() {
   const today = dayjs().startOf("day");
   const to = today.add(1, "day").toDate(); // exclusive: covers today
   const from = today.subtract(RANGE_DAYS - 1, "day").toDate(); // inclusive: 30 days including today
   const oldestDate = today.subtract(RANGE_DAYS - 1, "day").format("YYYY-MM-DD");
-  const month = getCurrentMonth();
 
-  const [rangeResult, summaryResult] = await Promise.allSettled([
-    getLogsRangePageForCurrentUser({ from, to }),
-    getMonthlySummaryForCurrentUser(month),
-  ]);
+  const result = await getLogsRangePageForCurrentUser({ from, to }).catch(() => null);
 
-  if (rangeResult.status === "rejected") {
+  if (!result) {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
         <h1 className="text-xl font-bold text-white mb-5">記録</h1>
@@ -33,18 +24,23 @@ export default async function HistoryPage() {
     );
   }
 
-  const { logs, hasMore } = rangeResult.value;
-  const summary = summaryResult.status === "fulfilled" ? summaryResult.value : null;
+  const { logs, hasMore } = result;
   const dayItems = buildDayRange(logs, from, to);
   const hasAnyLogs = logs.length > 0 || hasMore;
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-white mb-5">記録</h1>
-
-      {summary && <MonthlySummarySection summary={summary} month={month} baseParams="" />}
-
-      <div className="border-t border-zinc-800/50 my-5" />
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-xl font-bold text-white">記録</h1>
+        <Link
+          href="/history/stats"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors text-sm"
+          aria-label="月次統計を見る"
+        >
+          <BarChart2 size={15} />
+          <span>統計</span>
+        </Link>
+      </div>
 
       {!hasAnyLogs ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
