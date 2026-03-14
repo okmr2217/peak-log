@@ -20,7 +20,7 @@ export default async function HistoryStatsPage({ searchParams }: Props) {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 mb-5">
+      <div className="flex items-center gap-3 py-3 border-b border-white/5 mb-5">
         <Link
           href="/history"
           className="p-1.5 -ml-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"

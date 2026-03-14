@@ -11,7 +11,7 @@ export default async function HomePage() {
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-8">
       <section>
-        <div className="mb-5">
+        <div className="py-3 border-b border-white/5 mb-5">
           <p className="text-xs text-zinc-600 mb-1">{dateLabel}</p>
           <h1 className="text-base font-medium text-zinc-300">今日のピーク</h1>
         </div>
