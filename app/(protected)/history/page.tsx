@@ -38,7 +38,7 @@ export default async function HistoryPage() {
           aria-label="月次統計を見る"
         >
           <BarChart2 size={15} />
-          <span>統計</span>
+          <span>月次統計</span>
         </Link>
       </div>
 
