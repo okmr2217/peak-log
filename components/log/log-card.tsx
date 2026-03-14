@@ -65,7 +65,7 @@ export function LogCard({
 
   return (
     <div
-      className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] overflow-hidden transition-all animate-in fade-in-0 duration-300"
+      className="bg-[#1A1A1A] rounded-xl border border-white/[0.06] transition-all animate-in fade-in-0 duration-300"
       style={
         accentColor
           ? {
