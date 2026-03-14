@@ -62,25 +62,17 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
       : "#1A1A1A",
     borderColor: color ? `${color}38` : "rgba(255,255,255,0.08)",
     boxShadow: color
-      ? `0 6px 32px -8px ${color}50, inset 0 1px 0 rgba(255,255,255,0.08)`
-      : `0 4px 16px -4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)`,
+      ? `0 4px 20px -8px ${color}38, inset 0 1px 0 rgba(255,255,255,0.07)`
+      : `0 2px 10px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)`,
   };
 
   return (
     <div
-      className="relative rounded-2xl border overflow-hidden transition-all animate-in fade-in-0 duration-300"
+      className="rounded-2xl border transition-all animate-in fade-in-0 duration-300"
       style={cardStyle}
     >
-      {/* Left accent bar */}
-      {color && (
-        <span
-          className="absolute left-0 inset-y-0 w-[3px] rounded-l-2xl"
-          style={{ background: `linear-gradient(180deg, ${color}EE 0%, ${color}44 100%)` }}
-        />
-      )}
-
       {/* Header row */}
-      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5" style={{ paddingLeft: color ? "20px" : undefined }}>
+      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
         {activity.emoji && (
           <span
             className="text-lg leading-none flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
@@ -104,7 +96,7 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
       <div
         className="pb-4 border-t"
         style={{
-          paddingLeft: color ? "20px" : "16px",
+          paddingLeft: "16px",
           paddingRight: "16px",
           borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
           background: "rgba(0,0,0,0.18)",

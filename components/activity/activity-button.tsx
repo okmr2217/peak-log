@@ -32,8 +32,8 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
 
   const color = activity.color;
   const glowShadow = color
-    ? `0 4px ${hovered ? "28px" : "18px"} -4px ${color}${hovered ? "60" : "38"}`
-    : `0 2px 12px -4px rgba(0,0,0,0.5)`;
+    ? `0 4px ${hovered ? "20px" : "12px"} -4px ${color}${hovered ? "45" : "28"}`
+    : `0 2px 8px -4px rgba(0,0,0,0.4)`;
   const boxShadow = `${glowShadow}, inset 0 1px 0 rgba(255,255,255,0.09)`;
 
   return (
