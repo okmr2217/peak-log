@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { getLogsRangePageForCurrentUser } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
 import { DayList } from "@/components/history/day-list";
+import { PageHeader } from "@/components/layout/page-header";
 
 const RANGE_DAYS = 30;
 
@@ -18,7 +19,7 @@ export default async function HistoryPage() {
   if (!result) {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
-        <h1 className="text-xl font-bold text-white mb-5">記録</h1>
+        <PageHeader title="記録" />
         <p className="text-zinc-500 text-sm">記録の読み込みに失敗しました</p>
       </div>
     );
@@ -30,17 +31,19 @@ export default async function HistoryPage() {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold text-white">記録</h1>
-        <Link
-          href="/history/stats"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors text-sm"
-          aria-label="月次統計を見る"
-        >
-          <BarChart2 size={15} />
-          <span>月次統計</span>
-        </Link>
-      </div>
+      <PageHeader
+        title="記録"
+        action={
+          <Link
+            href="/history/stats"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors text-sm"
+            aria-label="月次統計を見る"
+          >
+            <BarChart2 size={15} />
+            <span>月次統計</span>
+          </Link>
+        }
+      />
 
       {!hasAnyLogs ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">

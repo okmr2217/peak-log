@@ -2,13 +2,14 @@ import { requireUser } from "@/lib/session";
 import LogoutButton from "@/components/logout-button";
 import ChangePasswordCard from "@/components/settings/change-password-card";
 import { APP_VERSION } from "@/lib/app-version";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function SettingsPage() {
   const user = await requireUser();
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-8">
-      <h1 className="text-xl font-bold text-white">設定</h1>
+      <PageHeader title="設定" />
 
       {/* アカウント */}
       <section className="space-y-3">

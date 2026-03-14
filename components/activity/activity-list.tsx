@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ActivityItem } from "./activity-item";
 import { ActivityCreateModal } from "./activity-create-modal";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/layout/page-header";
 import type { ActivityWithStats } from "@/server/queries/activity";
 
 interface Props {
@@ -24,17 +25,15 @@ export function ActivityList({ activities }: Props) {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold text-white">活動</h1>
-        <Button
-          onClick={() => setShowCreateModal(true)}
-          size="sm"
-          className="gap-1.5 rounded-xl"
-        >
-          <Plus size={15} />
-          追加
-        </Button>
-      </div>
+      <PageHeader
+        title="活動"
+        action={
+          <Button onClick={() => setShowCreateModal(true)} size="sm" className="gap-1.5 rounded-xl">
+            <Plus size={15} />
+            追加
+          </Button>
+        }
+      />
 
       {activities.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">

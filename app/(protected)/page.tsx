@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { getActiveActivitiesForCurrentUser } from "@/server/queries/activity";
 import { getLogsForCurrentUser } from "@/server/queries/log";
 import { ActivityGrid } from "@/components/activity/activity-grid";
@@ -5,11 +6,15 @@ import { LogList } from "@/components/log/log-list";
 
 export default async function HomePage() {
   const [activities, logs] = await Promise.all([getActiveActivitiesForCurrentUser(), getLogsForCurrentUser(5)]);
+  const dateLabel = dayjs().format("M月D日");
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-8">
       <section>
-        <h1 className="text-xl font-bold text-white mb-5">今日のピーク</h1>
+        <div className="mb-5">
+          <p className="text-xs text-zinc-600 mb-1">{dateLabel}</p>
+          <h1 className="text-base font-medium text-zinc-300">今日のピーク</h1>
+        </div>
         <ActivityGrid activities={activities} />
       </section>
 

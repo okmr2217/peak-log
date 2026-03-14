@@ -28,7 +28,7 @@ export default async function HistoryStatsPage({ searchParams }: Props) {
         >
           <ChevronLeft size={20} />
         </Link>
-        <h1 className="text-xl font-bold text-white">統計</h1>
+        <h1 className="text-base font-medium text-zinc-300">統計</h1>
       </div>
 
       {summary ? (
