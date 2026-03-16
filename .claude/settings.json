@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      // === Node / npm / pnpm / yarn / bun ===
       "Bash(npm:*)",
       "Bash(npx:*)",
       "Bash(pnpm:*)",
@@ -9,19 +8,11 @@
       "Bash(bun:*)",
       "Bash(bunx:*)",
       "Bash(node:*)",
-
-      // === Next.js dev / build / lint ===
       "Bash(next:*)",
-
-      // === Git ===
       "Bash(git:*)",
-
-      // === ファイル操作 (PowerShell / cmd) ===
       "Bash(powershell:*)",
       "Bash(pwsh:*)",
       "Bash(cmd:*)",
-
-      // === ファイル・ディレクトリ操作 ===
       "Bash(mkdir:*)",
       "Bash(rm:*)",
       "Bash(rmdir:*)",
@@ -37,8 +28,6 @@
       "Bash(ls:*)",
       "Bash(dir:*)",
       "Bash(cd:*)",
-
-      // === エディタ / その他ツール ===
       "Bash(code:*)",
       "Bash(tsc:*)",
       "Bash(eslint:*)",
@@ -47,31 +36,22 @@
       "Bash(vitest:*)",
       "Bash(playwright:*)",
       "Bash(cypress:*)",
-
-      // === プロセス・ポート確認 ===
       "Bash(netstat:*)",
       "Bash(tasklist:*)",
       "Bash(taskkill:*)",
-
-      // === curl / wget (API確認など) ===
       "Bash(curl:*)",
       "Bash(wget:*)",
-
-      // === 環境変数・システム情報 ===
       "Bash(set:*)",
       "Bash(setx:*)",
       "Bash(where:*)",
       "Bash(which:*)",
       "Bash(whoami:*)",
       "Bash(hostname:*)",
-
-      // === Python (スクリプト補助用) ===
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(pip:*)"
     ],
     "deny": [
-      // === 危険なシステム操作は明示的に拒否 ===
       "Bash(format:*)",
       "Bash(diskpart:*)",
       "Bash(bcdedit:*)",
