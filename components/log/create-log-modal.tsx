@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
-import dayjs from "dayjs";
 import { createLog } from "@/server/actions/log";
 import { upsertReflection } from "@/server/actions/reflection";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
