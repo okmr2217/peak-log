@@ -40,6 +40,7 @@ yarn-error.log*
 
 # claude
 .claude/
+.claude/worktrees/
 
 # typescript
 *.tsbuildinfo
