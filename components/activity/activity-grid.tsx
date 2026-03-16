@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { createLog } from "@/server/actions/log";
 import { ActivityButton } from "./activity-button";
+import { CreateLogModal } from "@/components/log/create-log-modal";
 import { ReflectionModal } from "@/components/reflection/reflection-modal";
 
 type Activity = {
@@ -14,7 +14,7 @@ type Activity = {
 };
 
 type Toast =
-  | { type: "success"; logId: string }
+  | { type: "success"; logId: string; hasReflection: boolean }
   | { type: "error"; message: string };
 
 type ActivityGridProps = {
@@ -22,18 +22,21 @@ type ActivityGridProps = {
 };
 
 export function ActivityGrid({ activities }: ActivityGridProps) {
+  const [pendingActivity, setPendingActivity] = useState<Activity | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
   const [reflectionLogId, setReflectionLogId] = useState<string | null>(null);
 
-  const handleQuickLog = useCallback(async (activityId: string) => {
-    const result = await createLog({ activityId });
-    if (result.ok) {
-      setToast({ type: "success", logId: result.data?.logId ?? "" });
-      setTimeout(() => setToast(null), 4000);
-    } else {
-      setToast({ type: "error", message: result.message });
-      setTimeout(() => setToast(null), 3000);
-    }
+  const handleActivityTap = useCallback(
+    async (activityId: string) => {
+      const activity = activities.find((a) => a.id === activityId);
+      if (activity) setPendingActivity(activity);
+    },
+    [activities],
+  );
+
+  const handleLogCreated = useCallback((logId: string, hasReflection: boolean) => {
+    setToast({ type: "success", logId, hasReflection });
+    setTimeout(() => setToast(null), 4000);
   }, []);
 
   if (activities.length === 0) {
@@ -55,7 +58,7 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
     <div className="relative">
       <div className="grid grid-cols-2 gap-3">
         {activities.map((activity) => (
-          <ActivityButton key={activity.id} activity={activity} onQuickLog={handleQuickLog} />
+          <ActivityButton key={activity.id} activity={activity} onQuickLog={handleActivityTap} />
         ))}
       </div>
 
@@ -74,16 +77,18 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
                   <span className="text-white text-sm font-medium">記録しました</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setReflectionLogId(toast.logId);
-                    setToast(null);
-                  }}
-                  className="text-[#00E5FF] text-xs font-medium hover:opacity-80 transition-opacity shrink-0 px-3 py-1.5 rounded-lg bg-[#00E5FF]/10"
-                >
-                  余韻を追加
-                </button>
+                {!toast.hasReflection && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReflectionLogId(toast.logId);
+                      setToast(null);
+                    }}
+                    className="text-[#00E5FF] text-xs font-medium hover:opacity-80 transition-opacity shrink-0 px-3 py-1.5 rounded-lg bg-[#00E5FF]/10"
+                  >
+                    余韻を追加
+                  </button>
+                )}
               </>
             ) : (
               <span className="text-red-300 text-sm">{toast.message}</span>
@@ -92,12 +97,17 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
         </div>
       )}
 
-      {reflectionLogId && (
-        <ReflectionModal
-          logId={reflectionLogId}
+      {pendingActivity && (
+        <CreateLogModal
+          activity={pendingActivity}
           isOpen={true}
-          onClose={() => setReflectionLogId(null)}
+          onClose={() => setPendingActivity(null)}
+          onSuccess={handleLogCreated}
         />
+      )}
+
+      {reflectionLogId && (
+        <ReflectionModal logId={reflectionLogId} isOpen={true} onClose={() => setReflectionLogId(null)} />
       )}
     </div>
   );
