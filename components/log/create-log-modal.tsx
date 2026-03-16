@@ -226,7 +226,7 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
                     disabled={{ after: today }}
                     defaultMonth={otherDate}
                     classNames={{
-                      root: "w-full",
+                      root: "w-full relative",
                       months: "flex flex-col",
                       month: "flex flex-col gap-1",
                       month_caption: "flex justify-center relative items-center h-9 mb-1",
