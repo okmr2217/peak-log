@@ -16,17 +16,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 type DateMode = "today" | "yesterday" | "other";
 
-function roundToNearest30(date: Date): string {
+function floorToNearest30(date: Date): string {
   const hours = date.getHours();
   const minutes = date.getMinutes();
-  if (minutes < 15) {
-    return `${String(hours).padStart(2, "0")}:00`;
-  } else if (minutes < 45) {
-    return `${String(hours).padStart(2, "0")}:30`;
-  } else {
-    const nextHour = (hours + 1) % 24;
-    return `${String(nextHour).padStart(2, "0")}:00`;
-  }
+  const floored = minutes < 30 ? 0 : 30;
+  return `${String(hours).padStart(2, "0")}:${String(floored).padStart(2, "0")}`;
 }
 
 const TIME_OPTIONS: string[] = [];
@@ -95,7 +89,7 @@ type Props = {
 export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) {
   const [dateMode, setDateMode] = useState<DateMode>("today");
   const [otherDate, setOtherDate] = useState<Date>(new Date());
-  const [selectedTime, setSelectedTime] = useState(() => roundToNearest30(new Date()));
+  const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(new Date()));
   const [timeOpen, setTimeOpen] = useState(false);
   const [showReflection, setShowReflection] = useState(false);
   const [excitement, setExcitement] = useState<number | undefined>();
@@ -282,7 +276,7 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
                       <ChevronDown className="h-4 w-4 text-zinc-500 ml-auto shrink-0" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-40 max-h-52 overflow-y-auto p-1" align="start">
+                  <PopoverContent className="w-40 p-1" style={{ maxHeight: "13rem", overflowY: "auto" }} align="start">
                     {TIME_OPTIONS.map((t) => {
                       const isSelected = t === selectedTime;
                       return (
