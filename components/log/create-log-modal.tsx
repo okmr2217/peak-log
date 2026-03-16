@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
-import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { useState, useTransition } from "react";
+import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { format, startOfDay, isAfter } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import dayjs from "dayjs";
 import { createLog } from "@/server/actions/log";
 import { upsertReflection } from "@/server/actions/reflection";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -90,7 +89,6 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
   const [dateMode, setDateMode] = useState<DateMode>("today");
   const [otherDate, setOtherDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(new Date()));
-  const [timeOpen, setTimeOpen] = useState(false);
   const [showReflection, setShowReflection] = useState(false);
   const [excitement, setExcitement] = useState<number | undefined>();
   const [achievement, setAchievement] = useState<number | undefined>();
@@ -98,16 +96,6 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const selectedTimeRef = useRef<HTMLButtonElement>(null);
-
-  // Scroll selected time into view when popover opens
-  useEffect(() => {
-    if (timeOpen && selectedTimeRef.current) {
-      setTimeout(() => {
-        selectedTimeRef.current?.scrollIntoView({ block: "center" });
-      }, 50);
-    }
-  }, [timeOpen]);
 
   function getPerformedAt(): Date {
     let date: Date;
@@ -231,7 +219,7 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
                       month: "flex flex-col gap-1",
                       month_caption: "flex justify-center relative items-center h-9 mb-1",
                       caption_label: "text-sm font-semibold text-white",
-                      nav: "absolute inset-x-0 top-0 flex justify-between items-center h-9 px-1",
+                      nav: "absolute inset-x-0 top-0 flex justify-between items-center h-9 px-1 z-10",
                       button_previous:
                         "h-7 w-7 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors",
                       button_next:
@@ -265,42 +253,20 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
               {/* Time picker */}
               <div>
                 <Label className="text-zinc-500 text-xs mb-2 block tracking-wide uppercase">時刻</Label>
-                <Popover open={timeOpen} onOpenChange={setTimeOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      className="w-full flex items-center gap-2.5 bg-white/5 rounded-xl px-3.5 py-3 text-white text-sm hover:bg-white/8 transition-colors"
-                    >
-                      <Clock className="h-4 w-4 text-zinc-500 shrink-0" />
-                      <span className="font-medium tabular-nums">{selectedTime}</span>
-                      <ChevronDown className="h-4 w-4 text-zinc-500 ml-auto shrink-0" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-40 p-1" align="start">
-                    <div style={{ maxHeight: "13rem", overflowY: "auto" }}>
-                      {TIME_OPTIONS.map((t) => {
-                        const isSelected = t === selectedTime;
-                        return (
-                          <button
-                            key={t}
-                            ref={isSelected ? selectedTimeRef : undefined}
-                            type="button"
-                            onClick={() => {
-                              setSelectedTime(t);
-                              setTimeOpen(false);
-                            }}
-                            className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors tabular-nums ${
-                              isSelected ? "text-white font-semibold" : "text-zinc-300 hover:bg-white/10"
-                            }`}
-                            style={isSelected ? { background: "linear-gradient(135deg, #7C4DFF, #5533cc)" } : undefined}
-                          >
-                            {t}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <div className="relative">
+                  <select
+                    value={selectedTime}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    className="w-full appearance-none bg-white/5 rounded-xl px-3.5 py-3 text-white text-sm [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]/50 cursor-pointer"
+                  >
+                    {TIME_OPTIONS.map((t) => (
+                      <option key={t} value={t} className="bg-[#1A1A1A]">
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+                </div>
               </div>
             </div>
 
