@@ -276,27 +276,29 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
                       <ChevronDown className="h-4 w-4 text-zinc-500 ml-auto shrink-0" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-40 p-1" style={{ maxHeight: "13rem", overflowY: "auto" }} align="start">
-                    {TIME_OPTIONS.map((t) => {
-                      const isSelected = t === selectedTime;
-                      return (
-                        <button
-                          key={t}
-                          ref={isSelected ? selectedTimeRef : undefined}
-                          type="button"
-                          onClick={() => {
-                            setSelectedTime(t);
-                            setTimeOpen(false);
-                          }}
-                          className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors tabular-nums ${
-                            isSelected ? "text-white font-semibold" : "text-zinc-300 hover:bg-white/10"
-                          }`}
-                          style={isSelected ? { background: "linear-gradient(135deg, #7C4DFF, #5533cc)" } : undefined}
-                        >
-                          {t}
-                        </button>
-                      );
-                    })}
+                  <PopoverContent className="w-40 p-1" align="start">
+                    <div style={{ maxHeight: "13rem", overflowY: "auto" }}>
+                      {TIME_OPTIONS.map((t) => {
+                        const isSelected = t === selectedTime;
+                        return (
+                          <button
+                            key={t}
+                            ref={isSelected ? selectedTimeRef : undefined}
+                            type="button"
+                            onClick={() => {
+                              setSelectedTime(t);
+                              setTimeOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors tabular-nums ${
+                              isSelected ? "text-white font-semibold" : "text-zinc-300 hover:bg-white/10"
+                            }`}
+                            style={isSelected ? { background: "linear-gradient(135deg, #7C4DFF, #5533cc)" } : undefined}
+                          >
+                            {t}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
