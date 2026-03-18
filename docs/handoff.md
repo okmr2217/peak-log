@@ -45,29 +45,42 @@
 
 ## 今後の候補
 
-### 短期（UX 改善）
+### 高優先度
 
-| 機能 | 概要 | 優先度 |
-|------|------|--------|
-| **デフォルト Activity 自動作成** | 新規ユーザー登録時に初期 Activity（💪筋トレ等）を自動作成 | 高 |
-| **日毎の空白日表示** | ログがない日も History に表示（連続性の可視化） | 中 |
-| **Activity 統計の充実** | 累計数・最終実施日・平均間隔を Activity 詳細・一覧に表示 | 中 |
+| 機能 | 概要 | 実装メモ |
+|------|------|---------|
+| **performedAt 編集 UI** | 既存ログの日時を後から編集するモーダル | `updateLogPerformedAt` アクションは実装済み。カレンダー + 時刻 Popover を流用すれば日時入力 UI を揃えられる |
+| **ページネーション / 無限スクロール** | History の最大 50 件制限を解消する cursor pagination | `history-list.tsx` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
+| **Log に位置情報を追加** | Log 記録時に緯度・経度（+ 任意の地名）を保存する | Prisma スキーマに `latitude / longitude / locationName` を追加。ブラウザの Geolocation API で取得し、任意添付（拒否しても記録可能）にする |
+| **Home の最近ピーク ページネーション** | 現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応 | クエリの `take` 上限を引き上げ、cursor pagination を追加。表示は「もっと見る」ボタン or IntersectionObserver |
+| **History タイムライン表示モード** | 日次 History とは別に、全 Log を時系列で流れるタイムライン表示を追加。日次 History の日付行クリックで該当日へアンカー遷移する | `/history` に表示モード切替（日次 / タイムライン）を追加。タイムライン側は Log を時系列に並べ、日付グループにアンカーを設定。日次側の日付行リンクは `?mode=timeline#YYYY-MM-DD` 形式でアンカーへ遷移 |
 
-### 中期（機能拡張）
+### 中優先度
+
+| 機能 | 概要 | 実装メモ |
+|------|------|---------|
+| **削除確認ダイアログ** | `window.confirm` → カスタムダイアログ | `components/ui/confirm-dialog.tsx` として `title / description / onConfirm / isPending / isOpen / onClose` を受け取る汎用コンポーネントに。現状は1箇所のみなので他の destructive action が増えた時点で共通化 |
+| **余韻ありバッジ** | Reflection 済みの Log にアイコンバッジを表示 | Log カードに小アイコンを追加するだけ |
+| **History フィルタ** | 日付範囲・Activity 別フィルター | サーバー側クエリ変更＋URL パラメータで実装 |
+| **デフォルト Activity 自動作成** | 新規ユーザー登録時に初期 Activity を自動作成 | Better Auth フック or 初回ログイン検出 |
+
+### 低優先度 / 長期
 
 | 機能 | 概要 |
 |------|------|
-| カレンダー表示 | History をカレンダー形式で表示 |
-| タグ | Log や Activity にタグを付与して絞り込み |
-| 画像添付 | Log に写真を添付 |
-| データエクスポート | CSV / JSON エクスポート |
-| アカウント削除 | 設定からアカウントと全データを削除 |
+| **ビジュアル改善（frontend-design）** | LogCard 入場アニメーション・ActivityButton グロウ・モーダルグラデーション・空状態デザイン |
+| **日毎の空白日表示** | ログがない日も History に表示（連続性の可視化） |
+| **insights 専用ページ** | 月またぎ比較・年次ビュー。`getMonthlySummaryForCurrentUser` をそのまま流用可能 |
+| **カレンダー表示** | History をカレンダー形式で表示 |
+| **タグ** | Log や Activity にタグを付与して絞り込み |
+| **データエクスポート** | CSV / JSON エクスポート |
+| **アカウント削除** | 設定からアカウントと全データを削除 |
+| **PWA 強化** | Service Worker 実装・オフライン対応の完全化 |
 
 ---
 
 ## 次のセッションで相談したいこと
 
-1. **デフォルト Activity 自動作成**の実装方法（Better Auth フック or 初回ログイン検出）
-2. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
-3. **Activity 統計**：平均間隔の計算ロジックと表示場所
-4. **技術ブログ記事**の構成と執筆
+1. **performedAt 編集 UI**：モーダルの入力 UI をどの実装パターンにするか（既存の Popover を再利用 vs 専用コンポーネント）
+2. **ページネーション**：cursor pagination か offset か、UX（ボタン式 vs 無限スクロール）の方針
+3. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
