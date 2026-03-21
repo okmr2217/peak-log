@@ -4,20 +4,10 @@ import { useState, useTransition } from "react";
 import { subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import Link from "next/link";
-import { AlignLeft } from "lucide-react";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
 import { buildDayRange, formatDayFull, formatTime } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
-import { DayDetailSheet } from "./day-detail-sheet";
-
-type ReflectionPayload = {
-  id: string;
-  excitement: number | null;
-  achievement: number | null;
-  wantAgain: boolean | null;
-  note: string | null;
-};
 
 type Props = {
   initialItems: HistoryDayItem[];
@@ -30,26 +20,7 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
   const [dayItems, setDayItems] = useState<HistoryDayItem[]>(initialItems);
   const [oldest, setOldest] = useState<string>(oldestDate);
   const [hasMore, setHasMore] = useState(initialHasMore);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  function handleReflectionSaved(logId: string, reflection: ReflectionPayload) {
-    setDayItems((prev) =>
-      prev.map((day) => ({
-        ...day,
-        logs: day.logs.map((log) => (log.id === logId ? { ...log, reflection } : log)),
-      })),
-    );
-  }
-
-  function handlePerformedAtSaved(logId: string, newDate: Date) {
-    setDayItems((prev) =>
-      prev.map((day) => ({
-        ...day,
-        logs: day.logs.map((log) => (log.id === logId ? { ...log, performedAt: newDate } : log)),
-      })),
-    );
-  }
 
   function loadMore() {
     startTransition(async () => {
@@ -64,30 +35,17 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
     });
   }
 
-  const selectedDayItem = selectedDate ? (dayItems.find((d) => d.date === selectedDate) ?? null) : null;
-
   return (
     <>
       <div className="divide-y divide-white/[0.04]">
         {dayItems.map((day) => (
-          <button
+          <Link
             key={day.date}
-            type="button"
-            onClick={() => setSelectedDate(day.date)}
+            href={`/history?mode=timeline#${day.date}`}
             className="w-full flex items-center gap-4 py-2.5 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className="flex items-center gap-1 shrink-0">
-              <span className={`text-sm font-medium tabular-nums ${getDateTextClassName(getDayType(day.date))}`}>
-                {formatDayFull(day.date)}
-              </span>
-              <Link
-                href={`/history?mode=timeline#${day.date}`}
-                onClick={(e) => e.stopPropagation()}
-                className="text-zinc-700 hover:text-zinc-500 transition-colors"
-                aria-label="タイムラインで表示"
-              >
-                <AlignLeft size={12} />
-              </Link>
+            <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+              {formatDayFull(day.date)}
             </span>
             <span className="flex-1 min-w-0 flex flex-wrap gap-1.5">
               {day.logs.length === 0 ? (
@@ -113,7 +71,7 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
                 })
               )}
             </span>
-          </button>
+          </Link>
         ))}
       </div>
 
@@ -127,16 +85,6 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             {isPending ? "読み込み中..." : "さらに前を見る"}
           </button>
         </div>
-      )}
-
-      {selectedDayItem && (
-        <DayDetailSheet
-          date={selectedDayItem.date}
-          logs={selectedDayItem.logs}
-          onClose={() => setSelectedDate(null)}
-          onReflectionSaved={handleReflectionSaved}
-          onPerformedAtSaved={handlePerformedAtSaved}
-        />
       )}
     </>
   );
