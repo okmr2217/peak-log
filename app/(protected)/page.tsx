@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import { formatInTimeZone } from "date-fns-tz";
 import { getActiveActivitiesForCurrentUser } from "@/server/queries/activity";
 import { getLogsForCurrentUser } from "@/server/queries/log";
 import { ActivityGrid } from "@/components/activity/activity-grid";
@@ -6,7 +6,7 @@ import { LogList } from "@/components/log/log-list";
 
 export default async function HomePage() {
   const [activities, logs] = await Promise.all([getActiveActivitiesForCurrentUser(), getLogsForCurrentUser(5)]);
-  const dateLabel = dayjs().format("M月D日");
+  const dateLabel = formatInTimeZone(new Date(), "Asia/Tokyo", "M月d日");
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-8">

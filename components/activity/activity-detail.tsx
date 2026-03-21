@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { ChevronLeft, Sparkles } from "lucide-react";
-import dayjs from "dayjs";
+import { differenceInCalendarDays } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
 import { formatPerformedAt } from "@/lib/date-utils";
 
+const TZ = "Asia/Tokyo";
+
 function formatLastPerformedAt(date: Date): string {
-  const d = dayjs(date);
-  const today = dayjs().startOf("day");
-  const diffDays = today.diff(d.startOf("day"), "day");
+  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
+  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
+  const diffDays = differenceInCalendarDays(new Date(todayJST), new Date(dateJST));
 
   if (diffDays === 0) return "今日";
   if (diffDays === 1) return "昨日";
   if (diffDays < 7) return `${diffDays}日前`;
-  return d.format("M/D");
+  return formatInTimeZone(date, TZ, "M/d");
 }
 
 function formatAvgInterval(days: number): string {
@@ -126,7 +129,7 @@ export function ActivityDetailView({ detail }: Props) {
                 <p className="text-white font-semibold text-lg">
                   {formatLastPerformedAt(stats.lastPerformedAt)}
                   <span className="text-zinc-600 text-xs font-normal ml-1.5">
-                    {dayjs(stats.lastPerformedAt).format("M/D HH:mm")}
+                    {formatPerformedAt(stats.lastPerformedAt)}
                   </span>
                 </p>
               </div>

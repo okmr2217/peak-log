@@ -3,9 +3,10 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Pencil, Archive, ArchiveRestore, ArrowUp, ArrowDown, BarChart2 } from "lucide-react";
+import { differenceInCalendarDays } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { archiveActivity, reorderActivities } from "@/server/actions/activity";
 import { ActivityEditModal } from "./activity-edit-modal";
-import dayjs from "dayjs";
 
 interface Activity {
   id: string;
@@ -25,15 +26,17 @@ interface Props {
   allActivityIds: string[];
 }
 
+const TZ = "Asia/Tokyo";
+
 function formatLastPerformedShort(date: Date): string {
-  const d = dayjs(date);
-  const today = dayjs().startOf("day");
-  const diffDays = today.diff(d.startOf("day"), "day");
+  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
+  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
+  const diffDays = differenceInCalendarDays(new Date(todayJST), new Date(dateJST));
 
   if (diffDays === 0) return "今日";
   if (diffDays === 1) return "昨日";
   if (diffDays < 7) return `${diffDays}日前`;
-  return d.format("M/D");
+  return formatInTimeZone(date, TZ, "M/d");
 }
 
 export function ActivityItem({ activity, allActivityIds }: Props) {

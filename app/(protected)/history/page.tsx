@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { BarChart2 } from "lucide-react";
-import dayjs from "dayjs";
+import { addDays, subDays } from "date-fns";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { getLogsRangePageForCurrentUser } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
 import { DayList } from "@/components/history/day-list";
 import { PageHeader } from "@/components/layout/page-header";
 
 const RANGE_DAYS = 30;
+const TZ = "Asia/Tokyo";
 
 export default async function HistoryPage() {
-  const today = dayjs().startOf("day");
-  const to = today.add(1, "day").toDate(); // exclusive: covers today
-  const from = today.subtract(RANGE_DAYS - 1, "day").toDate(); // inclusive: 30 days including today
-  const oldestDate = today.subtract(RANGE_DAYS - 1, "day").format("YYYY-MM-DD");
+  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
+  const todayStart = fromZonedTime(todayJST, TZ);
+  const to = addDays(todayStart, 1); // exclusive: covers today
+  const from = subDays(todayStart, RANGE_DAYS - 1); // inclusive: 30 days including today
+  const oldestDate = formatInTimeZone(from, TZ, "yyyy-MM-dd");
 
   const result = await getLogsRangePageForCurrentUser({ from, to }).catch(() => null);
 

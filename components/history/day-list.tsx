@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import dayjs from "dayjs";
+import { subDays } from "date-fns";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
-import { buildDayRange, formatDayFull } from "@/lib/date-utils";
+import { buildDayRange, formatDayFull, formatTime } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { DayDetailSheet } from "./day-detail-sheet";
 
@@ -51,11 +52,12 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
   function loadMore() {
     startTransition(async () => {
       const { logs, hasMore: nextHasMore } = await fetchMoreDays({ before: oldest });
-      const to = dayjs(oldest).startOf("day");
-      const from = to.subtract(30, "day");
-      const newItems = buildDayRange(logs as LogItem[], from.toDate(), to.toDate());
+      const TZ = "Asia/Tokyo";
+      const to = fromZonedTime(oldest, TZ);
+      const from = subDays(to, 30);
+      const newItems = buildDayRange(logs as LogItem[], from, to);
       setDayItems((prev) => [...prev, ...newItems]);
-      setOldest(from.format("YYYY-MM-DD"));
+      setOldest(formatInTimeZone(from, TZ, "yyyy-MM-dd"));
       setHasMore(nextHasMore);
     });
   }
@@ -92,7 +94,7 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
                     >
                       <span className="text-base leading-none">{log.activity.emoji ?? "·"}</span>
                       <span className="tabular-nums text-zinc-400 text-xs leading-none">
-                        {dayjs(log.performedAt).format("H:mm")}
+                        {formatTime(log.performedAt)}
                       </span>
                     </span>
                   );

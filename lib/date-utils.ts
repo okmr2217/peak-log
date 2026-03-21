@@ -1,20 +1,19 @@
-import dayjs from "dayjs";
+import { subDays } from "date-fns";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 
-export function formatDayShort(dateStr: string): string {
-  return dayjs(dateStr).format("M/D");
-}
-
+const TZ = "Asia/Tokyo";
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
-export function formatDayFull(dateStr: string): string {
-  const d = dayjs(dateStr);
-  return `${d.format("M/D")}（${WEEKDAYS[d.day()]}）`;
+export function formatDayShort(dateStr: string): string {
+  return formatInTimeZone(new Date(dateStr), TZ, "M/d");
 }
 
-/**
- * 指定した日付範囲（from 以上、to 未満）のすべての日を生成し、
- * 各日に対応するログを割り当てる。新しい日付から順に並ぶ。
- */
+export function formatDayFull(dateStr: string): string {
+  const d = new Date(dateStr);
+  const dayOfWeek = new Date(formatInTimeZone(d, TZ, "yyyy-MM-dd")).getDay();
+  return `${formatInTimeZone(d, TZ, "M/d")}（${WEEKDAYS[dayOfWeek]}）`;
+}
+
 export function buildDayRange<T extends { performedAt: Date }>(
   logs: T[],
   fromDate: Date,
@@ -22,65 +21,65 @@ export function buildDayRange<T extends { performedAt: Date }>(
 ): Array<{ date: string; logs: T[] }> {
   const logsByDate = new Map<string, T[]>();
   for (const log of logs) {
-    const date = dayjs(log.performedAt).format("YYYY-MM-DD");
+    const date = formatInTimeZone(log.performedAt, TZ, "yyyy-MM-dd");
     const existing = logsByDate.get(date);
     if (existing) existing.push(log);
     else logsByDate.set(date, [log]);
   }
 
   const days: Array<{ date: string; logs: T[] }> = [];
-  let current = dayjs(toDate).subtract(1, "day").startOf("day");
-  const from = dayjs(fromDate).startOf("day");
+  let current = subDays(toDate, 1);
+  const from = fromDate;
 
-  while (current.isSame(from, "day") || current.isAfter(from, "day")) {
-    const dateStr = current.format("YYYY-MM-DD");
+  while (current >= from) {
+    const dateStr = formatInTimeZone(current, TZ, "yyyy-MM-dd");
     days.push({ date: dateStr, logs: logsByDate.get(dateStr) ?? [] });
-    current = current.subtract(1, "day");
+    current = subDays(current, 1);
   }
 
   return days;
 }
 
 export function formatDateHeader(date: Date): string {
-  const d = dayjs(date);
-  const today = dayjs().startOf("day");
-  const yesterday = today.subtract(1, "day");
+  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
+  const yesterdayJST = formatInTimeZone(subDays(new Date(), 1), TZ, "yyyy-MM-dd");
+  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
 
-  if (d.isSame(today, "day")) return "今日";
-  if (d.isSame(yesterday, "day")) return "昨日";
-  return d.format("YYYY/MM/DD");
+  if (dateJST === todayJST) return "今日";
+  if (dateJST === yesterdayJST) return "昨日";
+  return formatInTimeZone(date, TZ, "yyyy/MM/dd");
 }
 
 export function formatTime(date: Date): string {
-  return dayjs(date).format("HH:mm");
+  return formatInTimeZone(date, TZ, "HH:mm");
 }
 
 export function formatPerformedAt(date: Date): string {
-  return dayjs(date).format("M/D HH:mm");
+  return formatInTimeZone(date, TZ, "M/d HH:mm");
 }
 
 /** `datetime-local` input の value 形式 ("YYYY-MM-DDTHH:mm") に変換する */
 export function toDatetimeLocalString(date: Date): string {
-  return dayjs(date).format("YYYY-MM-DDTHH:mm");
+  return formatInTimeZone(date, TZ, "yyyy-MM-dd'T'HH:mm");
 }
 
 export function groupLogsByDate<T extends { performedAt: Date }>(
   logs: T[],
 ): Array<{ dateLabel: string; logs: T[] }> {
   const groups: Map<string, T[]> = new Map();
-
   for (const log of logs) {
     const label = formatDateHeader(log.performedAt);
     const existing = groups.get(label);
-    if (existing) {
-      existing.push(log);
-    } else {
-      groups.set(label, [log]);
-    }
+    if (existing) existing.push(log);
+    else groups.set(label, [log]);
   }
-
   return Array.from(groups.entries()).map(([dateLabel, groupLogs]) => ({
     dateLabel,
     logs: groupLogs,
   }));
+}
+
+/** JST の日付文字列 ("YYYY-MM-DD") を UTC の Date に変換する */
+export function jstDateToUtc(dateStr: string): Date {
+  return fromZonedTime(dateStr, TZ);
 }

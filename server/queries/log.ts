@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import type { Prisma } from "@prisma/client";
+import { fromZonedTime } from "date-fns-tz";
+
+const TZ = "Asia/Tokyo";
 
 export type MonthlySummary = {
   month: string;
@@ -38,8 +41,10 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
   const [yearStr, monthStr] = month.split("-");
   const year = parseInt(yearStr, 10);
   const monthNum = parseInt(monthStr, 10);
-  const start = new Date(year, monthNum - 1, 1);
-  const end = new Date(year, monthNum, 1);
+  const endYear = monthNum === 12 ? year + 1 : year;
+  const endMonth = monthNum === 12 ? 1 : monthNum + 1;
+  const start = fromZonedTime(`${yearStr}-${monthStr}-01`, TZ);
+  const end = fromZonedTime(`${endYear}-${String(endMonth).padStart(2, "0")}-01`, TZ);
 
   const logs = await prisma.log.findMany({
     where: { userId, performedAt: { gte: start, lt: end } },
@@ -155,8 +160,8 @@ export async function getLogsPageForCurrentUser({
 
   if (from || to) {
     where.performedAt = {
-      ...(from ? { gte: new Date(from) } : {}),
-      ...(to ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) } : {}),
+      ...(from ? { gte: fromZonedTime(from, TZ) } : {}),
+      ...(to ? { lte: fromZonedTime(`${to}T23:59:59.999`, TZ) } : {}),
     };
   }
 

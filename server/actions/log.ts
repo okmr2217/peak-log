@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import dayjs from "dayjs";
+import { subDays } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { type ActionResult, ok, fail } from "@/lib/action-result";
@@ -80,8 +81,9 @@ export async function fetchMoreLogs({
 }
 
 export async function fetchMoreDays({ before }: { before: string }): Promise<{ logs: LogItem[]; hasMore: boolean }> {
-  const to = dayjs(before).startOf("day").toDate();
-  const from = dayjs(before).subtract(30, "day").startOf("day").toDate();
+  const TZ = "Asia/Tokyo";
+  const to = fromZonedTime(before, TZ);
+  const from = subDays(to, 30);
   return getLogsRangePageForCurrentUser({ from, to });
 }
 
