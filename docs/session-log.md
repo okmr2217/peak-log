@@ -23,6 +23,42 @@
 
 ---
 
+## 2026-03-22 タスク2: ActivityItem のコンパクト化
+
+### やったこと
+- `activity-item.tsx` のカードパディングを `px-4 py-4` → `px-3.5 py-3` に縮小
+- 絵文字ボックスを `w-11 h-11 rounded-xl text-xl` → `w-9 h-9 rounded-lg text-lg` に縮小
+- アクションボタン行（`border-t` + 統計/編集/アーカイブ）を削除
+- 並び替えボタン隣に 3 点メニューボタン（`MoreVertical`）を追加
+- `useRef` + `useEffect` で外側クリック時にメニューを閉じる実装
+- ドロップダウン内に「統計を見る（Link）」「編集」「アーカイブ/解除」を配置
+
+### 技術メモ
+- `menuRef` は 3 点メニューの wrapper `<div>` に当てて、並び替えボタンはその外に置く（並び替えクリックでメニューが閉じないようにするため）
+
+---
+
+## 2026-03-22 タスク1: ログカードの情報密度改善・小型化
+
+### やったこと
+- ヘッダー行のパディングを `px-4 pt-4 pb-3.5` → `px-3.5 pt-3 pb-2.5` に縮小
+- 絵文字ボックスを `w-9 h-9 rounded-xl text-lg` → `w-7 h-7 rounded-lg text-sm` に縮小
+- Activity 名を `text-[15px] font-semibold` → `text-sm font-medium` に変更
+- reflection が null のとき Reflection エリア全体（`border-t` 含む）を非表示に変更
+- `log-card.tsx` に `"use client"` を追加し、`reflectionOpen` + `reflection` state を管理
+- `LogCardMenu` に `hasReflection: boolean` と `onAddReflection: () => void` を追加
+- `LogCardMenu` に「余韻を追加/余韻を編集」メニュー項目（`Sparkles` アイコン）を追加（順序: 余韻→時間→削除）
+- `AddReflectionButton` の使用を廃止し `ReflectionModal` を `LogCard` で直接レンダリング
+- `add-reflection-button.tsx` を削除（他に使用箇所なし）
+
+### 技術メモ
+- `log-card.tsx` は元々 `"use client"` なしだったが、state 管理のために追加。Next.js App Router ではサーバーコンポーネントからクライアントコンポーネントへの変換は親に影響しない
+
+### 失敗したアプローチ
+- なし
+
+---
+
 ## 2026-03-22 タスク: 日付選択UIを作成と編集で統一
 
 ### やったこと

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import Link from "next/link";
-import { Pencil, Archive, ArchiveRestore, ArrowUp, ArrowDown, BarChart2 } from "lucide-react";
+import { Pencil, Archive, ArchiveRestore, ArrowUp, ArrowDown, BarChart2, MoreVertical } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { archiveActivity, reorderActivities } from "@/server/actions/activity";
@@ -41,10 +41,23 @@ function formatLastPerformedShort(date: Date): string {
 
 export function ActivityItem({ activity, allActivityIds }: Props) {
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isArchivePending, startArchiveTransition] = useTransition();
   const [isReorderPending, startReorderTransition] = useTransition();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const currentIndex = allActivityIds.indexOf(activity.id);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMenuOpen]);
 
   function handleArchive() {
     startArchiveTransition(async () => {
@@ -84,90 +97,104 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
   return (
     <>
       <div
-        className={`flex flex-col px-4 py-4 rounded-2xl border transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
+        className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl border transition-opacity ${activity.isArchived ? "opacity-50" : ""}`}
         style={cardStyle}
       >
-        {/* 情報エリア */}
-        <div className="flex items-center gap-3">
-          <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ backgroundColor: color ? `${color}28` : "#7C4DFF22" }}
-          >
-            {activity.emoji ?? "⚡"}
-          </div>
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+          style={{ backgroundColor: color ? `${color}28` : "#7C4DFF22" }}
+        >
+          {activity.emoji ?? "⚡"}
+        </div>
 
-          <div className="flex-1 min-w-0">
-            <span className="text-white text-sm font-semibold block truncate">{activity.name}</span>
-            <div className="flex items-center gap-2 mt-1">
-              {activity.isArchived && <span className="text-[11px] text-zinc-600">アーカイブ済み</span>}
-              {activity.stats.totalCount > 0 ? (
-                <>
-                  <span className="text-[11px] text-zinc-500 tabular-nums">{activity.stats.totalCount}回</span>
-                  {activity.stats.lastPerformedAt && (
-                    <>
-                      <span className="text-zinc-700 text-[11px]">·</span>
-                      <span className="text-[11px] text-zinc-600">
-                        {formatLastPerformedShort(activity.stats.lastPerformedAt)}
-                      </span>
-                    </>
-                  )}
-                </>
-              ) : (
-                <span className="text-[11px] text-zinc-700">まだ記録なし</span>
-              )}
-            </div>
-          </div>
-
-          {/* 並び替えボタン */}
-          <div className="flex items-center gap-0.5 flex-shrink-0">
-            <button
-              onClick={handleMoveUp}
-              disabled={isReorderPending || currentIndex === 0}
-              className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
-              aria-label="上に移動"
-            >
-              <ArrowUp size={13} />
-            </button>
-            <button
-              onClick={handleMoveDown}
-              disabled={isReorderPending || currentIndex === allActivityIds.length - 1}
-              className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
-              aria-label="下に移動"
-            >
-              <ArrowDown size={13} />
-            </button>
+        <div className="flex-1 min-w-0">
+          <span className="text-white text-sm font-semibold block truncate">{activity.name}</span>
+          <div className="flex items-center gap-2 mt-1">
+            {activity.isArchived && <span className="text-[11px] text-zinc-600">アーカイブ済み</span>}
+            {activity.stats.totalCount > 0 ? (
+              <>
+                <span className="text-[11px] text-zinc-500 tabular-nums">{activity.stats.totalCount}回</span>
+                {activity.stats.lastPerformedAt && (
+                  <>
+                    <span className="text-zinc-700 text-[11px]">·</span>
+                    <span className="text-[11px] text-zinc-600">
+                      {formatLastPerformedShort(activity.stats.lastPerformedAt)}
+                    </span>
+                  </>
+                )}
+              </>
+            ) : (
+              <span className="text-[11px] text-zinc-700">まだ記録なし</span>
+            )}
           </div>
         </div>
 
-        {/* アクションボタン行 */}
-        <div
-          className="flex items-center gap-1 mt-3 pt-3 border-t"
-          style={{
-            borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
-          }}
-        >
-          <Link
-            href={`/activities/${activity.id}`}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-          >
-            <BarChart2 size={12} />
-            <span>統計</span>
-          </Link>
+        {/* 並び替え + 3点メニュー */}
+        <div className="flex items-center gap-0.5 flex-shrink-0">
           <button
-            onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+            onClick={handleMoveUp}
+            disabled={isReorderPending || currentIndex === 0}
+            className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+            aria-label="上に移動"
           >
-            <Pencil size={12} />
-            <span>編集</span>
+            <ArrowUp size={13} />
           </button>
           <button
-            onClick={handleArchive}
-            disabled={isArchivePending}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 disabled:opacity-50 transition-colors ml-auto"
+            onClick={handleMoveDown}
+            disabled={isReorderPending || currentIndex === allActivityIds.length - 1}
+            className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+            aria-label="下に移動"
           >
-            {activity.isArchived ? <ArchiveRestore size={12} /> : <Archive size={12} />}
-            <span>{activity.isArchived ? "解除" : "アーカイブ"}</span>
+            <ArrowDown size={13} />
           </button>
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setIsMenuOpen((v) => !v)}
+              className="p-1.5 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"
+              aria-label="操作メニュー"
+            >
+              <MoreVertical size={14} />
+            </button>
+
+            {isMenuOpen && (
+              <div className="absolute right-0 top-full mt-1 bg-[#1F1F1F] border border-white/10 rounded-xl shadow-xl z-50 min-w-[148px] overflow-hidden">
+                <Link
+                  href={`/activities/${activity.id}`}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
+                >
+                  <BarChart2 size={12} className="text-zinc-500 shrink-0" />
+                  統計を見る
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setShowEditModal(true);
+                  }}
+                  className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+                >
+                  <Pencil size={12} className="text-zinc-500 shrink-0" />
+                  編集
+                </button>
+                <div className="border-t border-white/[0.06] mx-2" />
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleArchive();
+                  }}
+                  disabled={isArchivePending}
+                  className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 disabled:opacity-50 transition-colors text-left"
+                >
+                  {activity.isArchived ? (
+                    <ArchiveRestore size={12} className="text-zinc-500 shrink-0" />
+                  ) : (
+                    <Archive size={12} className="text-zinc-500 shrink-0" />
+                  )}
+                  {activity.isArchived ? "アーカイブを解除" : "アーカイブ"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
