@@ -2,6 +2,21 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-22（セッション2）
+
+### やったこと
+- History にタイムライン表示モードを追加（タスク C）
+  - `HistoryTabs`（client）: 日次 / タイムラインのタブ切り替え。URL `?mode=timeline` で状態永続化
+  - `TimelineItem`（client）: 縦線＋時刻＋絵文字ボックス＋Activity名のコンパクト行。余韻ありは Sparkles アイコン表示
+  - `TimelineList`（client）: 日付グループ（ログあり日のみ）＋時系列表示。`DayList` と同じ `fetchMoreDays` で「さらに前を見る」対応
+  - `DayList` の日付行に `AlignLeft` アイコンリンク（`/history?mode=timeline#YYYY-MM-DD`）を追加
+  - `section id="YYYY-MM-DD" className="scroll-mt-20"` でアンカー遷移のずれを防止
+  - `history/page.tsx` に `searchParams` でモード判定を追加し、`TimelineList` / `DayList` を切り替え
+
+### 技術メモ
+- タイムライン内のログ順序は `getLogsRangePageForCurrentUser` が `asc` 返却のため、`[...day.logs].reverse()` で新しい順に反転した
+- `HistoryTabs` は `"use client"` で `useSearchParams` + `router.push` でモード切り替え。Server Component 側でモードを読み取る設計と相性が良い
+
 ## 2026-03-22
 
 ### やったこと

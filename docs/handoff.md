@@ -16,7 +16,7 @@
 | `/` | Home | Activity グリッド・クイックログ・最近の5件 |
 | `/activities` | Activity 管理 | 一覧・作成・編集・並び替え・アーカイブ |
 | `/activities/[id]` | Activity 詳細 | 統計・最近のログ一覧 |
-| `/history` | History（日次） | 日別ログ表示・余韻追加・削除 |
+| `/history` | History（日次 / タイムライン） | 日別ログ表示・余韻追加・削除・タイムライン表示モード |
 | `/history/stats` | 月次統計 | 月別集計・上位 Activity・ピークログ |
 | `/settings` | 設定 | メール表示・パスワード変更・ログアウト・バージョン表示 |
 
@@ -32,6 +32,7 @@
 - `/history` の月次統計リンクを紫ベースのボタンスタイルに変更（`bg-[#7C4DFF]/10 border border-[#7C4DFF]/30`）
 - `/history/stats` のページヘッダーを PageHeader コンポーネントに統一
 - 月次統計ページのテキストサイズ全体的に底上げ（StatCard・PeakLogItem・MonthNav・セクション見出し）
+- History タイムライン表示モード（`?mode=timeline` で切り替え・日付グループ＋時系列・アンカー遷移対応）
 - History 日次表示（日付・曜日・土日祝色分け）
 - History 日別詳細（モバイル: Sheet / PC: Modal）
 - 月次統計（月ナビ・集計・ピークログ）
@@ -65,7 +66,7 @@
 | ~~**Home の最近ピーク ページネーション**~~ | ~~現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応~~ | 完了: cursor pagination・「もっと見る」ボタン実装済み |
 | **ページネーション / 無限スクロール** | History の最大 50 件制限を解消する cursor pagination | `history-list.tsx` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
 | **Log に位置情報を追加** | Log 記録時に緯度・経度（+ 任意の地名）を保存する | Prisma スキーマに `latitude / longitude / locationName` を追加。ブラウザの Geolocation API で取得し、任意添付（拒否しても記録可能）にする |
-| **History タイムライン表示モード** | 日次 History とは別に、全 Log を時系列で流れるタイムライン表示を追加。日次 History の日付行クリックで該当日へアンカー遷移する | `/history` に表示モード切替（日次 / タイムライン）を追加。タイムライン側は Log を時系列に並べ、日付グループにアンカーを設定。日次側の日付行リンクは `?mode=timeline#YYYY-MM-DD` 形式でアンカーへ遷移 |
+| ~~**History タイムライン表示モード**~~ | ~~日次 History とは別に、全 Log を時系列で流れるタイムライン表示を追加。日次 History の日付行クリックで該当日へアンカー遷移する~~ | 完了: `HistoryTabs` / `TimelineList` / `TimelineItem` を実装。日次日付行にアンカーリンクアイコンを追加 |
 
 ### 中優先度
 
