@@ -23,6 +23,32 @@
 
 ---
 
+## 2026-03-22 タスク2: 月次統計ページのデザイン改善
+
+### やったこと
+- `/history/stats/page.tsx` のヘッダーを `PageHeader` コンポーネントに置き換え（タイトル「月次統計」・description・戻るリンクを action に配置）
+- `MonthlySummarySection` の「今月の概要」見出しを `text-xs text-zinc-600` → `text-sm text-zinc-400` に変更
+- 「よく記録したこと」「今月のピーク」のカード内見出しを `text-xs text-zinc-500` → `text-sm text-zinc-400` に変更
+- `StatCard` の数字を `text-2xl` → `text-3xl`、ラベルを `text-xs text-zinc-500` → `text-sm text-zinc-400` に変更
+- `PeakLogItem` の Activity 名を `text-sm` → `text-base`、日時を `text-xs text-zinc-600` → `text-sm text-zinc-500`、余韻メモを `text-xs` → `text-sm`、ドットを `w-1.5 h-1.5` → `w-2 h-2` に変更
+- `MonthNav` の月ラベルを `text-sm` → `text-base`、ChevronLeft/Right を `size={14}` → `size={16}` に変更
+
+### 技術メモ
+- `PageHeader` の `action` は右側配置のため、戻るリンクは action に「← 記録」テキスト付きで配置する形を採用
+
+---
+
+## 2026-03-22 タスク1: 月次統計への遷移リンクを目立たせる
+
+### やったこと
+- `/history/page.tsx` の月次統計リンクのクラスを `text-zinc-400 hover:text-white hover:bg-zinc-800` から `bg-[#7C4DFF]/10 border border-[#7C4DFF]/30 text-[#7C4DFF] hover:bg-[#7C4DFF]/20 hover:text-[#9E70FF]` に変更
+- `PageHeader` コンポーネント自体は変更せず、`action` に渡す JSX のクラスのみ修正
+
+### 技術メモ
+- プロダクトの Primary カラー `#7C4DFF` を 10% 透過の背景・30% 透過のボーダーで使用することで、ダーク背景でも埋没しない薄いボタン風スタイルを実現
+
+---
+
 ## 2026-03-22 タスク4: セッション期限90日・オートフィル対応
 
 ### やったこと
