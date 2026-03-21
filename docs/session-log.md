@@ -23,6 +23,25 @@
 
 ---
 
+## 2026-03-22 タスク: 日付選択UIを作成と編集で統一
+
+### やったこと
+- `lib/date-picker-utils.ts` を作成し、`DateMode` 型・`floorToNearest30`・`TIME_OPTIONS`・`DAY_PICKER_CLASS_NAMES` を共通化
+- `create-log-modal.tsx` をリファクタリングしてローカル定義を `date-picker-utils` から import に切り替え
+- `edit-performed-at-modal.tsx` の `<input type="datetime-local">` を削除し、「今日 / 昨日 / 他の日」ピル + DayPicker + 時刻セレクトに置き換え
+- `performedAt` からの初期値復元ロジックを実装（日付→dateMode 判定、時刻→30分刻みで切り捨て）
+- 未来日時のバリデーション（「未来の日時は記録できません」）を追加
+
+### 技術メモ
+- `DateMode` 判定は `startOfDay()` で日付を正規化して比較（時刻差を無視するため）
+- `DAY_PICKER_CLASS_NAMES` は JSX を含まないので `.ts` ファイルに切り出せた。Chevron コンポーネントは各モーダルにインライン記述のまま
+- `otherDate` の初期値は `startOfDay(performedAt)` にして時刻成分を除去
+
+### 失敗したアプローチ
+- なし
+
+---
+
 ## 2026-03-22 タスク2: 月次統計ページのデザイン改善
 
 ### やったこと
