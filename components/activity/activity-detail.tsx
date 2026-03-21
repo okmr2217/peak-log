@@ -89,7 +89,7 @@ export function ActivityDetailView({ detail }: Props) {
   const accentColor = detail.color;
 
   return (
-    <div className="px-4 py-6 max-w-lg mx-auto">
+    <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
       {/* 戻るボタン */}
       <Link
         href="/activities"
@@ -110,9 +110,9 @@ export function ActivityDetailView({ detail }: Props) {
         <div>
           <h1 className="text-xl font-bold text-white">{detail.name}</h1>
           {detail.isArchived ? (
-            <span className="text-xs text-zinc-600">アーカイブ済み</span>
+            <span className="text-xs text-zinc-600 mt-1.5 block">アーカイブ済み</span>
           ) : (
-            <span className="text-xs text-zinc-600">この Activity の記録と統計を確認できます</span>
+            <span className="text-xs text-zinc-600 mt-1.5 block">この Activity の記録と統計を確認できます</span>
           )}
         </div>
       </div>

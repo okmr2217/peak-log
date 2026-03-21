@@ -11,7 +11,7 @@ export function PageHeader({ title, description, action }: PageHeaderProps) {
         <h1 className="text-base font-medium text-zinc-300">{title}</h1>
         {action && <div>{action}</div>}
       </div>
-      {description && <p className="text-xs text-zinc-600 mt-0.5">{description}</p>}
+      {description && <p className="text-xs text-zinc-600 mt-1.5">{description}</p>}
     </div>
   );
 }
