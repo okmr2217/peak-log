@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-22（タスク1・2完了後）
+> 最終更新: 2026-03-22（日付選択UI統一完了後）
 > バージョン: 1.0.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -24,7 +24,7 @@
 
 - Activity 管理（作成・編集・並び替え・アーカイブ）
 - Quick Log（Home からワンタップ記録）
-- `performedAt` 入力フロー（当日・前日・カレンダー・時刻 Popover）
+- `performedAt` 入力フロー（当日・前日・カレンダー・時刻セレクト）—— 作成・編集モーダルで UI を統一済み
 - ログ作成時にメモ（余韻 note）を任意入力可能（note のみの Reflection 作成にも対応）
 - Reflection（余韻）追加・編集（1 ログにつき 0 or 1）
 - ログカードのメモ改行反映（`whitespace-pre-wrap`）
@@ -57,7 +57,7 @@
 
 | 機能 | 概要 | 実装メモ |
 |------|------|---------|
-| **performedAt 編集 UI** | 既存ログの日時を後から編集するモーダル | `updateLogPerformedAt` アクションは実装済み。カレンダー + 時刻 Popover を流用すれば日時入力 UI を揃えられる |
+| ~~**performedAt 編集 UI**~~ | ~~既存ログの日時を後から編集するモーダル~~ | 完了: 作成モーダルと同じ UI に統一済み |
 | **ページネーション / 無限スクロール** | History の最大 50 件制限を解消する cursor pagination | `history-list.tsx` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
 | **Log に位置情報を追加** | Log 記録時に緯度・経度（+ 任意の地名）を保存する | Prisma スキーマに `latitude / longitude / locationName` を追加。ブラウザの Geolocation API で取得し、任意添付（拒否しても記録可能）にする |
 | **Home の最近ピーク ページネーション** | 現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応 | クエリの `take` 上限を引き上げ、cursor pagination を追加。表示は「もっと見る」ボタン or IntersectionObserver |
@@ -89,7 +89,6 @@
 
 ## 次のセッションで相談したいこと
 
-1. **performedAt 編集 UI**：モーダルの入力 UI をどの実装パターンにするか（既存の Popover を再利用 vs 専用コンポーネント）
-2. **ページネーション**：cursor pagination か offset か、UX（ボタン式 vs 無限スクロール）の方針
-3. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
-4. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
+1. **ページネーション**：cursor pagination か offset か、UX（ボタン式 vs 無限スクロール）の方針
+2. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
+3. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
