@@ -137,7 +137,7 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
                 )}
               </div>
             )}
-            {reflection.note && <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>}
+            {reflection.note && <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>}
             <AddReflectionButton
               logId={log.id}
               initialValues={reflection}

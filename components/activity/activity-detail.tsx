@@ -72,7 +72,7 @@ function RecentLogItem({ log }: { log: RecentLog }) {
             </div>
           )}
           {reflection.note && (
-            <p className="text-zinc-500 text-xs leading-relaxed line-clamp-2">{reflection.note}</p>
+            <p className="text-zinc-500 text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>
           )}
         </div>
       )}
@@ -109,7 +109,11 @@ export function ActivityDetailView({ detail }: Props) {
         </div>
         <div>
           <h1 className="text-xl font-bold text-white">{detail.name}</h1>
-          {detail.isArchived && <span className="text-xs text-zinc-600">アーカイブ済み</span>}
+          {detail.isArchived ? (
+            <span className="text-xs text-zinc-600">アーカイブ済み</span>
+          ) : (
+            <span className="text-xs text-zinc-600">この Activity の記録と統計を確認できます</span>
+          )}
         </div>
       </div>
 
