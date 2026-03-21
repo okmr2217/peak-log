@@ -42,6 +42,13 @@
 - `formatDayFull` の曜日取得: `formatInTimeZone(d, TZ, "yyyy-MM-dd")` → `new Date("YYYY-MM-DD").getDay()` でUTC midnight の曜日を取得（JST 日付文字列の曜日として正しい）
 - MCP レスポンスの `toJSTISOString`: UTC ms に +9h して `.toISOString().slice(0, 19) + "+09:00"` で生成
 
+### 失敗したアプローチ
+- **DBマイグレーション（+9h）は不要だった**: 「JST のつもりの値が UTC カラムに保存されている」と誤判断して全レコードに +9h を加算。実際は `performedAt` はクライアント（JST ブラウザ）で生成した Date オブジェクトを送信しているため DB にはすでに正しい UTC が保存されていた。+9h により全データが 9 時間ずれて表示される不具合が発生した。直後に -9h の逆マイグレーションで開発・本番両 DB を復元した
+
+### 追加作業（不具合対応）
+- `scripts/migrate-performed-at.ts` を -9h の逆マイグレーションに書き換え
+- 開発 DB（46件）・本番 DB（37件）のロールバック実行
+- `docs/decisions.md` ADR-006 に失敗の記録を追記
+
 ### 次にやりたいこと
-- DBマイグレーション実行: `npx tsx scripts/migrate-performed-at.ts`（実行前に Supabase バックアップ必須）
 - 動作確認: ログ一覧の表示時刻がズレていないこと・新規ログ作成時の時刻が正しいこと

@@ -56,7 +56,8 @@
 - **ステータス**: 採用
 - **決定**: `performedAt` は DB（PostgreSQL `timestamptz`）に UTC で保存し、表示・グループ化・範囲クエリはすべて `date-fns-tz` の `Asia/Tokyo` を明示して処理する
 - **理由**: Vercel サーバーは UTC 環境。`new Date()` や `dayjs()` のローカル時刻依存コードはサーバー実行時に JST と 9 時間ずれる。環境依存を排除するため TZ を明示する方針に統一した
-- **背景**: 1.0.0 時点まで `dayjs` をタイムゾーン指定なしで使っていたため、既存 DB レコードの `performedAt` が「JST のつもりの値を UTC カラムに保存」した状態になっていた。`scripts/migrate-performed-at.ts` で全レコードに +9h を加算して正規化した
+- **背景**: 1.0.0 時点まで `dayjs` をタイムゾーン指定なしで使っていた。サーバーサイドの日付範囲計算（`fetchMoreDays`・月次集計）が UTC サーバーで JST を考慮できていなかったため `date-fns-tz` に移行して修正した
+- **DB マイグレーションについて（失敗の記録）**: 「JST のつもりの値が UTC カラムに保存されている」と誤判断し、全レコードに +9h を加算するマイグレーションを実施したが誤りだった。`performedAt` はクライアント（JST ブラウザ）で生成した Date オブジェクトを送信しているため、ブラウザが UTC 変換済みで DB には正しい UTC が保存されていた。+9h により全データが 9 時間ずれて表示される不具合が発生したため、直後に -9h の逆マイグレーションで復元した。**DBマイグレーションは不要だった**
 - **実装ルール**:
   - 表示・フォーマット: `formatInTimeZone(date, "Asia/Tokyo", pattern)`
   - JST 日付文字列 → UTC Date: `fromZonedTime("YYYY-MM-DD", "Asia/Tokyo")`
