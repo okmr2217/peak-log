@@ -28,13 +28,38 @@ npx prettier --write .   # フォーマット（printWidth: 120）
 
 ## コーディングルール
 
+### 基本方針
 - TypeScript strict mode。`any` 禁止
 - サーバーコンポーネント優先。Client Component は必要最小限に
 - DB アクセスはサーバーのみ（Client から Prisma を呼ばない）
 - すべてのクエリに `userId` フィルタを必ず含める
-- Server Actions は Zod でバリデーション、Better Auth でセッション確認
-- named export を使用（default export は page.tsx のみ）
+- named export を使用（default export は page.tsx / layout.tsx のみ）
 - Tailwind CSS のみ使用。カスタム CSS ファイルは作らない
+- Prettier printWidth = 140
+
+### 設計姿勢
+- 不要な抽象化をしない。「今ある具体的なコード」で十分なら、汎用化・共通化・ラッパー作成をしない
+- 将来の拡張を見越した設計より、現時点の要件をシンプルに満たすコードを優先する
+- ユーティリティ関数やカスタムフックの抽出は、実際に 2 箇所以上で重複してから検討する
+
+### 型定義・定数
+- Zod スキーマから型を推論する（型の重複定義禁止）
+- マジックナンバー・エラーメッセージは `src/lib/constants.ts` に定数化
+
+### ファイル構成
+- 単一ファイルは 500 行以内を目安に分割
+- `"use server"` ファイル内の非 async 関数は `src/lib/` に分離
+- Server Actions はクエリ（取得系）とミューテーション（更新系）でファイルを分ける
+
+### エラーハンドリング
+- Server Actions は `ActionResult<T>` 型で統一（success / failure）
+
+## やらないこと
+- 不要な抽象化・ライブラリ追加
+- コードコメント・docstring の追加（変更していないコードへ）
+- エラーハンドリングの過剰追加（起こりえないケースへの対処）
+- リファクタリング・整理（明示的に依頼されていない場合）
+- 機能フラグ・後方互換シムの追加
 
 ## プロダクト前提
 
