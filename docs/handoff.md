@@ -25,11 +25,16 @@
 - Activity 管理（作成・編集・並び替え・アーカイブ）
 - Quick Log（Home からワンタップ記録）
 - `performedAt` 入力フロー（当日・前日・カレンダー・時刻 Popover）
+- ログ作成時にメモ（余韻 note）を任意入力可能（note のみの Reflection 作成にも対応）
 - Reflection（余韻）追加・編集（1 ログにつき 0 or 1）
+- ログカードのメモ改行反映（`whitespace-pre-wrap`）
+- 各ページの説明文表示（PageHeader の description prop 対応）
 - History 日次表示（日付・曜日・土日祝色分け）
 - History 日別詳細（モバイル: Sheet / PC: Modal）
 - 月次統計（月ナビ・集計・ピークログ）
 - Activity 詳細統計（累計回数・最終実施日）
+- セッション期限 90 日設定（Better Auth `session.expiresIn`）
+- ログインページのオートフィル対応（`autocomplete` 属性）
 - PWA manifest 設定（service worker は未実装）
 - バージョン管理・CHANGELOG（`package.json` → Settings ページに表示）
 
@@ -84,3 +89,4 @@
 1. **performedAt 編集 UI**：モーダルの入力 UI をどの実装パターンにするか（既存の Popover を再利用 vs 専用コンポーネント）
 2. **ページネーション**：cursor pagination か offset か、UX（ボタン式 vs 無限スクロール）の方針
 3. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
+4. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
