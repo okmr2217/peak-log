@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import Link from "next/link";
+import { AlignLeft } from "lucide-react";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
 import { buildDayRange, formatDayFull, formatTime } from "@/lib/date-utils";
@@ -74,8 +76,18 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             onClick={() => setSelectedDate(day.date)}
             className="w-full flex items-center gap-4 py-2.5 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
-              {formatDayFull(day.date)}
+            <span className="flex items-center gap-1 shrink-0">
+              <span className={`text-sm font-medium tabular-nums ${getDateTextClassName(getDayType(day.date))}`}>
+                {formatDayFull(day.date)}
+              </span>
+              <Link
+                href={`/history?mode=timeline#${day.date}`}
+                onClick={(e) => e.stopPropagation()}
+                className="text-zinc-700 hover:text-zinc-500 transition-colors"
+                aria-label="タイムラインで表示"
+              >
+                <AlignLeft size={12} />
+              </Link>
             </span>
             <span className="flex-1 min-w-0 flex flex-wrap gap-1.5">
               {day.logs.length === 0 ? (

@@ -5,12 +5,17 @@ import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { getLogsRangePageForCurrentUser } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
 import { DayList } from "@/components/history/day-list";
+import { TimelineList } from "@/components/history/timeline-list";
+import { HistoryTabs } from "@/components/history/history-tabs";
 import { PageHeader } from "@/components/layout/page-header";
 
 const RANGE_DAYS = 30;
 const TZ = "Asia/Tokyo";
 
-export default async function HistoryPage() {
+export default async function HistoryPage({ searchParams }: { searchParams: Promise<{ mode?: string }> }) {
+  const { mode: modeParam } = await searchParams;
+  const mode = modeParam === "timeline" ? "timeline" : "day";
+
   const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
   const todayStart = fromZonedTime(todayJST, TZ);
   const to = addDays(todayStart, 1); // exclusive: covers today
@@ -49,6 +54,8 @@ export default async function HistoryPage() {
         }
       />
 
+      <HistoryTabs mode={mode} />
+
       {!hasAnyLogs ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-zinc-400 text-sm mb-1">まだピークはありません</p>
@@ -57,6 +64,8 @@ export default async function HistoryPage() {
             ピークを記録 →
           </Link>
         </div>
+      ) : mode === "timeline" ? (
+        <TimelineList initialItems={dayItems} oldestDate={oldestDate} hasMore={hasMore} />
       ) : (
         <DayList initialItems={dayItems} oldestDate={oldestDate} hasMore={hasMore} />
       )}
