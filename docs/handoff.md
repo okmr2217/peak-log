@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-22（日付選択UI統一完了後）
+> 最終更新: 2026-03-22（LogCard・ActivityItem コンパクト化完了後）
 > バージョン: 1.0.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -40,6 +40,8 @@
 - ログインページのオートフィル対応（`autocomplete` 属性）
 - PWA manifest 設定（service worker は未実装）
 - バージョン管理・CHANGELOG（`package.json` → Settings ページに表示）
+- LogCard のコンパクト化（絵文字ボックス縮小・余韻なし時の Reflection エリア非表示・余韻追加/編集をドロップダウンメニューに統合）
+- ActivityItem のコンパクト化（絵文字ボックス縮小・アクションボタン行を廃止し 3 点メニューに統合）
 
 変更履歴の詳細は @CHANGELOG.md を参照。
 
