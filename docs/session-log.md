@@ -23,6 +23,57 @@
 
 ---
 
+## 2026-03-22 タスク4: セッション期限90日・オートフィル対応
+
+### やったこと
+- `lib/auth.ts` に `session.expiresIn: 60 * 60 * 24 * 90` を追加（90日）
+- ログインページの email 入力に `autoComplete="email"`、password 入力に `autoComplete="current-password"` を付与
+
+### 技術メモ
+- Better Auth の session 設定は `betterAuth()` の第1引数オブジェクトに `session.expiresIn`（秒数）を渡す
+- 既存セッションには遡及しない（新規ログイン以降に適用）
+
+---
+
+## 2026-03-22 タスク3: 各ページに説明文を追加
+
+### やったこと
+- `PageHeader` コンポーネントに `description` prop（optional）を追加
+- `/history`・`/settings`・`/activities` の PageHeader に description を渡すように変更
+- Home (`/`) のヘッダー部分に説明文を直接追加
+- `/history/stats` のカスタムヘッダーに説明文を追加
+- `ActivityDetailView` のヘッダーに説明文を追加（アーカイブ済みの場合は既存の「アーカイブ済み」表示を優先）
+
+### 技術メモ
+- PageHeader の description は h1 の下に `text-xs text-zinc-600` で表示
+- stats ページはカスタムヘッダー構造だったため、div 構造を調整して description を追加
+
+---
+
+## 2026-03-22 タスク2: ログカードのメモ改行反映
+
+### やったこと
+- `log-card.tsx` の note 表示 `<p>` に `whitespace-pre-wrap` クラスを追加
+- `activity-detail.tsx` の note 表示にも同様に追加
+
+### 技術メモ
+- `whitespace-pre-wrap` と `line-clamp-2` は併用可能。pre-wrap で改行を反映しつつ、2行でクリップする
+
+---
+
+## 2026-03-22 タスク1: ログ作成時にメモ入力を追加
+
+### やったこと
+- `create-log-modal.tsx` の note textarea を「余韻も一緒に残す」セクション内から取り出し、時刻選択の直下に常時表示する「メモ（任意）」欄として配置
+- submit ロジックを変更: note が入力されていればログ作成と同時に Reflection を作成（rating データなしでも）
+- 「余韻も一緒に残す」セクションは excitement / achievement / wantAgain のみに変更
+
+### 技術メモ
+- submit 時: `noteTrimmed !== ""` OR `showReflection && ratingData` があれば upsertReflection を呼ぶ
+- `upsertReflection` に excitement/achievement/wantAgain は `showReflection` が true のときのみ渡す（note だけで Reflection 作成する場合は rating は undefined）
+
+---
+
 ## 2026-03-22
 
 ### やったこと
