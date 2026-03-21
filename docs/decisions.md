@@ -48,3 +48,19 @@
 - **決定**: バージョン番号は `package.json` の `version` を唯一の正本とする。UI 表示は `package.json` を参照する
 - **理由**: 複数ファイルで管理すると同期ズレが起きる。`package.json` はエコシステム標準であり、npm/GitHub Actions 等のツールと自然に連携できる
 - **却下した選択肢**: `src/lib/constants.ts` にハードコード → 更新箇所が増え忘れが発生しやすい
+
+---
+
+## ADR-006: タイムゾーンは常に Asia/Tokyo を明示する
+
+- **ステータス**: 採用
+- **決定**: `performedAt` は DB（PostgreSQL `timestamptz`）に UTC で保存し、表示・グループ化・範囲クエリはすべて `date-fns-tz` の `Asia/Tokyo` を明示して処理する
+- **理由**: Vercel サーバーは UTC 環境。`new Date()` や `dayjs()` のローカル時刻依存コードはサーバー実行時に JST と 9 時間ずれる。環境依存を排除するため TZ を明示する方針に統一した
+- **背景**: 1.0.0 時点まで `dayjs` をタイムゾーン指定なしで使っていたため、既存 DB レコードの `performedAt` が「JST のつもりの値を UTC カラムに保存」した状態になっていた。`scripts/migrate-performed-at.ts` で全レコードに +9h を加算して正規化した
+- **実装ルール**:
+  - 表示・フォーマット: `formatInTimeZone(date, "Asia/Tokyo", pattern)`
+  - JST 日付文字列 → UTC Date: `fromZonedTime("YYYY-MM-DD", "Asia/Tokyo")`
+  - 月・日付範囲クエリ: `fromZonedTime` で JST 月初を UTC に変換してから Prisma に渡す
+  - `datetime-local` 入力値の表示: `toDatetimeLocalString` が `Asia/Tokyo` を使用
+- **却下した選択肢**: サーバーの TZ 環境変数を `Asia/Tokyo` に設定 → Vercel 環境での設定管理が煩雑、明示的なコードの方が可搬性が高い
+- **furikaeri-mcp との連携**: MCP レスポンスの `performedAt` は `toJSTISOString()` で `"+09:00"` 付き ISO 文字列に変換して返す（Claude が日本語文脈で解釈しやすくするため）
