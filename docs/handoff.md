@@ -39,10 +39,6 @@
 
 ## 積み残し・注意点
 
-- **DBマイグレーション未実行**: `scripts/migrate-performed-at.ts` を実行して既存レコードの `performedAt` を +9h 補正する必要がある。実行前に Supabase ダッシュボードからバックアップを取ること
-  ```bash
-  npx tsx scripts/migrate-performed-at.ts
-  ```
 - **furikaeri-mcp のデプロイ**: タイムゾーン修正をデプロイしないと MCP レスポンスに反映されない
 
 ---
