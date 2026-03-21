@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useTransition } from "react";
-import { MoreVertical, Clock, Trash2 } from "lucide-react";
+import { MoreVertical, Clock, Trash2, Sparkles } from "lucide-react";
 import { deleteLog } from "@/server/actions/log";
 import { EditPerformedAtModal } from "./edit-performed-at-modal";
 import {
@@ -20,10 +20,12 @@ type Props = {
   logId: string;
   performedAt: Date;
   timeOnly?: boolean;
+  hasReflection: boolean;
+  onAddReflection: () => void;
   onPerformedAtSaved?: (newDate: Date) => void;
 };
 
-export function LogCardMenu({ logId, performedAt, timeOnly, onPerformedAtSaved }: Props) {
+export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAddReflection, onPerformedAtSaved }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditDateOpen, setIsEditDateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -69,6 +71,18 @@ export function LogCardMenu({ logId, performedAt, timeOnly, onPerformedAtSaved }
 
       {isMenuOpen && (
         <div className="absolute right-0 top-full mt-1 bg-[#1F1F1F] border border-white/10 rounded-xl shadow-xl z-50 min-w-[148px] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false);
+              onAddReflection();
+            }}
+            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+          >
+            <Sparkles size={12} className="text-zinc-500 shrink-0" />
+            {hasReflection ? "余韻を編集" : "余韻を追加"}
+          </button>
+          <div className="border-t border-white/[0.06] mx-2" />
           <button
             type="button"
             onClick={() => {

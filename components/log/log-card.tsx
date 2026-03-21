@@ -1,5 +1,16 @@
-import { AddReflectionButton } from "./add-reflection-button";
+"use client";
+
+import { useState } from "react";
 import { LogCardMenu } from "./log-card-menu";
+import { ReflectionModal } from "@/components/reflection/reflection-modal";
+
+type ReflectionValues = {
+  id: string;
+  excitement: number | null;
+  achievement: number | null;
+  wantAgain: boolean | null;
+  note: string | null;
+};
 
 type LogCardProps = {
   log: {
@@ -11,26 +22,11 @@ type LogCardProps = {
       emoji: string | null;
       color: string | null;
     };
-    reflection: {
-      id: string;
-      excitement: number | null;
-      achievement: number | null;
-      wantAgain: boolean | null;
-      note: string | null;
-    } | null;
+    reflection: ReflectionValues | null;
   };
   usage: "home" | "history";
   onPerformedAtSaved?: (logId: string, newDate: Date) => void;
-  onReflectionSaved?: (
-    logId: string,
-    reflection: {
-      id: string;
-      excitement: number | null;
-      achievement: number | null;
-      wantAgain: boolean | null;
-      note: string | null;
-    },
-  ) => void;
+  onReflectionSaved?: (logId: string, reflection: ReflectionValues) => void;
 };
 
 function RatingDots({ value, activeColor }: { value: number; activeColor: string }) {
@@ -52,8 +48,10 @@ function RatingDots({ value, activeColor }: { value: number; activeColor: string
 }
 
 export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: LogCardProps) {
-  const { activity, reflection, performedAt } = log;
+  const { activity, performedAt } = log;
   const timeOnly = usage === "history";
+  const [reflection, setReflection] = useState<ReflectionValues | null>(log.reflection);
+  const [reflectionOpen, setReflectionOpen] = useState(false);
 
   const color = activity.color;
   const cardStyle = {
@@ -66,45 +64,51 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
       : `0 2px 10px -4px rgba(0,0,0,0.4)`,
   };
 
+  function handleReflectionSaved(r: ReflectionValues) {
+    setReflection(r);
+    onReflectionSaved?.(log.id, r);
+  }
+
   return (
     <div
       className="rounded-2xl border transition-all animate-in fade-in-0 duration-300"
       style={cardStyle}
     >
       {/* Header row */}
-      <div className="flex items-center gap-2.5 px-4 pt-4 pb-3.5">
+      <div className="flex items-center gap-2.5 px-3.5 pt-3 pb-2.5">
         {activity.emoji && (
           <span
-            className="text-lg leading-none flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
+            className="text-sm leading-none flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center"
             style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
           >
             {activity.emoji}
           </span>
         )}
-        <span className="text-white font-semibold text-[15px] tracking-tight flex-1 min-w-0 truncate">
+        <span className="text-white font-medium text-sm tracking-tight flex-1 min-w-0 truncate">
           {activity.name}
         </span>
         <LogCardMenu
           logId={log.id}
           performedAt={performedAt}
           timeOnly={timeOnly}
+          hasReflection={!!reflection}
+          onAddReflection={() => setReflectionOpen(true)}
           onPerformedAtSaved={onPerformedAtSaved ? (d) => onPerformedAtSaved(log.id, d) : undefined}
         />
       </div>
 
-      {/* Reflection area */}
-      <div
-        className="pb-4 border-t"
-        style={{
-          paddingLeft: "16px",
-          paddingRight: "16px",
-          borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
-          background: "rgba(0,0,0,0.18)",
-        }}
-      >
-        {reflection ? (
+      {/* Reflection area - only shown when reflection exists */}
+      {reflection && (
+        <div
+          className="pb-4 border-t"
+          style={{
+            paddingLeft: "14px",
+            paddingRight: "14px",
+            borderColor: color ? `${color}22` : "rgba(255,255,255,0.06)",
+            background: "rgba(0,0,0,0.18)",
+          }}
+        >
           <div className="pt-3 space-y-2.5">
-            {/* Ratings row */}
             {(reflection.excitement != null || reflection.achievement != null || reflection.wantAgain != null) && (
               <div className="flex items-center gap-3 flex-wrap">
                 {reflection.excitement != null && (
@@ -137,22 +141,20 @@ export function LogCard({ log, usage, onPerformedAtSaved, onReflectionSaved }: L
                 )}
               </div>
             )}
-            {reflection.note && <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>}
-            <AddReflectionButton
-              logId={log.id}
-              initialValues={reflection}
-              onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
-            />
+            {reflection.note && (
+              <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>
+            )}
           </div>
-        ) : (
-          <div className="pt-3">
-            <AddReflectionButton
-              logId={log.id}
-              onSaved={onReflectionSaved ? (r) => onReflectionSaved(log.id, r) : undefined}
-            />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      <ReflectionModal
+        logId={log.id}
+        initialValues={reflection ?? undefined}
+        isOpen={reflectionOpen}
+        onClose={() => setReflectionOpen(false)}
+        onSaved={handleReflectionSaved}
+      />
     </div>
   );
 }
