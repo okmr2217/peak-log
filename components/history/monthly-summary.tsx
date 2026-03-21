@@ -14,7 +14,7 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
   return (
     <section className="mb-2 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-zinc-600 uppercase tracking-wider font-medium">今月の概要</span>
+        <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">今月の概要</span>
         <MonthNav month={month} baseParams={baseParams} basePath={basePath} />
       </div>
 
@@ -33,7 +33,7 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
 
           {summary.topActivities.length > 0 && (
             <div className="bg-[#1A1A1A] rounded-xl p-4 border border-white/[0.05]">
-              <p className="text-xs text-zinc-500 mb-3">よく記録したこと</p>
+              <p className="text-sm text-zinc-400 mb-3">よく記録したこと</p>
               <ul className="space-y-2.5">
                 {summary.topActivities.map((a) => (
                   <li key={a.activityId} className="flex items-center justify-between">
@@ -41,7 +41,7 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
                       {a.emoji && <span>{a.emoji}</span>}
                       <span>{a.name}</span>
                     </span>
-                    <span className="text-xs text-zinc-600">{a.count}件</span>
+                    <span className="text-sm text-zinc-400">{a.count}件</span>
                   </li>
                 ))}
               </ul>
@@ -50,7 +50,7 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
 
           {summary.peakLogs.length > 0 && (
             <div className="bg-[#1A1A1A] rounded-xl p-4 border border-white/[0.05]">
-              <p className="text-xs text-zinc-500 mb-3">今月のピーク</p>
+              <p className="text-sm text-zinc-400 mb-3">今月のピーク</p>
               <div className="space-y-4">
                 {summary.peakLogs.map((log, i) => (
                   <div key={log.id}>
@@ -70,8 +70,8 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="bg-[#1A1A1A] rounded-xl p-4 text-center border border-white/[0.05]">
-      <div className="text-2xl font-bold text-white">{value}</div>
-      <div className="text-xs text-zinc-500 mt-1">{label}</div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className="text-sm text-zinc-400 mt-1">{label}</div>
     </div>
   );
 }
@@ -81,21 +81,21 @@ function PeakLogItem({ log }: { log: MonthlySummary["peakLogs"][number] }) {
   return (
     <div>
       <div className="flex items-start justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-sm text-zinc-200 flex-1 min-w-0">
+        <span className="flex items-center gap-1.5 text-base text-zinc-200 flex-1 min-w-0">
           {log.activity.emoji && <span className="shrink-0">{log.activity.emoji}</span>}
           <span className="truncate">{log.activity.name}</span>
           {r && <Sparkles size={11} className="text-[#7C4DFF] shrink-0" />}
         </span>
-        <span className="text-xs text-zinc-600 shrink-0">{formatPerformedAt(log.performedAt)}</span>
+        <span className="text-sm text-zinc-500 shrink-0">{formatPerformedAt(log.performedAt)}</span>
       </div>
       {r?.excitement != null && (
         <div className="flex gap-1 mt-1.5">
           {Array.from({ length: 5 }, (_, i) => (
-            <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < r.excitement! ? "bg-[#7C4DFF]" : "bg-zinc-800"}`} />
+            <div key={i} className={`w-2 h-2 rounded-full ${i < r.excitement! ? "bg-[#7C4DFF]" : "bg-zinc-800"}`} />
           ))}
         </div>
       )}
-      {r?.note && <p className="text-xs text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">{r.note}</p>}
+      {r?.note && <p className="text-sm text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">{r.note}</p>}
     </div>
   );
 }

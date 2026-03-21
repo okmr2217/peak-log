@@ -42,12 +42,12 @@ export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
         className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
         aria-label="前の月"
       >
-        <ChevronLeft size={14} />
+        <ChevronLeft size={16} />
       </Link>
-      <span className="text-white font-medium text-sm min-w-[88px] text-center">{label}</span>
+      <span className="text-white font-medium text-base min-w-[88px] text-center">{label}</span>
       {isCurrentMonth ? (
         <span className="p-1.5 text-zinc-800" aria-disabled="true">
-          <ChevronRight size={14} />
+          <ChevronRight size={16} />
         </span>
       ) : (
         <Link
@@ -55,7 +55,7 @@ export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
           className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
           aria-label="次の月"
         >
-          <ChevronRight size={14} />
+          <ChevronRight size={16} />
         </Link>
       )}
     </div>
