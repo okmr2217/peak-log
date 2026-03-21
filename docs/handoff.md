@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-22
+> 最終更新: 2026-03-22（タスク1・2完了後）
 > バージョン: 1.0.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -29,6 +29,9 @@
 - Reflection（余韻）追加・編集（1 ログにつき 0 or 1）
 - ログカードのメモ改行反映（`whitespace-pre-wrap`）
 - 各ページの説明文表示（PageHeader の description prop 対応）
+- `/history` の月次統計リンクを紫ベースのボタンスタイルに変更（`bg-[#7C4DFF]/10 border border-[#7C4DFF]/30`）
+- `/history/stats` のページヘッダーを PageHeader コンポーネントに統一
+- 月次統計ページのテキストサイズ全体的に底上げ（StatCard・PeakLogItem・MonthNav・セクション見出し）
 - History 日次表示（日付・曜日・土日祝色分け）
 - History 日別詳細（モバイル: Sheet / PC: Modal）
 - 月次統計（月ナビ・集計・ピークログ）
