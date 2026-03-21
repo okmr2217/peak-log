@@ -27,6 +27,7 @@ export function ActivityList({ activities }: Props) {
     <div className="px-4 py-6 max-w-lg mx-auto">
       <PageHeader
         title="活動"
+        description="Activity の管理・並び替え・アーカイブができます"
         action={
           <Button onClick={() => setShowCreateModal(true)} size="sm" className="gap-1.5 rounded-xl">
             <Plus size={15} />

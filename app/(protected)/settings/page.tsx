@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-8">
-      <PageHeader title="設定" />
+      <PageHeader title="設定" description="アカウント設定とアプリ情報を確認できます" />
 
       {/* アカウント */}
       <section className="space-y-3">

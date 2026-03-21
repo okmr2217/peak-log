@@ -22,7 +22,7 @@ export default async function HistoryPage() {
   if (!result) {
     return (
       <div className="px-4 py-6 max-w-lg mx-auto">
-        <PageHeader title="記録" />
+        <PageHeader title="記録" description="日別にピーク体験を振り返ることができます" />
         <p className="text-zinc-500 text-sm">記録の読み込みに失敗しました</p>
       </div>
     );
@@ -36,6 +36,7 @@ export default async function HistoryPage() {
     <div className="px-4 py-6 max-w-lg mx-auto">
       <PageHeader
         title="記録"
+        description="日別にピーク体験を振り返ることができます"
         action={
           <Link
             href="/history/stats"

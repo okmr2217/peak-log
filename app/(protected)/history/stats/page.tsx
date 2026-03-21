@@ -20,15 +20,18 @@ export default async function HistoryStatsPage({ searchParams }: Props) {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 py-3 border-b border-white/5 mb-5">
-        <Link
-          href="/history"
-          className="p-1.5 -ml-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
-          aria-label="記録に戻る"
-        >
-          <ChevronLeft size={20} />
-        </Link>
-        <h1 className="text-base font-medium text-zinc-300">統計</h1>
+      <div className="py-3 border-b border-white/5 mb-5">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/history"
+            className="p-1.5 -ml-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
+            aria-label="記録に戻る"
+          >
+            <ChevronLeft size={20} />
+          </Link>
+          <h1 className="text-base font-medium text-zinc-300">統計</h1>
+        </div>
+        <p className="text-xs text-zinc-600 mt-0.5 ml-0.5">月ごとの記録を集計して確認できます</p>
       </div>
 
       {summary ? (

@@ -14,6 +14,7 @@ export default async function HomePage() {
         <div className="py-3 border-b border-white/5 mb-5">
           <p className="text-xs text-zinc-600 mb-1">{dateLabel}</p>
           <h1 className="text-base font-medium text-zinc-300">今日のピーク</h1>
+          <p className="text-xs text-zinc-600 mt-0.5">今日もピーク体験を記録しよう</p>
         </div>
         <ActivityGrid activities={activities} />
       </section>
