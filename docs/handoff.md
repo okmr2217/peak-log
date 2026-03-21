@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-22（LogCard・ActivityItem コンパクト化完了後）
+> 最終更新: 2026-03-22（Home ページネーション・デフォルト Activity 自動作成 実装後）
 > バージョン: 1.0.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -42,6 +42,8 @@
 - バージョン管理・CHANGELOG（`package.json` → Settings ページに表示）
 - LogCard のコンパクト化（絵文字ボックス縮小・余韻なし時の Reflection エリア非表示・余韻追加/編集をドロップダウンメニューに統合）
 - ActivityItem のコンパクト化（絵文字ボックス縮小・アクションボタン行を廃止し 3 点メニューに統合）
+- Home の最近のピーク ページネーション（cursor pagination・「もっと見る」ボタン実装。`LogList` を Client Component 化し `getLogsPageForCurrentUser` / `fetchMoreLogs` で対応）
+- 新規ユーザー登録時のデフォルト Activity 自動作成（Better Auth `databaseHooks.user.create.after`・5件 transaction）
 
 変更履歴の詳細は @CHANGELOG.md を参照。
 
@@ -60,9 +62,9 @@
 | 機能 | 概要 | 実装メモ |
 |------|------|---------|
 | ~~**performedAt 編集 UI**~~ | ~~既存ログの日時を後から編集するモーダル~~ | 完了: 作成モーダルと同じ UI に統一済み |
+| ~~**Home の最近ピーク ページネーション**~~ | ~~現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応~~ | 完了: cursor pagination・「もっと見る」ボタン実装済み |
 | **ページネーション / 無限スクロール** | History の最大 50 件制限を解消する cursor pagination | `history-list.tsx` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
 | **Log に位置情報を追加** | Log 記録時に緯度・経度（+ 任意の地名）を保存する | Prisma スキーマに `latitude / longitude / locationName` を追加。ブラウザの Geolocation API で取得し、任意添付（拒否しても記録可能）にする |
-| **Home の最近ピーク ページネーション** | 現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応 | クエリの `take` 上限を引き上げ、cursor pagination を追加。表示は「もっと見る」ボタン or IntersectionObserver |
 | **History タイムライン表示モード** | 日次 History とは別に、全 Log を時系列で流れるタイムライン表示を追加。日次 History の日付行クリックで該当日へアンカー遷移する | `/history` に表示モード切替（日次 / タイムライン）を追加。タイムライン側は Log を時系列に並べ、日付グループにアンカーを設定。日次側の日付行リンクは `?mode=timeline#YYYY-MM-DD` 形式でアンカーへ遷移 |
 
 ### 中優先度
@@ -72,7 +74,7 @@
 | **削除確認ダイアログ** | `window.confirm` → カスタムダイアログ | `components/ui/confirm-dialog.tsx` として `title / description / onConfirm / isPending / isOpen / onClose` を受け取る汎用コンポーネントに。現状は1箇所のみなので他の destructive action が増えた時点で共通化 |
 | **余韻ありバッジ** | Reflection 済みの Log にアイコンバッジを表示 | Log カードに小アイコンを追加するだけ |
 | **History フィルタ** | 日付範囲・Activity 別フィルター | サーバー側クエリ変更＋URL パラメータで実装 |
-| **デフォルト Activity 自動作成** | 新規ユーザー登録時に初期 Activity を自動作成 | Better Auth フック or 初回ログイン検出 |
+| ~~**デフォルト Activity 自動作成**~~ | ~~新規ユーザー登録時に初期 Activity を自動作成~~ | 完了: `databaseHooks.user.create.after` で5件 transaction |
 
 ### 低優先度 / 長期
 
@@ -91,6 +93,6 @@
 
 ## 次のセッションで相談したいこと
 
-1. **ページネーション**：cursor pagination か offset か、UX（ボタン式 vs 無限スクロール）の方針
-2. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
-3. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
+1. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
+2. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
+3. **History IntersectionObserver**：「もっと見る」ボタンを無限スクロールに切り替えるか

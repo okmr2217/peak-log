@@ -2,6 +2,21 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-22
+
+### やったこと
+- Home「最近のピーク」に cursor pagination を追加（初期30件・もっと見るボタン）
+  - `LogList` を `"use client"` に変更し `initialPage: LogsPage` を受け取る形に刷新
+  - `page.tsx` を `getLogsPageForCurrentUser({ limit: 30 })` に変更
+  - `HistoryList` と同じスタイルの「もっと見る」ボタンを追加
+- 新規ユーザー登録時にデフォルト Activity 5件を自動作成
+  - `lib/auth.ts` に `databaseHooks.user.create.after` フックを追加
+  - `prisma.$transaction` で5件まとめて作成（エラーは握り潰してユーザー登録を妨げない）
+
+### 技術メモ
+- `fetchMoreLogs` の既存 Server Action をそのまま流用できた（cursor のみ必須で q/from/to は optional）
+- Better Auth の `databaseHooks` は `lib/auth.ts` に直接記述するだけで動作する
+
 <!--
 ## YYYY-MM-DD セッション記録フォーマット
 
