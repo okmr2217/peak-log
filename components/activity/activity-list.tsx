@@ -24,7 +24,7 @@ export function ActivityList({ activities }: Props) {
   }
 
   return (
-    <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
+    <div className="px-4 pb-6 max-w-lg mx-auto">
       <PageHeader
         title="活動"
         description="Activity の管理・並び替え・アーカイブができます"

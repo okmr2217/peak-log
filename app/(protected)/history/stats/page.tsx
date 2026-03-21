@@ -20,7 +20,7 @@ export default async function HistoryStatsPage({ searchParams }: Props) {
   const summary = await getMonthlySummaryForCurrentUser(month).catch(() => null);
 
   return (
-    <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
+    <div className="px-4 pb-6 max-w-lg mx-auto">
       <PageHeader
         title="月次統計"
         description="月ごとの記録を集計して確認できます"
