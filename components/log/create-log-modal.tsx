@@ -124,16 +124,16 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
         return;
       }
       const logId = result.data.logId;
-      const hasReflectionData =
-        showReflection &&
-        (excitement !== undefined || achievement !== undefined || wantAgain !== undefined || note.trim() !== "");
+      const noteTrimmed = note.trim();
+      const hasRatingData = showReflection && (excitement !== undefined || achievement !== undefined || wantAgain !== undefined);
+      const hasReflectionData = hasRatingData || noteTrimmed !== "";
       if (hasReflectionData) {
         await upsertReflection({
           logId,
-          excitement,
-          achievement,
-          wantAgain,
-          note: note.trim() || undefined,
+          excitement: showReflection ? excitement : undefined,
+          achievement: showReflection ? achievement : undefined,
+          wantAgain: showReflection ? wantAgain : undefined,
+          note: noteTrimmed || undefined,
         });
       }
       onSuccess(logId, hasReflectionData);
@@ -269,6 +269,23 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
               </div>
             </div>
 
+            {/* Memo */}
+            <div>
+              <Label htmlFor="create-log-note" className="text-zinc-500 text-xs mb-2 block tracking-wide uppercase">
+                メモ（任意）
+              </Label>
+              <Textarea
+                id="create-log-note"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                maxLength={200}
+                rows={2}
+                placeholder="体験の余韻を残しておこう..."
+                className="bg-white/5 border-0 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 resize-none focus-visible:ring-[#7C4DFF]/50 leading-relaxed"
+              />
+              <p className="text-zinc-700 text-xs text-right mt-1">{note.length}/200</p>
+            </div>
+
             {/* Reflection section — collapsed by default */}
             <div className="border-t border-white/5 pt-4">
               <button type="button" onClick={() => setShowReflection(!showReflection)} className="w-full flex items-center justify-between text-left">
@@ -328,21 +345,6 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
                         今回は十分
                       </button>
                     </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="create-log-note" className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">
-                      メモ
-                    </Label>
-                    <Textarea
-                      id="create-log-note"
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      maxLength={200}
-                      rows={3}
-                      placeholder="体験の余韻を残しておこう..."
-                      className="bg-white/5 border-0 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 resize-none focus-visible:ring-[#7C4DFF]/50 leading-relaxed"
-                    />
-                    <p className="text-zinc-700 text-xs text-right mt-1">{note.length}/200</p>
                   </div>
                 </div>
               )}
