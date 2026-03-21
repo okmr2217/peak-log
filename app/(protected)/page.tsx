@@ -1,11 +1,11 @@
 import { formatInTimeZone } from "date-fns-tz";
 import { getActiveActivitiesForCurrentUser } from "@/server/queries/activity";
-import { getLogsForCurrentUser } from "@/server/queries/log";
+import { getLogsPageForCurrentUser } from "@/server/queries/log";
 import { ActivityGrid } from "@/components/activity/activity-grid";
 import { LogList } from "@/components/log/log-list";
 
 export default async function HomePage() {
-  const [activities, logs] = await Promise.all([getActiveActivitiesForCurrentUser(), getLogsForCurrentUser(5)]);
+  const [activities, logsPage] = await Promise.all([getActiveActivitiesForCurrentUser(), getLogsPageForCurrentUser({ limit: 30 })]);
   const dateLabel = formatInTimeZone(new Date(), "Asia/Tokyo", "M月d日");
 
   return (
@@ -21,7 +21,7 @@ export default async function HomePage() {
 
       <section>
         <h2 className="text-sm font-semibold text-zinc-400 mb-3 uppercase tracking-wide">最近のピーク</h2>
-        <LogList logs={logs} />
+        <LogList initialPage={logsPage} />
       </section>
     </div>
   );
