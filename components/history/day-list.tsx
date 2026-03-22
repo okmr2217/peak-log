@@ -47,7 +47,7 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
             <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
               {formatDayFull(day.date)}
             </span>
-            <span className="flex-1 min-w-0 flex flex-wrap gap-1.5">
+            <span className="flex-1 min-w-0 flex flex-wrap gap-x-1.5 gap-y-2">
               {day.logs.length === 0 ? (
                 <span className="text-zinc-700 text-sm">-</span>
               ) : (

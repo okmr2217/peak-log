@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
@@ -35,13 +35,11 @@ function RatingDots({ value, activeClass }: { value: number; activeClass: string
 
 function RecentLogItem({ log }: { log: RecentLog }) {
   const { reflection } = log;
-  const hasReflection = !!reflection;
 
   return (
     <div className="py-3 border-b border-white/5 last:border-0">
       <div className="flex items-center gap-2 mb-1">
         <span className="text-zinc-300 text-sm tabular-nums">{formatPerformedAt(log.performedAt)}</span>
-        {hasReflection && <Sparkles size={10} className="text-[#00E5FF]/50" aria-label="余韻あり" />}
       </div>
 
       {reflection && (
