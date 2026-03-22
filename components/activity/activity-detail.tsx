@@ -3,7 +3,8 @@ import { ChevronLeft } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
-import { formatPerformedAt } from "@/lib/date-utils";
+import { formatPerformedAt, formatDayFull, formatTime } from "@/lib/date-utils";
+import { getDayType, getDateTextClassName } from "@/lib/day-type";
 
 const TZ = "Asia/Tokyo";
 
@@ -23,12 +24,23 @@ function formatAvgInterval(days: number): string {
   return rounded % 1 === 0 ? `${rounded}日ごと` : `${rounded.toFixed(1)}日ごと`;
 }
 
+function groupByDate(logs: RecentLog[]): Array<{ date: string; logs: RecentLog[] }> {
+  const map = new Map<string, RecentLog[]>();
+  for (const log of logs) {
+    const date = formatInTimeZone(log.performedAt, TZ, "yyyy-MM-dd");
+    const existing = map.get(date);
+    if (existing) existing.push(log);
+    else map.set(date, [log]);
+  }
+  return Array.from(map.entries()).map(([date, groupLogs]) => ({ date, logs: groupLogs }));
+}
+
 function RecentLogItem({ log, emoji, color }: { log: RecentLog; emoji: string | null; color: string | null }) {
   const { reflection } = log;
 
   return (
     <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
-      <span className="text-xs tabular-nums text-zinc-500 shrink-0 mt-0.5">{formatPerformedAt(log.performedAt)}</span>
+      <span className="text-xs tabular-nums text-zinc-500 shrink-0 mt-0.5 w-10">{formatTime(log.performedAt)}</span>
       <span
         className="w-6 h-6 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
         style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
@@ -47,6 +59,7 @@ interface Props {
 export function ActivityDetailView({ detail }: Props) {
   const { stats, recentLogs } = detail;
   const accentColor = detail.color;
+  const groupedLogs = groupByDate(recentLogs);
 
   return (
     <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
@@ -111,10 +124,22 @@ export function ActivityDetailView({ detail }: Props) {
       {/* 最近の記録 */}
       {recentLogs.length > 0 && (
         <div>
-          <h2 className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-3">最近の記録</h2>
-          <div className="bg-[#1A1A1A] rounded-2xl border border-white/5 px-4 py-1 space-y-0.5">
-            {recentLogs.map((log) => (
-              <RecentLogItem key={log.id} log={log} emoji={detail.emoji} color={accentColor} />
+          <h2 className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
+          <div className="space-y-6">
+            {groupedLogs.map(({ date, logs }) => (
+              <div key={date}>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className={`text-xs font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(date))}`}>
+                    {formatDayFull(date)}
+                  </span>
+                  <div className="flex-1 h-px bg-white/[0.04]" />
+                </div>
+                <div className="space-y-0.5">
+                  {logs.map((log) => (
+                    <RecentLogItem key={log.id} log={log} emoji={detail.emoji} color={accentColor} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
