@@ -23,57 +23,19 @@ function formatAvgInterval(days: number): string {
   return rounded % 1 === 0 ? `${rounded}日ごと` : `${rounded.toFixed(1)}日ごと`;
 }
 
-function RatingDots({ value, activeClass }: { value: number; activeClass: string }) {
-  return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={`inline-block w-1.5 h-1.5 rounded-full ${i < value ? activeClass : "bg-white/8"}`} />
-      ))}
-    </div>
-  );
-}
-
-function RecentLogItem({ log }: { log: RecentLog }) {
+function RecentLogItem({ log, emoji, color }: { log: RecentLog; emoji: string | null; color: string | null }) {
   const { reflection } = log;
 
   return (
-    <div className="py-3 border-b border-white/5 last:border-0">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-zinc-300 text-sm tabular-nums">{formatPerformedAt(log.performedAt)}</span>
-      </div>
-
-      {reflection && (
-        <div className="space-y-1.5 mt-1.5">
-          {(reflection.excitement != null || reflection.achievement != null || reflection.wantAgain != null) && (
-            <div className="flex items-center gap-3 flex-wrap">
-              {reflection.excitement != null && (
-                <div className="flex items-center gap-1.5">
-                  <RatingDots value={reflection.excitement} activeClass="bg-[#7C4DFF]" />
-                  <span className="text-zinc-600 text-[11px]">興奮</span>
-                </div>
-              )}
-              {reflection.achievement != null && (
-                <div className="flex items-center gap-1.5">
-                  <RatingDots value={reflection.achievement} activeClass="bg-[#00E5FF]/70" />
-                  <span className="text-zinc-600 text-[11px]">達成感</span>
-                </div>
-              )}
-              {reflection.wantAgain != null && (
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                    reflection.wantAgain ? "bg-[#7C4DFF]/15 text-[#7C4DFF]/80" : "bg-white/5 text-zinc-600"
-                  }`}
-                >
-                  {reflection.wantAgain ? "またやりたい" : "今回は十分"}
-                </span>
-              )}
-            </div>
-          )}
-          {reflection.note && (
-            <p className="text-zinc-500 text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>
-          )}
-        </div>
-      )}
+    <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
+      <span className="text-xs tabular-nums text-zinc-500 shrink-0 mt-0.5">{formatPerformedAt(log.performedAt)}</span>
+      <span
+        className="w-6 h-6 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
+        style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
+      >
+        {emoji ?? "·"}
+      </span>
+      {reflection?.note && <p className="text-xs text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
     </div>
   );
 }
@@ -150,9 +112,9 @@ export function ActivityDetailView({ detail }: Props) {
       {recentLogs.length > 0 && (
         <div>
           <h2 className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-3">最近の記録</h2>
-          <div className="bg-[#1A1A1A] rounded-2xl border border-white/5 px-4">
+          <div className="bg-[#1A1A1A] rounded-2xl border border-white/5 px-4 py-1 space-y-0.5">
             {recentLogs.map((log) => (
-              <RecentLogItem key={log.id} log={log} />
+              <RecentLogItem key={log.id} log={log} emoji={detail.emoji} color={accentColor} />
             ))}
           </div>
         </div>

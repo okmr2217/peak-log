@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
 import { formatTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
 import { ReflectionModal } from "@/components/reflection/reflection-modal";
@@ -46,7 +45,6 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="text-sm text-zinc-200 truncate">{activity.name}</span>
-          {reflection && <Sparkles size={10} className="text-[#00E5FF]/50 shrink-0" />}
         </div>
         {reflection?.note && <p className="text-xs text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
       </div>
