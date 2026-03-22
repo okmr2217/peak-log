@@ -144,8 +144,8 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
     avgIntervalDays = totalMs / (logs.length - 1) / (1000 * 60 * 60 * 24);
   }
 
-  // 最新5件（新しい順）
-  const recentLogs = logs.slice(-5).reverse();
+  // 最新30件（新しい順）
+  const recentLogs = logs.slice(-30).reverse();
 
   return {
     id: activity.id,

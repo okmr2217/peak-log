@@ -2,6 +2,13 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-22 activity-detail UI 改善
+
+### やったこと
+- `timeline-item.tsx` の Sparkles バッジを削除
+- `activity-detail.tsx` の最近の記録をタイムライン形式に変更（左ボーダー・時刻・絵文字ボックス・reflection.note）
+- `RecentLog` の取得件数を 5 件 → 30 件に変更
+
 ## 2026-03-22 タスク pill-gap：日次表示 pill の縦間隔調整
 
 ### やったこと
