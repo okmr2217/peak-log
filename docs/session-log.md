@@ -2,6 +2,18 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 Activity 詳細「最近の記録」カード化
+
+### やったこと
+- `/activities/[activityId]` の「最近の記録」を日付グループ表示からホームと同じカード形式（`TimelineItem`）に変更
+- 日付セパレーター・`RecentLogItem` コンポーネントを削除し、フラットなカードリストに統一
+- `RecentLog` 型・Prisma クエリに `createdAt` を追加
+- `ActivityDetailView` を Client Component 化し、余韻・performedAt の更新をローカル state で反映
+
+### 技術メモ
+- `"use client"` を付与しても、データは page.tsx（サーバー）から props で受け取る構造は変わらず
+- `toLogItem()` で `RecentLog` → `LogItem` 形式に変換し `TimelineItem` に渡す
+
 ## 2026-03-24 ActivityItem UI 刷新・D&D 並び替え追加
 
 ### やったこと

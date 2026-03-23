@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-24（ActivityItem D&D 並び替え・メニュー廃止）
+> 最終更新: 2026-03-24（Activity 詳細「最近の記録」カード化）
 > バージョン: 1.1.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -15,7 +15,7 @@
 | `/login` | ログイン・登録 | email/password 認証（Better Auth） |
 | `/` | Home | タイムライン（30日分・さらに前を見る）・FAB クイックログ |
 | `/activities` | Activity 管理 | 一覧・作成・編集・並び替え・アーカイブ |
-| `/activities/[id]` | Activity 詳細 | 統計・最近のログ一覧 |
+| `/activities/[id]` | Activity 詳細 | 統計・最近のログ一覧（ホームと同じカード形式） |
 | `/monthly` | 月次 | 月選択ナビ・月別集計・上位 Activity・今月のピーク（日次形式） |
 | `/settings` | 設定 | メール表示・パスワード変更・ログアウト・バージョン表示 |
 

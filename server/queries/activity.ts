@@ -89,6 +89,7 @@ export async function getActivitiesWithStatsForCurrentUser(): Promise<ActivityWi
 export type RecentLog = {
   id: string;
   performedAt: Date;
+  createdAt: Date;
   reflection: {
     id: string;
     excitement: number | null;
@@ -125,6 +126,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
       select: {
         id: true,
         performedAt: true,
+        createdAt: true,
         reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
       },
       orderBy: { performedAt: "asc" },

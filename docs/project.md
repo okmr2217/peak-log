@@ -217,7 +217,7 @@ model Reflection {
 - Activity ごとにカラーを持ち、LogCard・ActivityButton にグラデーション・グローで反映
 - Tailwind CSS のみ使用（CSS-in-JS なし）
 - アイコンは lucide-react のみ
-- Prettier の printWidth は 120
+- Prettier の printWidth は 140
 
 ---
 

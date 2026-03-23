@@ -1,10 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
-import { formatPerformedAt, formatDayFull, formatTime } from "@/lib/date-utils";
-import { getDayType, getDateTextClassName } from "@/lib/day-type";
+import type { LogItem } from "@/server/queries/log";
+import { formatPerformedAt } from "@/lib/date-utils";
+import { TimelineItem } from "@/components/history/timeline-item";
 
 const TZ = "Asia/Tokyo";
 
@@ -24,42 +28,46 @@ function formatAvgInterval(days: number): string {
   return rounded % 1 === 0 ? `${rounded}日ごと` : `${rounded.toFixed(1)}日ごと`;
 }
 
-function groupByDate(logs: RecentLog[]): Array<{ date: string; logs: RecentLog[] }> {
-  const map = new Map<string, RecentLog[]>();
-  for (const log of logs) {
-    const date = formatInTimeZone(log.performedAt, TZ, "yyyy-MM-dd");
-    const existing = map.get(date);
-    if (existing) existing.push(log);
-    else map.set(date, [log]);
-  }
-  return Array.from(map.entries()).map(([date, groupLogs]) => ({ date, logs: groupLogs }));
-}
-
-function RecentLogItem({ log, emoji, color }: { log: RecentLog; emoji: string | null; color: string | null }) {
-  const { reflection } = log;
-
-  return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
-      <span className="text-xs tabular-nums text-zinc-500 shrink-0 mt-0.5 w-10">{formatTime(log.performedAt)}</span>
-      <span
-        className="w-6 h-6 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
-        style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
-      >
-        {emoji ?? "·"}
-      </span>
-      {reflection?.note && <p className="text-xs text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
-    </div>
-  );
-}
+type ReflectionPayload = {
+  id: string;
+  excitement: number | null;
+  achievement: number | null;
+  wantAgain: boolean | null;
+  note: string | null;
+};
 
 interface Props {
   detail: ActivityDetail;
 }
 
 export function ActivityDetailView({ detail }: Props) {
-  const { stats, recentLogs } = detail;
+  const { stats } = detail;
   const accentColor = detail.color;
-  const groupedLogs = groupByDate(recentLogs);
+
+  const [recentLogs, setRecentLogs] = useState<RecentLog[]>(detail.recentLogs);
+
+  function handleReflectionSaved(logId: string, reflection: ReflectionPayload) {
+    setRecentLogs((prev) => prev.map((log) => (log.id === logId ? { ...log, reflection } : log)));
+  }
+
+  function handlePerformedAtSaved(logId: string, newDate: Date) {
+    setRecentLogs((prev) => prev.map((log) => (log.id === logId ? { ...log, performedAt: newDate } : log)));
+  }
+
+  function toLogItem(log: RecentLog): LogItem {
+    return {
+      id: log.id,
+      performedAt: log.performedAt,
+      createdAt: log.createdAt,
+      activity: {
+        id: detail.id,
+        name: detail.name,
+        emoji: detail.emoji,
+        color: detail.color,
+      },
+      reflection: log.reflection,
+    };
+  }
 
   return (
     <div className="p-4 max-w-lg mx-auto">
@@ -98,16 +106,17 @@ export function ActivityDetailView({ detail }: Props) {
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <div>
               <p className="text-zinc-600 text-[11px] mb-0.5">累計</p>
-              <p className="text-white font-semibold text-lg tabular-nums">{stats.totalCount}<span className="text-zinc-500 text-sm font-normal ml-0.5">回</span></p>
+              <p className="text-white font-semibold text-lg tabular-nums">
+                {stats.totalCount}
+                <span className="text-zinc-500 text-sm font-normal ml-0.5">回</span>
+              </p>
             </div>
             {stats.lastPerformedAt && (
               <div>
                 <p className="text-zinc-600 text-[11px] mb-0.5">最後の記録</p>
                 <p className="text-white font-semibold text-lg">
                   {formatLastPerformedAt(stats.lastPerformedAt)}
-                  <span className="text-zinc-600 text-xs font-normal ml-1.5">
-                    {formatPerformedAt(stats.lastPerformedAt)}
-                  </span>
+                  <span className="text-zinc-600 text-xs font-normal ml-1.5">{formatPerformedAt(stats.lastPerformedAt)}</span>
                 </p>
               </div>
             )}
@@ -125,21 +134,14 @@ export function ActivityDetailView({ detail }: Props) {
       {recentLogs.length > 0 && (
         <div>
           <h2 className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
-          <div className="space-y-6">
-            {groupedLogs.map(({ date, logs }) => (
-              <div key={date}>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className={`text-xs font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(date))}`}>
-                    {formatDayFull(date)}
-                  </span>
-                  <div className="flex-1 h-px bg-white/[0.04]" />
-                </div>
-                <div className="space-y-0.5">
-                  {logs.map((log) => (
-                    <RecentLogItem key={log.id} log={log} emoji={detail.emoji} color={accentColor} />
-                  ))}
-                </div>
-              </div>
+          <div className="space-y-3">
+            {recentLogs.map((log) => (
+              <TimelineItem
+                key={log.id}
+                log={toLogItem(log)}
+                onReflectionSaved={handleReflectionSaved}
+                onPerformedAtSaved={handlePerformedAtSaved}
+              />
             ))}
           </div>
         </div>
