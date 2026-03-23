@@ -33,8 +33,6 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
 
   return (
     <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
-      <span className="text-sm tabular-nums text-zinc-500 shrink-0 mt-0.5 w-10">{formatTime(performedAt)}</span>
-
       <span
         className="w-6 h-6 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
         style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
@@ -48,6 +46,8 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
         </div>
         {reflection?.note && <p className="text-sm text-zinc-500 truncate mt-1.5">{reflection.note}</p>}
       </div>
+
+      <span className="text-sm tabular-nums text-zinc-500 shrink-0 mt-0.5">{formatTime(performedAt)}</span>
 
       <LogCardMenu
         logId={log.id}
