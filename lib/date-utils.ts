@@ -58,6 +58,25 @@ export function formatPerformedAt(date: Date): string {
   return formatInTimeZone(date, TZ, "M/d HH:mm");
 }
 
+export function formatRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffSec < 60) return `${diffSec}秒前`;
+  if (diffMin < 60) return `${diffMin}分前`;
+  if (diffHour < 24) return `${diffHour}時間前`;
+  if (diffDay < 7) return `${diffDay}日前`;
+
+  const nowYear = formatInTimeZone(now, TZ, "yyyy");
+  const dateYear = formatInTimeZone(date, TZ, "yyyy");
+  if (nowYear === dateYear) return formatInTimeZone(date, TZ, "M月d日");
+  return formatInTimeZone(date, TZ, "yyyy年M月d日");
+}
+
 /** `datetime-local` input の value 形式 ("YYYY-MM-DDTHH:mm") に変換する */
 export function toDatetimeLocalString(date: Date): string {
   return formatInTimeZone(date, TZ, "yyyy-MM-dd'T'HH:mm");

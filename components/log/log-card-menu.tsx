@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { formatTime, formatPerformedAt } from "@/lib/date-utils";
+import { formatTime, formatRelativeTime } from "@/lib/date-utils";
 
 type Props = {
   logId: string;
@@ -33,7 +33,7 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
   const [isPending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const timeLabel = timeOnly ? formatTime(currentDate) : formatPerformedAt(currentDate);
+  const timeLabel = timeOnly ? formatTime(currentDate) : formatRelativeTime(currentDate);
 
   useEffect(() => {
     if (!isMenuOpen) return;
