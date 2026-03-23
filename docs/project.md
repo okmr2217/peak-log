@@ -133,6 +133,7 @@ peak-log/
 │   │       ├── page.tsx           # Home
 │   │       ├── activities/
 │   │       ├── history/
+│   │       ├── monthly/
 │   │       └── settings/
 │   ├── components/
 │   │   ├── activity/

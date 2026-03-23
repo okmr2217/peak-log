@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-22（Home ページネーション・デフォルト Activity 自動作成 実装後）
+> 最終更新: 2026-03-24（月次ページ独立・ナビゲーション追加）
 > バージョン: 1.0.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -17,7 +17,7 @@
 | `/activities` | Activity 管理 | 一覧・作成・編集・並び替え・アーカイブ |
 | `/activities/[id]` | Activity 詳細 | 統計・最近のログ一覧 |
 | `/history` | History（日次 / タイムライン） | 日別ログ表示・余韻追加・削除・タイムライン表示モード |
-| `/history/stats` | 月次統計 | 月別集計・上位 Activity・ピークログ |
+| `/monthly` | 月次 | 月選択ナビ・月別集計・上位 Activity・今月のピーク（日次形式） |
 | `/settings` | 設定 | メール表示・パスワード変更・ログアウト・バージョン表示 |
 
 ### 実装済み機能
@@ -30,8 +30,9 @@
 - ログカードのメモ改行反映（`whitespace-pre-wrap`）
 - 各ページの説明文表示（PageHeader の description prop 対応）
 - `/history` の月次統計リンクを紫ベースのボタンスタイルに変更（`bg-[#7C4DFF]/10 border border-[#7C4DFF]/30`）
-- `/history/stats` のページヘッダーを PageHeader コンポーネントに統一
-- 月次統計ページのテキストサイズ全体的に底上げ（StatCard・PeakLogItem・MonthNav・セクション見出し）
+- `/monthly` ページを新設し BottomNav に追加（CalendarDays アイコン「月次」、5タブ構成）
+- 月次ページ：今月の概要（統計・よく記録したこと）+ 今月のピーク（日次形式・月全件）
+- MonthNav をページレベルに独立配置・サイズ拡大
 - History タイムライン表示モード（`?mode=timeline` で切り替え・日付グループ＋時系列・アンカー遷移対応）
 - History 日次表示（日付・曜日・土日祝色分け）
 - History 日別詳細（モバイル: Sheet / PC: Modal）
@@ -83,7 +84,7 @@
 |------|------|
 | **ビジュアル改善（frontend-design）** | LogCard 入場アニメーション・ActivityButton グロウ・モーダルグラデーション・空状態デザイン |
 | **日毎の空白日表示** | ログがない日も History に表示（連続性の可視化） |
-| **insights 専用ページ** | 月またぎ比較・年次ビュー。`getMonthlySummaryForCurrentUser` をそのまま流用可能 |
+| **insights 強化** | 月またぎ比較・年次ビュー。`/monthly` ページを拡張する形で対応可能 |
 | **カレンダー表示** | History をカレンダー形式で表示 |
 | **タグ** | Log や Activity にタグを付与して絞り込み |
 | **データエクスポート** | CSV / JSON エクスポート |

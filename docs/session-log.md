@@ -2,6 +2,23 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 月次ページ独立・ナビゲーション追加
+
+### やったこと
+- `/monthly` ページを新設し BottomNav に CalendarDays アイコン「月次」として追加（5タブ構成に）
+- 月次ページの構成：
+  - ページ上部に MonthNav を中央配置（独立コントロールとして）
+  - 今月の概要セクション（統計カード・よく記録したこと）
+  - 今月のピーク（日次形式・当月全件・空状態表示あり）
+- `/history/stats` ページを削除、history ページの月次統計ボタンを削除
+- `getMonthlyLogsForCurrentUser(month)` クエリを追加
+- `MonthlySummarySection` から peakLogs ブロックと MonthNav を削除・props を `summary` のみに整理
+- `MonthNav` を `text-lg / font-semibold / size=18` にサイズ拡大（スタンドアロン配置に対応）
+
+### 技術メモ
+- 月次ページは全件サーバーレンダリング（ページネーション不要・月固定のため）
+- ログを `performedAt desc` で取得し Map で日付グループ化、挿入順が新しい日付から並ぶ
+
 ## 2026-03-24 Activity 説明文フィールド追加
 
 ### やったこと
