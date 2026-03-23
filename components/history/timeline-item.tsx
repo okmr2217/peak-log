@@ -41,7 +41,7 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
 
   return (
     <div className="rounded-2xl border transition-all animate-in fade-in-0 duration-300" style={cardStyle}>
-      <div className="flex items-center gap-2.5 px-3.5 py-2.5">
+      <div className="flex items-center gap-3 px-4 py-3.5">
         <span
           className="w-7 h-7 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
           style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
@@ -54,16 +54,17 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
           {reflection?.note && <p className="text-sm text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
         </div>
 
-        <span className="text-sm tabular-nums text-zinc-500 shrink-0">{formatRelativeTime(performedAt)}</span>
-
-        <LogCardMenu
-          logId={log.id}
-          performedAt={performedAt}
-          timeOnly
-          hasReflection={!!reflection}
-          onAddReflection={() => setReflectionOpen(true)}
-          onPerformedAtSaved={(newDate) => onPerformedAtSaved(log.id, newDate)}
-        />
+        <div className="flex items-center gap-0.5 shrink-0">
+          <span className="text-xs tabular-nums text-zinc-500">{formatRelativeTime(performedAt)}</span>
+          <LogCardMenu
+            logId={log.id}
+            performedAt={performedAt}
+            timeOnly
+            hasReflection={!!reflection}
+            onAddReflection={() => setReflectionOpen(true)}
+            onPerformedAtSaved={(newDate) => onPerformedAtSaved(log.id, newDate)}
+          />
+        </div>
       </div>
 
       <ReflectionModal

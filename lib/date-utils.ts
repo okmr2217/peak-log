@@ -66,15 +66,18 @@ export function formatRelativeTime(date: Date): string {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
+  const time = formatInTimeZone(date, TZ, "HH:mm");
+  const monthDay = formatInTimeZone(date, TZ, "M月d日");
+
   if (diffSec < 60) return `${diffSec}秒前`;
   if (diffMin < 60) return `${diffMin}分前`;
-  if (diffHour < 24) return `${diffHour}時間前`;
-  if (diffDay < 7) return `${diffDay}日前`;
+  if (diffHour < 24) return `${diffHour}時間前（${time}）`;
+  if (diffDay < 7) return `${diffDay}日前（${monthDay}）`;
 
   const nowYear = formatInTimeZone(now, TZ, "yyyy");
   const dateYear = formatInTimeZone(date, TZ, "yyyy");
-  if (nowYear === dateYear) return formatInTimeZone(date, TZ, "M月d日");
-  return formatInTimeZone(date, TZ, "yyyy年M月d日");
+  if (nowYear === dateYear) return `${monthDay}（${time}）`;
+  return `${formatInTimeZone(date, TZ, "yyyy年M月d日")}（${time}）`;
 }
 
 /** `datetime-local` input の value 形式 ("YYYY-MM-DDTHH:mm") に変換する */

@@ -63,7 +63,7 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
 
   return (
     <>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {allLogs.map((log) => (
           <TimelineItem
             key={log.id}
