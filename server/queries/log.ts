@@ -183,6 +183,29 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
   });
 }
 
+export async function getLogsSearchForCurrentUser({
+  activityId,
+  noteKeyword,
+}: {
+  activityId?: string;
+  noteKeyword?: string;
+}): Promise<LogItem[]> {
+  const userId = await requireUserId();
+
+  return prisma.log.findMany({
+    where: {
+      userId,
+      ...(activityId ? { activityId } : {}),
+      ...(noteKeyword ? { reflection: { note: { contains: noteKeyword, mode: "insensitive" } } } : {}),
+    },
+    include: {
+      activity: { select: { id: true, name: true, emoji: true, color: true } },
+      reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+    },
+    orderBy: [{ performedAt: "asc" }],
+  });
+}
+
 export async function getLogById(id: string) {
   const userId = await requireUserId();
   return prisma.log.findFirst({

@@ -70,10 +70,13 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (logId: string, hasReflection: boolean) => void;
+  defaultActivityId?: string | null;
 };
 
-export function CreateLogModal({ activity, activities, isOpen, onClose, onSuccess }: Props) {
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+export function CreateLogModal({ activity, activities, isOpen, onClose, onSuccess, defaultActivityId }: Props) {
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    () => activities?.find((a) => a.id === defaultActivityId) ?? null,
+  );
   const [dateMode, setDateMode] = useState<DateMode>("today");
   const [otherDate, setOtherDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(new Date()));
