@@ -68,7 +68,7 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
         {daysWithLogs.map((day) => (
           <section key={day.date} id={day.date} className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-2">
-              <span className={`text-xs font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+              <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
                 {formatDayFull(day.date)}
               </span>
               <div className="flex-1 h-px bg-white/[0.04]" />
