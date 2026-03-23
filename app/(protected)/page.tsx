@@ -26,7 +26,7 @@ export default async function HomePage() {
   const dayItems = buildDayRange(logs, from, to);
 
   return (
-    <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
+    <div className="p-4 max-w-lg mx-auto">
       <PageHeader title="ピーク" description="記録したピーク体験が、時系列で並びます" />
       <TimelineList initialItems={dayItems} oldestDate={oldestDate} hasMore={hasMore} />
       <HomeFab activities={activities} />

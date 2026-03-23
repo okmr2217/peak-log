@@ -62,7 +62,7 @@ export function ActivityDetailView({ detail }: Props) {
   const groupedLogs = groupByDate(recentLogs);
 
   return (
-    <div className="px-4 pt-4 pb-6 max-w-lg mx-auto">
+    <div className="p-4 max-w-lg mx-auto">
       {/* 戻るボタン */}
       <Link
         href="/activities"

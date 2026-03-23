@@ -8,7 +8,7 @@ export default async function SettingsPage() {
   const user = await requireUser();
 
   return (
-    <div className="px-4 pb-6 max-w-lg mx-auto">
+    <div className="p-4 max-w-lg mx-auto">
       <PageHeader title="設定" description="アカウント設定とアプリ情報を確認できます" />
       <div className="space-y-8">
 

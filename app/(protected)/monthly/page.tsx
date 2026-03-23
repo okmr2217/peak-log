@@ -37,7 +37,7 @@ export default async function MonthlyPage({ searchParams }: Props) {
   const dayGroups = Array.from(dayGroupsMap.entries());
 
   return (
-    <div className="px-4 pb-6 max-w-lg mx-auto">
+    <div className="p-4 max-w-lg mx-auto">
       <PageHeader
         title="月次"
         description="月ごとの記録を確認できます"
