@@ -36,26 +36,26 @@ export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-0.5">
       <Link
         href={buildHref(prevMonth)}
-        className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
+        className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#1A1A1A] border border-white/[0.08] text-zinc-500 hover:text-white hover:border-white/20 transition-colors"
         aria-label="前の月"
       >
-        <ChevronLeft size={18} />
+        <ChevronLeft size={15} />
       </Link>
-      <span className="text-white font-semibold text-lg min-w-[108px] text-center">{label}</span>
+      <span className="text-white font-medium text-sm min-w-[80px] text-center">{label}</span>
       {isCurrentMonth ? (
-        <span className="p-2 text-zinc-800" aria-disabled="true">
-          <ChevronRight size={18} />
+        <span className="h-8 w-8 flex items-center justify-center text-zinc-800" aria-disabled="true">
+          <ChevronRight size={15} />
         </span>
       ) : (
         <Link
           href={buildHref(nextMonth)}
-          className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
+          className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#1A1A1A] border border-white/[0.08] text-zinc-500 hover:text-white hover:border-white/20 transition-colors"
           aria-label="次の月"
         >
-          <ChevronRight size={18} />
+          <ChevronRight size={15} />
         </Link>
       )}
     </div>

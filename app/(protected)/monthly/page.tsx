@@ -38,11 +38,11 @@ export default async function MonthlyPage({ searchParams }: Props) {
 
   return (
     <div className="px-4 pb-6 max-w-lg mx-auto">
-      <PageHeader title="月次" description="月ごとの記録を確認できます" />
-
-      <div className="flex justify-center mb-6">
-        <MonthNav month={month} baseParams="" basePath="/monthly" />
-      </div>
+      <PageHeader
+        title="月次"
+        description="月ごとの記録を確認できます"
+        action={<MonthNav month={month} baseParams="" basePath="/monthly" />}
+      />
 
       {summary ? (
         <MonthlySummarySection summary={summary} />
