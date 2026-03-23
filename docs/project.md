@@ -24,7 +24,7 @@ Peak Log は **自分を高揚させる体験を記録するログアプリ**。
 |------|------|
 | 記録は軽く | Activity タップ一回でログが作れる |
 | 余韻は後から | Reflection（余韻）は後から任意で追加できる |
-| 振り返りが楽しい | History で自分のピーク体験が一覧できる |
+| 振り返りが楽しい | Home のタイムラインで自分のピーク体験を一覧できる |
 
 ---
 
@@ -67,7 +67,6 @@ Reflection 入力
 |------|---------|
 | Reflection | 余韻 |
 | Add reflection | 余韻を追加 |
-| History | 記録 |
 | Recent logs | 最近のピーク |
 | Quick log | ピークを記録 |
 | Empty state (Home) | 最初の活動を作ろう |
@@ -132,7 +131,6 @@ peak-log/
 │   │       ├── layout.tsx
 │   │       ├── page.tsx           # Home
 │   │       ├── activities/
-│   │       ├── history/
 │   │       ├── monthly/
 │   │       └── settings/
 │   ├── components/

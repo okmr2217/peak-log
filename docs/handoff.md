@@ -1,7 +1,7 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-24（クイックログ廃止・FAB 導入）
-> バージョン: 1.0.0
+> 最終更新: 2026-03-24（記録ページ廃止・Home タイムライン化）
+> バージョン: 1.1.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
 ---
@@ -13,10 +13,9 @@
 | パス | 画面 | 主な機能 |
 |------|------|---------|
 | `/login` | ログイン・登録 | email/password 認証（Better Auth） |
-| `/` | Home | FAB からログ作成・最近のピーク一覧 |
+| `/` | Home | タイムライン（30日分・さらに前を見る）・FAB クイックログ |
 | `/activities` | Activity 管理 | 一覧・作成・編集・並び替え・アーカイブ |
 | `/activities/[id]` | Activity 詳細 | 統計・最近のログ一覧 |
-| `/history` | History（日次 / タイムライン） | 日別ログ表示・余韻追加・削除・タイムライン表示モード |
 | `/monthly` | 月次 | 月選択ナビ・月別集計・上位 Activity・今月のピーク（日次形式） |
 | `/settings` | 設定 | メール表示・パスワード変更・ログアウト・バージョン表示 |
 
@@ -29,13 +28,9 @@
 - Reflection（余韻）追加・編集（1 ログにつき 0 or 1）
 - ログカードのメモ改行反映（`whitespace-pre-wrap`）
 - 各ページの説明文表示（PageHeader の description prop 対応）
-- `/history` の月次統計リンクを紫ベースのボタンスタイルに変更（`bg-[#7C4DFF]/10 border border-[#7C4DFF]/30`）
-- `/monthly` ページを新設し BottomNav に追加（CalendarDays アイコン「月次」、5タブ構成）
-- 月次ページ：今月の概要（統計・よく記録したこと）+ 今月のピーク（日次形式・月全件）
+- `/monthly` ページ：今月の概要（統計・よく記録したこと）+ 今月のピーク（日次形式・月全件）
 - MonthNav をページレベルに独立配置・サイズ拡大
-- History タイムライン表示モード（`?mode=timeline` で切り替え・日付グループ＋時系列・アンカー遷移対応）
-- History 日次表示（日付・曜日・土日祝色分け）
-- History 日別詳細（モバイル: Sheet / PC: Modal）
+- Home タイムライン（`TimelineList`・フラット時系列・30日分初期表示・「さらに前を見る」）
 - 月次統計（月ナビ・集計・ピークログ）
 - Activity 詳細統計（累計回数・最終実施日）
 - セッション期限 90 日設定（Better Auth `session.expiresIn`）
@@ -44,7 +39,6 @@
 - バージョン管理・CHANGELOG（`package.json` → Settings ページに表示）
 - LogCard のコンパクト化（絵文字ボックス縮小・余韻なし時の Reflection エリア非表示・余韻追加/編集をドロップダウンメニューに統合）
 - ActivityItem のコンパクト化（絵文字ボックス縮小・アクションボタン行を廃止し 3 点メニューに統合）
-- Home の最近のピーク ページネーション（cursor pagination・「もっと見る」ボタン実装。`LogList` を Client Component 化し `getLogsPageForCurrentUser` / `fetchMoreLogs` で対応）
 - 新規ユーザー登録時のデフォルト Activity 自動作成（Better Auth `databaseHooks.user.create.after`・5件 transaction）
 
 変更履歴の詳細は @CHANGELOG.md を参照。
@@ -63,11 +57,8 @@
 
 | 機能 | 概要 | 実装メモ |
 |------|------|---------|
-| ~~**performedAt 編集 UI**~~ | ~~既存ログの日時を後から編集するモーダル~~ | 完了: 作成モーダルと同じ UI に統一済み |
-| ~~**Home の最近ピーク ページネーション**~~ | ~~現状の最近 5 件を増やし、もっと見る / 無限スクロールに対応~~ | 完了: cursor pagination・「もっと見る」ボタン実装済み |
-| **ページネーション / 無限スクロール** | History の最大 50 件制限を解消する cursor pagination | `history-list.tsx` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
+| **無限スクロール** | Home タイムラインの「さらに前を見る」を IntersectionObserver に変更 | `TimelineList` の `loadMore()` を `IntersectionObserver` の callback に置き換えるだけ。state / server action の構造は変更不要 |
 | **Log に位置情報を追加** | Log 記録時に緯度・経度（+ 任意の地名）を保存する | Prisma スキーマに `latitude / longitude / locationName` を追加。ブラウザの Geolocation API で取得し、任意添付（拒否しても記録可能）にする |
-| ~~**History タイムライン表示モード**~~ | ~~日次 History とは別に、全 Log を時系列で流れるタイムライン表示を追加。日次 History の日付行クリックで該当日へアンカー遷移する~~ | 完了: `HistoryTabs` / `TimelineList` / `TimelineItem` を実装。日次日付行にアンカーリンクアイコンを追加 |
 
 ### 中優先度
 
@@ -75,17 +66,14 @@
 |------|------|---------|
 | **削除確認ダイアログ** | `window.confirm` → カスタムダイアログ | `components/ui/confirm-dialog.tsx` として `title / description / onConfirm / isPending / isOpen / onClose` を受け取る汎用コンポーネントに。現状は1箇所のみなので他の destructive action が増えた時点で共通化 |
 | **余韻ありバッジ** | Reflection 済みの Log にアイコンバッジを表示 | Log カードに小アイコンを追加するだけ |
-| **History フィルタ** | 日付範囲・Activity 別フィルター | サーバー側クエリ変更＋URL パラメータで実装 |
-| ~~**デフォルト Activity 自動作成**~~ | ~~新規ユーザー登録時に初期 Activity を自動作成~~ | 完了: `databaseHooks.user.create.after` で5件 transaction |
 
 ### 低優先度 / 長期
 
 | 機能 | 概要 |
 |------|------|
 | **ビジュアル改善（frontend-design）** | LogCard 入場アニメーション・ActivityButton グロウ・モーダルグラデーション・空状態デザイン |
-| **日毎の空白日表示** | ログがない日も History に表示（連続性の可視化） |
 | **insights 強化** | 月またぎ比較・年次ビュー。`/monthly` ページを拡張する形で対応可能 |
-| **カレンダー表示** | History をカレンダー形式で表示 |
+| **カレンダー表示** | ピークをカレンダー形式で表示 |
 | **タグ** | Log や Activity にタグを付与して絞り込み |
 | **データエクスポート** | CSV / JSON エクスポート |
 | **アカウント削除** | 設定からアカウントと全データを削除 |
@@ -95,6 +83,5 @@
 
 ## 次のセッションで相談したいこと
 
-1. **日毎の空白日表示**：History に記録のない日も表示する UI 設計
-2. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
-3. **History IntersectionObserver**：「もっと見る」ボタンを無限スクロールに切り替えるか
+1. **余韻ありバッジ**：Reflection 済みの Log にアイコンバッジを表示するか
+2. **無限スクロール**：「さらに前を見る」ボタンを IntersectionObserver に切り替えるか

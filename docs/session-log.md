@@ -2,6 +2,21 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 記録ページ廃止・Home タイムライン化
+
+### やったこと
+- `/history` ページ（日次 / タイムライン）を廃止
+- Home を `TimelineList`（フラット時系列・日付グループなし）に全面置き換え
+- Home に `PageHeader`（title="ピーク"）を追加
+- BottomNav から「記録」タブを削除 → 4タブ化（ホーム ｜ 月次 ｜ ピーク ｜ 設定）
+- 不要ファイルをすべて削除（8 ファイル・644 行削減）
+  - `DayList` / `HistoryTabs` / `DayDetailSheet` / `HistoryFilter` / `HistoryList` / `LogList`
+  - `fetchMoreLogs` server action / `getLogsPageForCurrentUser` / `LogsPage` / `LogsPageParams`
+
+### 技術メモ
+- Home のデータ取得を `getLogsPageForCurrentUser`（cursor pagination）から `getLogsRangePageForCurrentUser`（30日分・range）に変更
+- `TimelineList` の「さらに前を見る」は `fetchMoreDays` で継続動作
+
 ## 2026-03-24 クイックログ廃止・FAB 導入
 
 ### やったこと
