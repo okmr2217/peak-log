@@ -2,6 +2,18 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 ホームのリアルタイム更新修正
+
+### やったこと
+- 記録の作成・削除・日時編集後にホームのタイムラインが更新されない問題を修正
+- `HomeFab`・`DeleteLogButton`・`EditPerformedAtModal` に `router.refresh()` を追加
+- `TimelineList` に `useEffect` を追加し、`initialItems` props 変更時に state を同期
+
+### 技術メモ
+- Server Action で `revalidatePath("/")` は呼ばれていたが、`TimelineList` が `useState` でデータを保持しているため UI に反映されなかった
+- `router.refresh()` → サーバー再レンダリング → 新しい `initialItems` が props として渡る → `useEffect` で state 同期、という流れ
+- 「さらに前を見る」で追加読み込みした分は refresh 後にリセットされる（許容範囲）
+
 ## 2026-03-24 Activity 詳細「最近の記録」カード化
 
 ### やったこと

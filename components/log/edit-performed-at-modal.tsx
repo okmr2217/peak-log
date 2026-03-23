@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { X, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
@@ -30,6 +31,7 @@ function getInitialDateMode(performedAt: Date): DateMode {
 }
 
 export function EditPerformedAtModal({ logId, performedAt, isOpen, onClose, onSaved }: Props) {
+  const router = useRouter();
   const [dateMode, setDateMode] = useState<DateMode>(() => getInitialDateMode(performedAt));
   const [otherDate, setOtherDate] = useState<Date>(() => startOfDay(performedAt));
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(performedAt));
@@ -60,6 +62,7 @@ export function EditPerformedAtModal({ logId, performedAt, isOpen, onClose, onSa
     startTransition(async () => {
       const result = await updateLogPerformedAt({ logId, performedAt: newPerformedAt });
       if (result.ok) {
+        router.refresh();
         onSaved?.(newPerformedAt);
         onClose();
       } else {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { fetchMoreDays } from "@/server/actions/log";
@@ -27,6 +27,12 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
   const [oldest, setOldest] = useState<string>(oldestDate);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setDayItems(initialItems);
+    setOldest(oldestDate);
+    setHasMore(initialHasMore);
+  }, [initialItems, oldestDate, initialHasMore]);
 
   function handleReflectionSaved(logId: string, reflection: ReflectionPayload) {
     setDayItems((prev) =>

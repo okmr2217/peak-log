@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { CreateLogModal } from "@/components/log/create-log-modal";
 import { ReflectionModal } from "@/components/reflection/reflection-modal";
@@ -16,15 +17,17 @@ type Toast =
   | { type: "success"; logId: string; hasReflection: boolean }
   | { type: "error"; message: string };
 
-export function HomeFab({ activities }: { activities: Activity[] }) {
+export function HomeFab({ activities, defaultActivityId }: { activities: Activity[]; defaultActivityId?: string | null }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
   const [reflectionLogId, setReflectionLogId] = useState<string | null>(null);
 
   const handleSuccess = useCallback((logId: string, hasReflection: boolean) => {
+    router.refresh();
     setToast({ type: "success", logId, hasReflection });
     setTimeout(() => setToast(null), 4000);
-  }, []);
+  }, [router]);
 
   return (
     <>
@@ -83,6 +86,7 @@ export function HomeFab({ activities }: { activities: Activity[] }) {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onSuccess={handleSuccess}
+        defaultActivityId={defaultActivityId}
       />
 
       {reflectionLogId && (
