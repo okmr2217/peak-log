@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BarChart2 } from "lucide-react";
 import { addDays, subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { getLogsRangePageForCurrentUser } from "@/server/queries/log";
@@ -39,20 +38,7 @@ export default async function HistoryPage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="px-4 pb-6 max-w-lg mx-auto">
-      <PageHeader
-        title="記録"
-        description="日別にピーク体験を振り返ることができます"
-        action={
-          <Link
-            href="/history/stats"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#7C4DFF]/10 border border-[#7C4DFF]/30 text-[#7C4DFF] hover:bg-[#7C4DFF]/20 hover:text-[#9E70FF] transition-colors text-sm"
-            aria-label="月次統計を見る"
-          >
-            <BarChart2 size={15} />
-            <span>月次統計</span>
-          </Link>
-        }
-      />
+      <PageHeader title="記録" description="日別にピーク体験を振り返ることができます" />
 
       <HistoryTabs mode={mode} />
 

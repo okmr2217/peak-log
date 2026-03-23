@@ -223,6 +223,27 @@ export async function getLogsRangePageForCurrentUser({
   return { logs, hasMore: olderLog !== null };
 }
 
+export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogItem[]> {
+  const userId = await requireUserId();
+
+  const [yearStr, monthStr] = month.split("-");
+  const year = parseInt(yearStr, 10);
+  const monthNum = parseInt(monthStr, 10);
+  const endYear = monthNum === 12 ? year + 1 : year;
+  const endMonth = monthNum === 12 ? 1 : monthNum + 1;
+  const start = fromZonedTime(`${yearStr}-${monthStr}-01`, TZ);
+  const end = fromZonedTime(`${endYear}-${String(endMonth).padStart(2, "0")}-01`, TZ);
+
+  return prisma.log.findMany({
+    where: { userId, performedAt: { gte: start, lt: end } },
+    include: {
+      activity: { select: { id: true, name: true, emoji: true, color: true } },
+      reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+    },
+    orderBy: [{ performedAt: "desc" }, { id: "desc" }],
+  });
+}
+
 export async function getLogById(id: string) {
   const userId = await requireUserId();
   return prisma.log.findFirst({

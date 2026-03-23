@@ -1,7 +1,5 @@
 import { type MonthlySummary } from "@/server/queries/log";
 import { MonthNav } from "./month-nav";
-import { formatPerformedAt } from "@/lib/date-utils";
-import { Sparkles } from "lucide-react";
 
 type Props = {
   summary: MonthlySummary;
@@ -48,19 +46,6 @@ export function MonthlySummarySection({ summary, month, baseParams, basePath }: 
             </div>
           )}
 
-          {summary.peakLogs.length > 0 && (
-            <div className="bg-[#1A1A1A] rounded-xl p-4 border border-white/[0.05]">
-              <p className="text-sm text-zinc-400 mb-3">今月のピーク</p>
-              <div className="space-y-4">
-                {summary.peakLogs.map((log, i) => (
-                  <div key={log.id}>
-                    {i > 0 && <div className="border-t border-white/[0.06] mb-4" />}
-                    <PeakLogItem log={log} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </>
       )}
     </section>
@@ -72,30 +57,6 @@ function StatCard({ label, value }: { label: string; value: number }) {
     <div className="bg-[#1A1A1A] rounded-xl p-4 text-center border border-white/[0.05]">
       <div className="text-3xl font-bold text-white">{value}</div>
       <div className="text-sm text-zinc-400 mt-1">{label}</div>
-    </div>
-  );
-}
-
-function PeakLogItem({ log }: { log: MonthlySummary["peakLogs"][number] }) {
-  const r = log.reflection;
-  return (
-    <div>
-      <div className="flex items-start justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-base text-zinc-200 flex-1 min-w-0">
-          {log.activity.emoji && <span className="shrink-0">{log.activity.emoji}</span>}
-          <span className="truncate">{log.activity.name}</span>
-          {r && <Sparkles size={11} className="text-[#7C4DFF] shrink-0" />}
-        </span>
-        <span className="text-sm text-zinc-500 shrink-0">{formatPerformedAt(log.performedAt)}</span>
-      </div>
-      {r?.excitement != null && (
-        <div className="flex gap-1 mt-1.5">
-          {Array.from({ length: 5 }, (_, i) => (
-            <div key={i} className={`w-2 h-2 rounded-full ${i < r.excitement! ? "bg-[#7C4DFF]" : "bg-zinc-800"}`} />
-          ))}
-        </div>
-      )}
-      {r?.note && <p className="text-sm text-zinc-400 mt-1.5 line-clamp-2 leading-relaxed">{r.note}</p>}
     </div>
   );
 }
