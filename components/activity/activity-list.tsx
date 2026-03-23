@@ -1,26 +1,62 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  DragOverlay,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { ActivityItem } from "./activity-item";
 import { ActivityCreateModal } from "./activity-create-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
+import { reorderActivities } from "@/server/actions/activity";
 import type { ActivityWithStats } from "@/server/queries/activity";
 
 interface Props {
   activities: ActivityWithStats[];
 }
 
-export function ActivityList({ activities }: Props) {
+export function ActivityList({ activities: initialActivities }: Props) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [activities, setActivities] = useState(initialActivities);
+  const [draggingActivity, setDraggingActivity] = useState<ActivityWithStats | null>(null);
 
-  const allActivityIds = activities.map((a) => a.id);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
 
   function handleCreateSuccess() {
     setShowCreateModal(false);
     toast.success("活動を追加しました");
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    const found = activities.find((a) => a.id === event.active.id);
+    setDraggingActivity(found ?? null);
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    setDraggingActivity(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = activities.findIndex((a) => a.id === active.id);
+    const newIndex = activities.findIndex((a) => a.id === over.id);
+    const reordered = arrayMove(activities, oldIndex, newIndex);
+
+    setActivities(reordered);
+    await reorderActivities({ activityIds: reordered.map((a) => a.id) });
   }
 
   return (
@@ -42,11 +78,38 @@ export function ActivityList({ activities }: Props) {
           <p className="text-zinc-600 text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {activities.map((activity) => (
-            <ActivityItem key={activity.id} activity={activity} allActivityIds={allActivityIds} />
-          ))}
-        </div>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-2">
+              {activities.map((activity) => (
+                <ActivityItem key={activity.id} activity={activity} />
+              ))}
+            </div>
+          </SortableContext>
+
+          <DragOverlay>
+            {draggingActivity && (
+              <div
+                className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border shadow-2xl"
+                style={{
+                  background: draggingActivity.color
+                    ? `radial-gradient(ellipse at 0% 20%, ${draggingActivity.color}15 0%, transparent 55%), #1A1A1A`
+                    : "#1A1A1A",
+                  borderColor: draggingActivity.color ? `${draggingActivity.color}38` : "rgba(255,255,255,0.08)",
+                }}
+              >
+                <GripVertical size={16} className="text-zinc-500 flex-shrink-0" />
+                <div
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+                  style={{ backgroundColor: draggingActivity.color ? `${draggingActivity.color}28` : "#7C4DFF22" }}
+                >
+                  {draggingActivity.emoji ?? "⚡"}
+                </div>
+                <span className="text-white text-sm font-semibold truncate">{draggingActivity.name}</span>
+              </div>
+            )}
+          </DragOverlay>
+        </DndContext>
       )}
 
       {showCreateModal && (
