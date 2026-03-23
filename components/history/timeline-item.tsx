@@ -34,7 +34,7 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
   return (
     <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
       <span
-        className="w-6 h-6 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
+        className="w-8 h-8 rounded-md flex items-center justify-center text-base leading-none shrink-0"
         style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
       >
         {activity.emoji ?? "·"}
