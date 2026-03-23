@@ -42,12 +42,12 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
           <Link
             key={day.date}
             href={`/history?mode=timeline#${day.date}`}
-            className="w-full flex items-center gap-4 py-2.5 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
+            className="w-full flex flex-col gap-2.5 py-2.5 px-1 text-left hover:bg-white/[0.02] transition-colors rounded"
           >
-            <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
+            <span className={`text-sm font-medium tabular-nums ${getDateTextClassName(getDayType(day.date))}`}>
               {formatDayFull(day.date)}
             </span>
-            <span className="flex-1 min-w-0 flex flex-wrap gap-x-1.5 gap-y-2">
+            <span className="flex flex-wrap gap-x-1.5 gap-y-2">
               {day.logs.length === 0 ? (
                 <span className="text-zinc-700 text-sm">-</span>
               ) : (
@@ -56,14 +56,14 @@ export function DayList({ initialItems, oldestDate, hasMore: initialHasMore }: P
                   return (
                     <span
                       key={`${log.id}-${i}`}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-sm text-zinc-300 shrink-0"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border text-sm text-zinc-300 shrink-0"
                       style={{
                         background: color ? `${color}22` : "rgba(255,255,255,0.06)",
                         borderColor: color ? `${color}44` : "rgba(255,255,255,0.08)",
                       }}
                     >
-                      <span className="text-base leading-none">{log.activity.emoji ?? "·"}</span>
-                      <span className="tabular-nums text-zinc-400 text-xs leading-none">
+                      <span className="text-sm leading-none">{log.activity.emoji ?? "·"}</span>
+                      <span className="tabular-nums text-zinc-400 text-sm leading-none">
                         {formatTime(log.performedAt)}
                       </span>
                     </span>
