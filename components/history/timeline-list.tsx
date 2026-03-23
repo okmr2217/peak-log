@@ -5,8 +5,7 @@ import { subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { fetchMoreDays } from "@/server/actions/log";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
-import { buildDayRange, formatDayFull } from "@/lib/date-utils";
-import { getDayType, getDateTextClassName } from "@/lib/day-type";
+import { buildDayRange } from "@/lib/date-utils";
 import { TimelineItem } from "./timeline-item";
 
 type ReflectionPayload = {
@@ -60,30 +59,18 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
     });
   }
 
-  const daysWithLogs = dayItems.filter((d) => d.logs.length > 0);
+  const allLogs = dayItems.flatMap((d) => [...d.logs].reverse());
 
   return (
     <>
-      <div className="space-y-6">
-        {daysWithLogs.map((day) => (
-          <section key={day.date} id={day.date} className="scroll-mt-20">
-            <div className="flex items-center gap-3 mb-2">
-              <span className={`text-sm font-medium tabular-nums shrink-0 ${getDateTextClassName(getDayType(day.date))}`}>
-                {formatDayFull(day.date)}
-              </span>
-              <div className="flex-1 h-px bg-white/[0.04]" />
-            </div>
-            <div className="space-y-0.5">
-              {[...day.logs].reverse().map((log) => (
-                <TimelineItem
-                  key={log.id}
-                  log={log}
-                  onReflectionSaved={handleReflectionSaved}
-                  onPerformedAtSaved={handlePerformedAtSaved}
-                />
-              ))}
-            </div>
-          </section>
+      <div className="space-y-2">
+        {allLogs.map((log) => (
+          <TimelineItem
+            key={log.id}
+            log={log}
+            onReflectionSaved={handleReflectionSaved}
+            onPerformedAtSaved={handlePerformedAtSaved}
+          />
         ))}
       </div>
 

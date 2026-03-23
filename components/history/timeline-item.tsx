@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatTime } from "@/lib/date-utils";
+import { formatRelativeTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
 import { ReflectionModal } from "@/components/reflection/reflection-modal";
 import type { LogItem } from "@/server/queries/log";
@@ -31,32 +31,40 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
     onReflectionSaved(log.id, r);
   }
 
+  const cardStyle = {
+    background: color
+      ? `radial-gradient(ellipse at 0% 0%, ${color}1A 0%, transparent 60%), #1A1A1A`
+      : "#1A1A1A",
+    borderColor: color ? `${color}38` : "rgba(255,255,255,0.08)",
+    boxShadow: color ? `0 4px 20px -8px ${color}38` : `0 2px 10px -4px rgba(0,0,0,0.4)`,
+  };
+
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-zinc-800 py-2">
-      <span
-        className="w-8 h-8 rounded-md flex items-center justify-center text-base leading-none shrink-0"
-        style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
-      >
-        {activity.emoji ?? "·"}
-      </span>
+    <div className="rounded-2xl border transition-all animate-in fade-in-0 duration-300" style={cardStyle}>
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5">
+        <span
+          className="w-7 h-7 rounded-md flex items-center justify-center text-sm leading-none shrink-0"
+          style={{ backgroundColor: color ? `${color}28` : "rgba(255,255,255,0.07)" }}
+        >
+          {activity.emoji ?? "·"}
+        </span>
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
+        <div className="flex-1 min-w-0">
           <span className="text-sm text-zinc-200 truncate">{activity.name}</span>
+          {reflection?.note && <p className="text-sm text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
         </div>
-        {reflection?.note && <p className="text-sm text-zinc-500 truncate mt-1.5">{reflection.note}</p>}
+
+        <span className="text-sm tabular-nums text-zinc-500 shrink-0">{formatRelativeTime(performedAt)}</span>
+
+        <LogCardMenu
+          logId={log.id}
+          performedAt={performedAt}
+          timeOnly
+          hasReflection={!!reflection}
+          onAddReflection={() => setReflectionOpen(true)}
+          onPerformedAtSaved={(newDate) => onPerformedAtSaved(log.id, newDate)}
+        />
       </div>
-
-      <span className="text-sm tabular-nums text-zinc-500 shrink-0 mt-0.5">{formatTime(performedAt)}</span>
-
-      <LogCardMenu
-        logId={log.id}
-        performedAt={performedAt}
-        timeOnly
-        hasReflection={!!reflection}
-        onAddReflection={() => setReflectionOpen(true)}
-        onPerformedAtSaved={(newDate) => onPerformedAtSaved(log.id, newDate)}
-      />
 
       <ReflectionModal
         logId={log.id}
