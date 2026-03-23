@@ -130,43 +130,42 @@ export function ActivityItem({ activity, allActivityIds }: Props) {
           </div>
         </div>
 
-        {/* 並び替え + 3点メニュー */}
+        {/* 並び替え + 統計 + 3点メニュー */}
         <div className="flex items-center gap-0.5 flex-shrink-0">
           <button
             onClick={handleMoveUp}
             disabled={isReorderPending || currentIndex === 0}
-            className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+            className="p-2 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
             aria-label="上に移動"
           >
-            <ArrowUp size={13} />
+            <ArrowUp size={15} />
           </button>
           <button
             onClick={handleMoveDown}
             disabled={isReorderPending || currentIndex === allActivityIds.length - 1}
-            className="p-1.5 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
+            className="p-2 text-zinc-700 hover:text-zinc-400 disabled:opacity-20 transition-colors"
             aria-label="下に移動"
           >
-            <ArrowDown size={13} />
+            <ArrowDown size={15} />
           </button>
+          <Link
+            href={`/activities/${activity.id}`}
+            className="p-2 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"
+            aria-label="統計を見る"
+          >
+            <BarChart2 size={16} />
+          </Link>
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen((v) => !v)}
-              className="p-1.5 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"
+              className="p-2 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"
               aria-label="操作メニュー"
             >
-              <MoreVertical size={14} />
+              <MoreVertical size={16} />
             </button>
 
             {isMenuOpen && (
               <div className="absolute right-0 top-full mt-1 bg-[#1F1F1F] border border-white/10 rounded-xl shadow-xl z-50 min-w-[148px] overflow-hidden">
-                <Link
-                  href={`/activities/${activity.id}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-                >
-                  <BarChart2 size={12} className="text-zinc-500 shrink-0" />
-                  統計を見る
-                </Link>
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);
