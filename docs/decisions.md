@@ -65,3 +65,13 @@
   - `datetime-local` 入力値の表示: `toDatetimeLocalString` が `Asia/Tokyo` を使用
 - **却下した選択肢**: サーバーの TZ 環境変数を `Asia/Tokyo` に設定 → Vercel 環境での設定管理が煩雑、明示的なコードの方が可搬性が高い
 - **furikaeri-mcp との連携**: MCP レスポンスの `performedAt` は `toJSTISOString()` で `"+09:00"` 付き ISO 文字列に変換して返す（Claude が日本語文脈で解釈しやすくするため）
+
+---
+
+## ADR-007: クイックログ（ActivityGrid）を廃止し FAB に置き換える
+
+- **ステータス**: 採用
+- **決定**: Home の ActivityGrid（activity タイル一覧）を廃止し、右下固定の FAB から `CreateLogModal` を開く形に変更。フォーム内で活動を選択する
+- **理由**: ActivityGrid はホーム画面の大半を占めており、最近のピーク一覧が埋もれていた。FAB + インフォームな活動選択により画面の情報密度を下げ、記録フローを統一する
+- **却下した選択肢**: ActivityGrid を残しつつ FAB を追加 → 記録導線が2重になり UX が複雑になるため却下
+- **実装**: `HomeFab`（`components/log/home-fab.tsx`）が FAB・トースト・余韻モーダルを管理。`CreateLogModal` の `activity` prop をオプション化し、未指定時に活動選択リストを上部表示する

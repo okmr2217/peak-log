@@ -65,13 +65,15 @@ type Activity = {
 };
 
 type Props = {
-  activity: Activity;
+  activity?: Activity | null;
+  activities?: Activity[];
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (logId: string, hasReflection: boolean) => void;
 };
 
-export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) {
+export function CreateLogModal({ activity, activities, isOpen, onClose, onSuccess }: Props) {
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [dateMode, setDateMode] = useState<DateMode>("today");
   const [otherDate, setOtherDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(new Date()));
@@ -82,6 +84,9 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const resolvedActivity = activity ?? selectedActivity;
+  const showActivitySelector = !activity && activities && activities.length > 0;
 
   function getPerformedAt(): Date {
     let date: Date;
@@ -98,6 +103,10 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
   }
 
   function handleSubmit() {
+    if (!resolvedActivity) {
+      setError("活動を選択してください");
+      return;
+    }
     const performedAt = getPerformedAt();
     if (performedAt > new Date()) {
       setError("未来の日時は記録できません");
@@ -105,7 +114,7 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
     }
     setError(null);
     startTransition(async () => {
-      const result = await createLog({ activityId: activity.id, performedAt });
+      const result = await createLog({ activityId: resolvedActivity.id, performedAt });
       if (!result.ok) {
         setError(result.message);
         return;
@@ -136,7 +145,6 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
     other: "他の日",
   };
 
-  // Format display date for "other" mode
   const otherDateLabel = format(otherDate, "M月d日");
 
   return (
@@ -154,10 +162,6 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-white font-semibold text-base">ピークを記録</h2>
-              <p className="text-zinc-500 text-[11px] mt-0.5">
-                {activity.emoji && <span className="mr-1">{activity.emoji}</span>}
-                {activity.name}
-              </p>
             </div>
             <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-zinc-500 hover:text-white">
               <X className="h-4 w-4" />
@@ -165,6 +169,35 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
           </div>
 
           <div className="space-y-5">
+            {/* Activity selector */}
+            {showActivitySelector && (
+              <div>
+                <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">活動を選ぶ</Label>
+                <div className="space-y-1.5">
+                  {activities!.map((a) => {
+                    const isSelected = selectedActivity?.id === a.id;
+                    return (
+                      <button
+                        key={a.id}
+                        type="button"
+                        onClick={() => setSelectedActivity(a)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all duration-150 active:scale-[0.98] text-left"
+                        style={
+                          isSelected
+                            ? { background: `${a.color ?? "#7C4DFF"}18`, borderColor: `${a.color ?? "#7C4DFF"}50` }
+                            : { background: "rgba(255,255,255,0.04)", borderColor: "transparent" }
+                        }
+                      >
+                        <span className="w-0.5 self-stretch rounded-full flex-shrink-0" style={{ background: a.color ?? "#7C4DFF" }} />
+                        {a.emoji && <span className="text-lg leading-none">{a.emoji}</span>}
+                        <span className="text-sm text-white/80 font-medium">{a.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Date + Time row */}
             <div>
               <Label className="text-zinc-500 text-xs mb-2.5 block tracking-wide uppercase">いつの体験として残しますか？</Label>
@@ -251,12 +284,11 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
             </div>
 
             {/* Reflection section — collapsed by default */}
-            <div className="border-t border-white/5 pt-4">
-              <button type="button" onClick={() => setShowReflection(!showReflection)} className="w-full flex items-center justify-between text-left">
-                <span className="text-zinc-400 text-sm font-medium">余韻も一緒に残す</span>
-                {showReflection ? <ChevronUp className="h-4 w-4 text-zinc-500" /> : <ChevronDown className="h-4 w-4 text-zinc-500" />}
+            <div>
+              <button type="button" onClick={() => setShowReflection(!showReflection)} className="flex items-center gap-1.5 text-left">
+                <span className="text-zinc-500 text-xs font-medium">余韻も一緒に残す</span>
+                {showReflection ? <ChevronUp className="h-3.5 w-3.5 text-zinc-600" /> : <ChevronDown className="h-3.5 w-3.5 text-zinc-600" />}
               </button>
-              <p className="text-zinc-600 text-[11px] mt-0.5">任意・後から追加もできます</p>
 
               {showReflection && (
                 <div className="mt-4 space-y-4">
@@ -319,11 +351,11 @@ export function CreateLogModal({ activity, isOpen, onClose, onSuccess }: Props) 
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isPending}
+              disabled={isPending || !resolvedActivity}
               className="w-full rounded-xl py-3.5 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
               style={{
                 background: isPending ? "rgba(124,77,255,0.5)" : "linear-gradient(135deg, #7C4DFF 0%, #5533cc 100%)",
-                boxShadow: isPending ? "none" : "0 4px 24px -4px rgba(124,77,255,0.5)",
+                boxShadow: isPending || !resolvedActivity ? "none" : "0 4px 24px -4px rgba(124,77,255,0.5)",
               }}
             >
               {isPending ? "記録中..." : "記録する"}
