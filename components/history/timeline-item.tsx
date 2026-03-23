@@ -46,7 +46,7 @@ export function TimelineItem({ log, onReflectionSaved, onPerformedAtSaved }: Pro
         <div className="flex items-center gap-1.5">
           <span className="text-sm text-zinc-200 truncate">{activity.name}</span>
         </div>
-        {reflection?.note && <p className="text-xs text-zinc-500 truncate mt-0.5">{reflection.note}</p>}
+        {reflection?.note && <p className="text-sm text-zinc-500 truncate mt-1.5">{reflection.note}</p>}
       </div>
 
       <LogCardMenu
