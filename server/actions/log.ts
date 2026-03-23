@@ -14,7 +14,7 @@ import {
   type CreateLogInput,
   type UpdateLogPerformedAtInput,
 } from "@/server/validators/log";
-import { getLogsPageForCurrentUser, getLogsRangePageForCurrentUser, type LogsPage, type LogItem } from "@/server/queries/log";
+import { getLogsRangePageForCurrentUser, type LogItem } from "@/server/queries/log";
 
 export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
   const parsed = createLogSchema.safeParse(input);
@@ -40,7 +40,7 @@ export async function createLog(input: CreateLogInput): Promise<ActionResult<{ l
       },
     });
     revalidatePath("/");
-    revalidatePath("/history");
+
     return ok({ logId: log.id });
   } catch (e) {
     return fail(toActionMessage(e, "記録できませんでした"));
@@ -59,25 +59,11 @@ export async function deleteLog(id: string): Promise<ActionResult> {
       where: { id: parsed.data.id, userId },
     });
     revalidatePath("/");
-    revalidatePath("/history");
+
     return ok();
   } catch (e) {
     return fail(toActionMessage(e, "削除できませんでした"));
   }
-}
-
-export async function fetchMoreLogs({
-  cursor,
-  q,
-  from,
-  to,
-}: {
-  cursor: string;
-  q?: string;
-  from?: string;
-  to?: string;
-}): Promise<LogsPage> {
-  return getLogsPageForCurrentUser({ cursor, q, from, to });
 }
 
 export async function fetchMoreDays({ before }: { before: string }): Promise<{ logs: LogItem[]; hasMore: boolean }> {
@@ -110,7 +96,7 @@ export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Pr
     });
 
     revalidatePath("/");
-    revalidatePath("/history");
+
     return ok();
   } catch (e) {
     return fail(toActionMessage(e, "更新できませんでした"));

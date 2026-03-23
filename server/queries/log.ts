@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
-import type { Prisma } from "@prisma/client";
 import { fromZonedTime } from "date-fns-tz";
 
 const TZ = "Asia/Tokyo";
@@ -112,8 +111,6 @@ export async function getLogsForCurrentUser(limit = 20) {
   });
 }
 
-export const HISTORY_PAGE_SIZE = 20;
-
 export type LogItem = {
   id: string;
   performedAt: Date;
@@ -132,64 +129,6 @@ export type LogItem = {
     note: string | null;
   } | null;
 };
-
-export type LogsPage = {
-  items: LogItem[];
-  nextCursor: string | null;
-  hasMore: boolean;
-};
-
-export type LogsPageParams = {
-  limit?: number;
-  cursor?: string;
-  q?: string;
-  from?: string;
-  to?: string;
-};
-
-export async function getLogsPageForCurrentUser({
-  limit = HISTORY_PAGE_SIZE,
-  cursor,
-  q,
-  from,
-  to,
-}: LogsPageParams = {}): Promise<LogsPage> {
-  const userId = await requireUserId();
-
-  const where: Prisma.LogWhereInput = { userId };
-
-  if (from || to) {
-    where.performedAt = {
-      ...(from ? { gte: fromZonedTime(from, TZ) } : {}),
-      ...(to ? { lte: fromZonedTime(`${to}T23:59:59.999`, TZ) } : {}),
-    };
-  }
-
-  const trimmedQ = q?.trim();
-  if (trimmedQ) {
-    where.OR = [
-      { activity: { name: { contains: trimmedQ, mode: "insensitive" } } },
-      { reflection: { note: { contains: trimmedQ, mode: "insensitive" } } },
-    ];
-  }
-
-  const rows = await prisma.log.findMany({
-    where,
-    include: {
-      activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
-    },
-    orderBy: [{ performedAt: "desc" }, { id: "desc" }],
-    take: limit + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-  });
-
-  const hasMore = rows.length > limit;
-  const items = hasMore ? rows.slice(0, limit) : rows;
-  const nextCursor = hasMore ? items[items.length - 1].id : null;
-
-  return { items, nextCursor, hasMore };
-}
 
 export type HistoryDayItem = {
   date: string; // YYYY-MM-DD
