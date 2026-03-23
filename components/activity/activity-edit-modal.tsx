@@ -6,6 +6,7 @@ import { updateActivity } from "@/server/actions/activity";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
@@ -21,6 +22,7 @@ interface Activity {
   name: string;
   emoji: string | null;
   color: string | null;
+  description: string | null;
 }
 
 interface Props {
@@ -32,6 +34,7 @@ export function ActivityEditModal({ activity, onClose }: Props) {
   const [name, setName] = useState(activity.name);
   const [emoji, setEmoji] = useState(activity.emoji ?? "");
   const [color, setColor] = useState(activity.color ?? "");
+  const [description, setDescription] = useState(activity.description ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -44,6 +47,7 @@ export function ActivityEditModal({ activity, onClose }: Props) {
         name,
         emoji: emoji || undefined,
         color: color || undefined,
+        description: description || undefined,
       });
       if (result.ok) {
         onClose();
@@ -105,6 +109,21 @@ export function ActivityEditModal({ activity, onClose }: Props) {
                   />
                 ))}
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-activity-description" className="text-zinc-500 text-xs uppercase tracking-wide">
+                説明
+              </Label>
+              <Textarea
+                id="edit-activity-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="活動の目的やルールなど（任意）"
+                maxLength={200}
+                rows={2}
+                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0 resize-none"
+              />
+              <p className="text-zinc-600 text-xs text-right">{description.length}/200</p>
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             <Button

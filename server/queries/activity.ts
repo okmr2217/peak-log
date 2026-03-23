@@ -49,6 +49,7 @@ export type ActivityWithStats = {
   name: string;
   emoji: string | null;
   color: string | null;
+  description: string | null;
   sortOrder: number;
   isArchived: boolean;
   stats: ActivityStats;
@@ -61,7 +62,7 @@ export async function getActivitiesWithStatsForCurrentUser(): Promise<ActivityWi
   const [activities, logStats] = await Promise.all([
     prisma.activity.findMany({
       where: { userId },
-      select: { id: true, name: true, emoji: true, color: true, sortOrder: true, isArchived: true },
+      select: { id: true, name: true, emoji: true, color: true, description: true, sortOrder: true, isArchived: true },
       orderBy: { sortOrder: "asc" },
     }),
     prisma.log.groupBy({

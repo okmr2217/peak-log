@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { createActivity } from "@/server/actions/activity";
 import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
@@ -24,6 +25,7 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("");
   const [color, setColor] = useState("");
+  const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -35,6 +37,7 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
         name,
         emoji: emoji || undefined,
         color: color || undefined,
+        description: description || undefined,
       });
       if (result.ok) {
         onSuccess();
@@ -94,6 +97,21 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
                   />
                 ))}
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="activity-description" className="text-zinc-500 text-xs uppercase tracking-wide">
+                説明
+              </Label>
+              <Textarea
+                id="activity-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="活動の目的やルールなど（任意）"
+                maxLength={200}
+                rows={2}
+                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0 resize-none"
+              />
+              <p className="text-zinc-600 text-xs text-right">{description.length}/200</p>
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             <Button

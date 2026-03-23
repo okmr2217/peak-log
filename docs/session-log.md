@@ -2,6 +2,19 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 Activity 説明文フィールド追加
+
+### やったこと
+- `Activity` モデルに `description String?` を追加（Prisma マイグレーション済み）
+- バリデータ（`createActivitySchema` / `updateActivitySchema`）に `description`（最大200文字）を追加
+- `ActivityWithStats` 型と `getActivitiesWithStatsForCurrentUser` クエリに `description` を追加
+- 作成・編集モーダルにテキストエリア（2行・200文字カウンター表示）を追加（カラーフィールドの後）
+- `ActivityItem` の `Activity` インターフェースに `description` を追加
+
+### 技術メモ
+- カードへの表示はなし。モーダルのみ表示
+- `getActiveActivitiesForCurrentUser`（Home用）には `description` を含めていない（不要なため）
+
 ## 2026-03-22 activity-detail UI 改善
 
 ### やったこと

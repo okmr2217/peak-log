@@ -94,13 +94,14 @@ model Verification {
 // sortOrder で並び替え、isArchived で論理削除に対応。
 // ---------------------------------------------------------------------------
 model Activity {
-  id         String   @id @default(cuid())
-  userId     String
-  name       String
-  emoji      String?
-  color      String?
-  sortOrder  Int      @default(0)
-  isArchived Boolean  @default(false)
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  emoji       String?
+  color       String?
+  description String?
+  sortOrder   Int      @default(0)
+  isArchived  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

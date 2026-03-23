@@ -4,6 +4,7 @@ export const createActivitySchema = z.object({
   name: z.string().min(1, "活動名を入力してください").max(20, "活動名は20文字以内で入力してください"),
   emoji: z.string().max(10).optional(),
   color: z.string().max(20).optional(),
+  description: z.string().max(200, "説明は200文字以内で入力してください").optional(),
 });
 
 export const updateActivitySchema = z.object({
@@ -11,6 +12,7 @@ export const updateActivitySchema = z.object({
   name: z.string().min(1, "活動名を入力してください").max(20, "活動名は20文字以内で入力してください"),
   emoji: z.string().max(10).optional(),
   color: z.string().max(20).optional(),
+  description: z.string().max(200, "説明は200文字以内で入力してください").optional(),
 });
 
 export const archiveActivitySchema = z.object({

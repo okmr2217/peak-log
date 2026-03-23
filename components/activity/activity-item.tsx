@@ -13,6 +13,7 @@ interface Activity {
   name: string;
   emoji: string | null;
   color: string | null;
+  description: string | null;
   sortOrder: number;
   isArchived: boolean;
   stats: {
