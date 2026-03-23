@@ -63,10 +63,10 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
       <button
         type="button"
         onClick={() => setIsMenuOpen((v) => !v)}
-        className="p-1 rounded-lg text-zinc-600 hover:text-zinc-400 hover:bg-white/5 transition-colors"
+        className="p-1.5 rounded-lg text-zinc-600 hover:text-zinc-400 hover:bg-white/5 transition-colors"
         aria-label="操作メニュー"
       >
-        <MoreVertical size={14} />
+        <MoreVertical size={16} />
       </button>
 
       {isMenuOpen && (
