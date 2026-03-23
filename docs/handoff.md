@@ -1,6 +1,6 @@
 # Peak Log — セッション引き継ぎ
 
-> 最終更新: 2026-03-24（記録ページ廃止・Home タイムライン化）
+> 最終更新: 2026-03-24（ActivityItem D&D 並び替え・メニュー廃止）
 > バージョン: 1.1.0
 > このドキュメントは「今どこにいるか」を記録する。コンセプト・技術設計は @docs/project.md を参照。
 
@@ -38,7 +38,7 @@
 - PWA manifest 設定（service worker は未実装）
 - バージョン管理・CHANGELOG（`package.json` → Settings ページに表示）
 - LogCard のコンパクト化（絵文字ボックス縮小・余韻なし時の Reflection エリア非表示・余韻追加/編集をドロップダウンメニューに統合）
-- ActivityItem のコンパクト化（絵文字ボックス縮小・アクションボタン行を廃止し 3 点メニューに統合）
+- ActivityItem のコンパクト化 + D&D 並び替え（GripVertical ハンドル・useSortable）・メニュー廃止（統計・編集・アーカイブを独立アイコンボタンとして常時表示）
 - 新規ユーザー登録時のデフォルト Activity 自動作成（Better Auth `databaseHooks.user.create.after`・5件 transaction）
 
 変更履歴の詳細は @CHANGELOG.md を参照。

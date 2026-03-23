@@ -86,7 +86,8 @@ Reflection 入力
 | 認証 | Better Auth 1.5 |
 | スタイリング | Tailwind CSS 3 |
 | バリデーション | Zod 4 |
-| 日付処理 | dayjs / date-fns |
+| 日付処理 | date-fns / date-fns-tz |
+| D&D | @dnd-kit/core / @dnd-kit/sortable |
 | アイコン | Lucide React |
 | Toast | Sonner |
 | UI プリミティブ | Radix UI（Dialog・Popover・AlertDialog 等） |

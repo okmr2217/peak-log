@@ -2,6 +2,27 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 ActivityItem UI 刷新・D&D 並び替え追加
+
+### やったこと
+- 並び替え（↑↓）・メニュー（⋮）ボタンを `p-1.5 / size 13-14` → `p-2 / size 15-16` に拡大
+- 統計ボタン（BarChart2）をドロップダウンメニューから独立アイコンボタンに昇格
+- `@dnd-kit/core` `@dnd-kit/sortable` `@dnd-kit/utilities` を追加
+- `ActivityList` に `DndContext` + `SortableContext` を追加しオプティミスティック更新
+  - `useState` でローカル順序を管理、`arrayMove` で即時反映 → `reorderActivities` Server Action 呼び出し
+  - `DragOverlay` でドラッグ中のゴーストカードを表示
+  - `TouchSensor`（delay: 200ms）でモバイルのスクロールと競合しない設定
+- `ActivityItem` に `useSortable` フック + `GripVertical` ハンドルを追加
+- ↑↓ 並び替えボタンを廃止（D&D に置き換え）
+- `MoreVertical` ドロップダウンメニューを廃止
+- 統計・編集・アーカイブをカード右端に常時表示のアイコンボタンとして配置
+- `ActivityItem` の `allActivityIds` prop を削除（D&D 移行により不要）
+
+### 技術メモ
+- `useSortable` の `transform` と既存の `cardStyle` は `style={{ ...cardStyle, ...style }}` で合成
+- オプティミスティック更新: `setActivities(reordered)` → `await reorderActivities(...)` の順。エラー時のロールバックは現状なし（Server Action 失敗時は次のページロードで修正される）
+- `TouchSensor` の `activationConstraint: { delay: 200, tolerance: 5 }` でタップとドラッグを区別
+
 ## 2026-03-24 記録ページ廃止・Home タイムライン化
 
 ### やったこと
