@@ -36,26 +36,26 @@ export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <Link
         href={buildHref(prevMonth)}
-        className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
+        className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
         aria-label="前の月"
       >
-        <ChevronLeft size={16} />
+        <ChevronLeft size={18} />
       </Link>
-      <span className="text-white font-medium text-base min-w-[88px] text-center">{label}</span>
+      <span className="text-white font-semibold text-lg min-w-[108px] text-center">{label}</span>
       {isCurrentMonth ? (
-        <span className="p-1.5 text-zinc-800" aria-disabled="true">
-          <ChevronRight size={16} />
+        <span className="p-2 text-zinc-800" aria-disabled="true">
+          <ChevronRight size={18} />
         </span>
       ) : (
         <Link
           href={buildHref(nextMonth)}
-          className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
+          className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-white"
           aria-label="次の月"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={18} />
         </Link>
       )}
     </div>

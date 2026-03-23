@@ -1,20 +1,13 @@
 import { type MonthlySummary } from "@/server/queries/log";
-import { MonthNav } from "./month-nav";
 
 type Props = {
   summary: MonthlySummary;
-  month: string;
-  baseParams: string;
-  basePath?: string;
 };
 
-export function MonthlySummarySection({ summary, month, baseParams, basePath }: Props) {
+export function MonthlySummarySection({ summary }: Props) {
   return (
     <section className="mb-2 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">今月の概要</span>
-        <MonthNav month={month} baseParams={baseParams} basePath={basePath} />
-      </div>
+      <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">今月の概要</span>
 
       {summary.totalLogs === 0 ? (
         <div className="bg-[#1A1A1A] rounded-xl p-6 text-center border border-white/[0.05]">

@@ -1,5 +1,6 @@
 import { getMonthlySummaryForCurrentUser, getMonthlyLogsForCurrentUser } from "@/server/queries/log";
 import { MonthlySummarySection } from "@/components/history/monthly-summary";
+import { MonthNav } from "@/components/history/month-nav";
 import { PageHeader } from "@/components/layout/page-header";
 import { formatInTimeZone } from "date-fns-tz";
 import { formatDayFull, formatTime } from "@/lib/date-utils";
@@ -39,16 +40,25 @@ export default async function MonthlyPage({ searchParams }: Props) {
     <div className="px-4 pb-6 max-w-lg mx-auto">
       <PageHeader title="月次" description="月ごとの記録を確認できます" />
 
+      <div className="flex justify-center mb-6">
+        <MonthNav month={month} baseParams="" basePath="/monthly" />
+      </div>
+
       {summary ? (
-        <MonthlySummarySection summary={summary} month={month} baseParams="" basePath="/monthly" />
+        <MonthlySummarySection summary={summary} />
       ) : (
         <p className="text-zinc-500 text-sm">統計の読み込みに失敗しました</p>
       )}
 
-      {dayGroups.length > 0 && (
-        <section className="mt-6 space-y-3">
-          <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">今月のピーク</span>
-          <div className="divide-y divide-white/[0.04]">
+      <section className="mt-6">
+        <span className="text-sm text-zinc-400 uppercase tracking-wider font-medium">今月のピーク</span>
+        {dayGroups.length === 0 ? (
+          <div className="bg-[#1A1A1A] rounded-xl p-6 text-center border border-white/[0.05] mt-2">
+            <p className="text-zinc-400 text-sm mb-1">この月のピークはまだありません</p>
+            <p className="text-zinc-600 text-xs">記録すると、ここに日別で表示されます</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-white/[0.04] mt-1">
             {dayGroups.map(([date, dayLogs]) => (
               <div key={date} className="flex flex-col gap-2.5 py-2.5 px-1">
                 <span className={`text-sm font-medium tabular-nums ${getDateTextClassName(getDayType(date))}`}>
@@ -75,8 +85,8 @@ export default async function MonthlyPage({ searchParams }: Props) {
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }
