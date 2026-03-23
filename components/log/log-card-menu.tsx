@@ -59,7 +59,7 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
 
   return (
     <div className="relative flex items-center gap-1" ref={menuRef}>
-      <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>
+      {!timeOnly && <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>}
       <button
         type="button"
         onClick={() => setIsMenuOpen((v) => !v)}
