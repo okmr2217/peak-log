@@ -4,7 +4,6 @@ import { getActiveActivitiesForCurrentUser } from "@/server/queries/activity";
 import { getLogsRangePageForCurrentUser, getLogsSearchForCurrentUser } from "@/server/queries/log";
 import type { LogItem, HistoryDayItem } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
-import { HomeFab } from "@/components/log/home-fab";
 import { HomeContent } from "@/components/home/home-content";
 
 const RANGE_DAYS = 30;
@@ -52,16 +51,13 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   }
 
   return (
-    <div>
-      <HomeContent
-        activities={activities}
-        dayItems={dayItems}
-        oldestDate={oldestDate}
-        hasMore={hasMore}
-        selectedActivityId={activityId ?? null}
-        noteKeyword={note ?? ""}
-      />
-      <HomeFab activities={activities} defaultActivityId={activityId ?? null} />
-    </div>
+    <HomeContent
+      activities={activities}
+      dayItems={dayItems}
+      oldestDate={oldestDate}
+      hasMore={hasMore}
+      selectedActivityId={activityId ?? null}
+      noteKeyword={note ?? ""}
+    />
   );
 }

@@ -82,6 +82,7 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
       )}
 
       <CreateLogModal
+        key={isOpen ? `open-${defaultActivityId ?? ""}` : "closed"}
         activities={activities}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

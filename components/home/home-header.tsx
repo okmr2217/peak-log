@@ -13,9 +13,10 @@ type Props = {
   noteKeyword: string;
   onLoadingStart: () => void;
   onOpenChange: (open: boolean) => void;
+  onActivityChange: (activityId: string | null) => void;
 };
 
-export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoadingStart, onOpenChange }: Props) {
+export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoadingStart, onOpenChange, onActivityChange }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -48,6 +49,7 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
   const handleActivityClick = (actId: string) => {
     const next = localActivityId === actId ? null : actId;
     setLocalActivityId(next);
+    onActivityChange(next);
     updateUrl(next, noteLocal);
   };
 
@@ -61,6 +63,7 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
 
   const handleClear = () => {
     setLocalActivityId(null);
+    onActivityChange(null);
     setNoteLocal("");
     if (debounceRef.current) clearTimeout(debounceRef.current);
     router.push("/");

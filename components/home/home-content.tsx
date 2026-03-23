@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { HomeHeader } from "./home-header";
+import { HomeFab } from "@/components/log/home-fab";
 import { TimelineList } from "@/components/history/timeline-list";
 import type { HistoryDayItem } from "@/server/queries/log";
 
@@ -19,10 +20,12 @@ type Props = {
 export function HomeContent({ activities, dayItems, oldestDate, hasMore, selectedActivityId, noteKeyword }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [optimisticActivityId, setOptimisticActivityId] = useState(selectedActivityId);
 
   // サーバーが新しい props を返した = 検索完了
   useEffect(() => {
     setIsLoading(false);
+    setOptimisticActivityId(selectedActivityId);
   }, [selectedActivityId, noteKeyword]);
 
   const hasFilters = !!(selectedActivityId || noteKeyword);
@@ -36,6 +39,7 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
         noteKeyword={noteKeyword}
         onLoadingStart={() => setIsLoading(true)}
         onOpenChange={setIsPanelOpen}
+        onActivityChange={setOptimisticActivityId}
       />
       {isEmpty && !isLoading ? (
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -51,6 +55,7 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
           />
         </div>
       )}
+      <HomeFab activities={activities} defaultActivityId={optimisticActivityId} />
     </>
   );
 }
