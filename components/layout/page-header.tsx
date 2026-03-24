@@ -7,7 +7,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, action }: PageHeaderProps) {
   return (
     <div className="py-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between h-8">
         <h1 className="text-base font-medium text-zinc-300">{title}</h1>
         {action && <div>{action}</div>}
       </div>

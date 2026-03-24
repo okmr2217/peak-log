@@ -71,7 +71,7 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
 
   return (
     <div className={open ? "sticky top-0 z-10 bg-[#0A0A0A] border-b border-white/8" : ""}>
-      <div className="px-4 max-w-lg mx-auto">
+      <div className="px-4 pt-4 max-w-lg mx-auto">
         <PageHeader
           title="ピーク"
           description="記録したピーク体験が、時系列で並びます"
