@@ -136,6 +136,7 @@ peak-log/
 │   │       └── settings/
 │   ├── components/
 │   │   ├── activity/
+│   │   ├── home/                  # Home 専用（HomeContent・HomeHeader）
 │   │   ├── log/
 │   │   ├── reflection/
 │   │   ├── history/

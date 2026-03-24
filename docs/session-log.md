@@ -2,6 +2,36 @@
 
 > セッションごとの作業記録。新しい記録をこの直下に追記する（時系列降順）。
 
+## 2026-03-24 ホーム検索フィルター追加
+
+### やったこと
+- Home にアクティビティ・メモ（余韻ノート）検索フィルターを追加
+- サーバーサイドフィルタリング（URL パラメータ `?activityId=&note=`）で実装
+- フィルタパネル（Activity チップ折り返し・メモ input）を `PageHeader` の action 位置にトグルボタンとして配置
+- パネル展開時に `sticky top-0 z-10` で固定
+- フィルタあり時は `getLogsSearchForCurrentUser` で全期間検索・「さらに前を見る」非表示
+- フィルタなし時は従来の 30 日範囲 + 「さらに前を見る」
+- 検索ローダー：ボタンアイコン → スピナー + 結果リスト `opacity-40` フェード
+- 空状態：検索結果ゼロ時に `min-h-[50vh]` 上下中央で「条件に一致するピークがありません」表示
+- FAB と検索条件の連携：選択中 Activity を `CreateLogModal` の初期選択に反映
+- 楽観更新：Activity チップ選択の UI 反映をサーバー往復前に即時反映
+
+### コンポーネント構成
+```
+page.tsx（Server）
+  └─ HomeContent（Client）
+       ├─ HomeHeader（フィルタパネル・開閉・URL 更新）
+       ├─ TimelineList（検索結果表示）
+       └─ HomeFab（optimisticActivityId を渡す）
+```
+
+### 技術メモ
+- サーバー props 変更を `useEffect` で検知してローディング終了（`setIsLoading(false)`）
+- `TimelineList` に `key={activityId-note}` を渡すことで検索条件変更時に再マウント・state リセット
+- Activity チップ・クリアの楽観 state（`localActivityId`）と FAB 用 state（`optimisticActivityId`）を `onActivityChange` コールバックで `HomeContent` が仲介
+- `CreateLogModal` に `key={isOpen ? "open-{id}" : "closed"}` を付与。モーダルを開くたびに再マウントすることで `defaultActivityId` が毎回確実に反映される
+- `setState` を別コンポーネントの render 中に呼ぶ React エラーは、`setOpen` updater 内で `onOpenChange` を呼んでいたのが原因。`const next = !open; setOpen(next); onOpenChange(next);` に分離して解決
+
 ## 2026-03-24 ホームのリアルタイム更新修正
 
 ### やったこと
