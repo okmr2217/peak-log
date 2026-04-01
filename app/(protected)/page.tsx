@@ -22,8 +22,9 @@ function groupToHistoryDays(logs: LogItem[]): HistoryDayItem[] {
     .map(([date, dayLogs]) => ({ date, logs: dayLogs }));
 }
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ activityId?: string; note?: string }> }) {
-  const { activityId, note } = await searchParams;
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ activityId?: string; note?: string; tab?: string }> }) {
+  const { activityId, note, tab } = await searchParams;
+  const currentTab = tab === "compact" ? "compact" : "detail";
   const hasFilters = !!(activityId || note);
 
   const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
@@ -58,6 +59,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       hasMore={hasMore}
       selectedActivityId={activityId ?? null}
       noteKeyword={note ?? ""}
+      currentTab={currentTab}
     />
   );
 }

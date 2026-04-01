@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Zap, Settings } from "lucide-react";
+import { Clock, BarChart2, Zap, Settings } from "lucide-react";
 import { clsx } from "clsx";
 
 const navItems = [
-  { href: "/", label: "ホーム", icon: Home },
-  { href: "/monthly", label: "月次", icon: CalendarDays },
+  { href: "/", label: "タイムライン", icon: Clock },
+  { href: "/stats", label: "統計", icon: BarChart2 },
   { href: "/activities", label: "ピーク", icon: Zap },
   { href: "/settings", label: "設定", icon: Settings },
 ];

@@ -7,16 +7,19 @@ import { PageHeader } from "@/components/layout/page-header";
 
 type Activity = { id: string; name: string; emoji: string | null; color: string | null };
 
+type Tab = "detail" | "compact";
+
 type Props = {
   activities: Activity[];
   selectedActivityId: string | null;
   noteKeyword: string;
+  currentTab: Tab;
   onLoadingStart: () => void;
   onOpenChange: (open: boolean) => void;
   onActivityChange: (activityId: string | null) => void;
 };
 
-export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoadingStart, onOpenChange, onActivityChange }: Props) {
+export function HomeHeader({ activities, selectedActivityId, noteKeyword, currentTab, onLoadingStart, onOpenChange, onActivityChange }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -36,12 +39,24 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
 
   const hasFilters = !!(localActivityId || noteLocal);
 
-  const updateUrl = (actId: string | null, note: string) => {
-    setIsPending(true);
-    onLoadingStart();
+  const buildParams = (actId: string | null, note: string, tab: Tab) => {
     const params = new URLSearchParams();
     if (actId) params.set("activityId", actId);
     if (note) params.set("note", note);
+    if (tab !== "detail") params.set("tab", tab);
+    return params;
+  };
+
+  const updateUrl = (actId: string | null, note: string) => {
+    setIsPending(true);
+    onLoadingStart();
+    const params = buildParams(actId, note, currentTab);
+    const qs = params.toString();
+    router.push(qs ? `/?${qs}` : "/");
+  };
+
+  const handleTabChange = (tab: Tab) => {
+    const params = buildParams(localActivityId, noteLocal, tab);
     const qs = params.toString();
     router.push(qs ? `/?${qs}` : "/");
   };
@@ -66,14 +81,16 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
     onActivityChange(null);
     setNoteLocal("");
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    router.push("/");
+    const params = buildParams(null, "", currentTab);
+    const qs = params.toString();
+    router.push(qs ? `/?${qs}` : "/");
   };
 
   return (
     <div className={open ? "sticky top-0 z-10 bg-[#0A0A0A] border-b border-white/8" : ""}>
       <div className="px-4 pt-4 max-w-lg mx-auto">
         <PageHeader
-          title="ピーク"
+          title="タイムライン"
           description="記録したピーク体験が、時系列で並びます"
           action={
             <button
@@ -95,6 +112,21 @@ export function HomeHeader({ activities, selectedActivityId, noteKeyword, onLoad
             </button>
           }
         />
+
+        <div className="flex gap-1 p-0.5 bg-white/[0.04] rounded-lg border border-white/[0.06] mb-1 mt-2">
+          {(["detail", "compact"] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => handleTabChange(t)}
+              className={`flex-1 text-xs py-1.5 rounded-md transition-colors font-medium ${
+                currentTab === t ? "bg-white/[0.08] text-white" : "text-zinc-600 hover:text-zinc-400"
+              }`}
+            >
+              {t === "detail" ? "詳細" : "コンパクト"}
+            </button>
+          ))}
+        </div>
 
         {open && (
           <div className="pb-3 space-y-3">

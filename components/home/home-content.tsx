@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { HomeHeader } from "./home-header";
 import { HomeFab } from "@/components/log/home-fab";
 import { TimelineList } from "@/components/history/timeline-list";
+import { CompactTimelineList } from "./compact-timeline";
 import type { HistoryDayItem } from "@/server/queries/log";
 
 type Activity = { id: string; name: string; emoji: string | null; color: string | null };
+type Tab = "detail" | "compact";
 
 type Props = {
   activities: Activity[];
@@ -15,9 +17,10 @@ type Props = {
   hasMore: boolean;
   selectedActivityId: string | null;
   noteKeyword: string;
+  currentTab: Tab;
 };
 
-export function HomeContent({ activities, dayItems, oldestDate, hasMore, selectedActivityId, noteKeyword }: Props) {
+export function HomeContent({ activities, dayItems, oldestDate, hasMore, selectedActivityId, noteKeyword, currentTab }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [optimisticActivityId, setOptimisticActivityId] = useState(selectedActivityId);
@@ -37,6 +40,7 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
         activities={activities}
         selectedActivityId={selectedActivityId}
         noteKeyword={noteKeyword}
+        currentTab={currentTab}
         onLoadingStart={() => setIsLoading(true)}
         onOpenChange={setIsPanelOpen}
         onActivityChange={setOptimisticActivityId}
@@ -47,12 +51,21 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isPanelOpen ? "pt-4" : ""} ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
-          <TimelineList
-            key={`${selectedActivityId ?? ""}-${noteKeyword}`}
-            initialItems={dayItems}
-            oldestDate={oldestDate}
-            hasMore={hasMore}
-          />
+          {currentTab === "compact" ? (
+            <CompactTimelineList
+              key={`compact-${selectedActivityId ?? ""}-${noteKeyword}`}
+              initialItems={dayItems}
+              oldestDate={oldestDate}
+              hasMore={hasMore}
+            />
+          ) : (
+            <TimelineList
+              key={`detail-${selectedActivityId ?? ""}-${noteKeyword}`}
+              initialItems={dayItems}
+              oldestDate={oldestDate}
+              hasMore={hasMore}
+            />
+          )}
         </div>
       )}
       <HomeFab activities={activities} defaultActivityId={optimisticActivityId} />
