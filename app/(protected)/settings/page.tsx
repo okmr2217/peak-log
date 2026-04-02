@@ -11,7 +11,7 @@ export default async function SettingsPage() {
   return (
     <div className="p-4 max-w-lg mx-auto">
       <PageHeader title="設定" description="アカウント設定とアプリ情報を確認できます" />
-      <div className="space-y-8">
+      <div className="space-y-4">
 
       {/* アカウント */}
       <section className="space-y-3">
