@@ -59,7 +59,7 @@ export function CompactTimelineList({ initialItems, oldestDate, hasMore: initial
               {formatDayFull(date)}
             </span>
             <span className="flex flex-wrap gap-x-1.5 gap-y-2">
-              {[...logs].reverse().map((log) => {
+              {logs.map((log) => {
                 const color = log.activity.color;
                 return (
                   <span

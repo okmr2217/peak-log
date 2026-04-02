@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
-import { Pencil, Archive, ArchiveRestore, BarChart2, GripVertical } from "lucide-react";
+import { Pencil, Archive, ArchiveRestore, GripVertical } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { CSS } from "@dnd-kit/utilities";
@@ -117,13 +116,6 @@ export function ActivityItem({ activity }: Props) {
 
         {/* アクションボタン */}
         <div className="flex items-center gap-0.5 flex-shrink-0">
-          <Link
-            href={`/activities/${activity.id}`}
-            className="p-2 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"
-            aria-label="統計を見る"
-          >
-            <BarChart2 size={16} />
-          </Link>
           <button
             onClick={() => setShowEditModal(true)}
             className="p-2 text-zinc-600 hover:text-zinc-400 hover:bg-white/5 rounded-lg transition-colors"

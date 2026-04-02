@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ActivityCategoryStat, PeriodPreset } from "@/server/queries/log";
 import { PeriodFilter } from "./period-filter";
 import { formatRelativeTime } from "@/lib/date-utils";
@@ -22,15 +23,15 @@ export function CategoryStatsSection({ stats, period }: Props) {
           {stats.map((stat, index) => {
             const color = stat.color;
             return (
-              <li
-                key={stat.activityId}
-                className="relative bg-[#1A1A1A] rounded-xl border border-white/[0.05] overflow-hidden"
-              >
+              <li key={stat.activityId}>
+                <Link
+                  href={`/activities/${stat.activityId}`}
+                  className="relative bg-[#1A1A1A] rounded-xl border border-white/[0.05] overflow-hidden flex items-center gap-3 pl-4 pr-4 py-3.5 hover:bg-[#222] transition-colors"
+                >
                 <div
                   className="absolute left-0 top-0 bottom-0 w-[3px]"
                   style={{ background: color ?? "#7C4DFF" }}
                 />
-                <div className="pl-4 pr-4 py-3.5 flex items-center gap-3">
                   <span className="text-xs text-zinc-600 w-5 text-right tabular-nums font-medium shrink-0">
                     {index + 1}
                   </span>
@@ -55,7 +56,7 @@ export function CategoryStatsSection({ stats, period }: Props) {
                       )}
                     </div>
                   </div>
-                </div>
+                </Link>
               </li>
             );
           })}
