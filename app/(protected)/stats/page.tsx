@@ -49,7 +49,7 @@ async function MonthlyStatsContent({ month }: { month: string }) {
   const summary = await getMonthlySummaryForCurrentUser(month).catch(() => null);
 
   if (!summary) {
-    return <p className="text-zinc-500 text-sm">統計の読み込みに失敗しました</p>;
+    return <p className="text-muted-foreground text-sm">統計の読み込みに失敗しました</p>;
   }
 
   return <MonthlySummarySection summary={summary} />;

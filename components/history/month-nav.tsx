@@ -39,20 +39,20 @@ export function MonthNav({ month, baseParams, basePath = "/history" }: Props) {
     <div className="flex items-center gap-0.5">
       <Link
         href={buildHref(prevMonth)}
-        className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#1A1A1A] border border-white/[0.08] text-zinc-500 hover:text-white hover:border-white/20 transition-colors"
+        className="h-8 w-8 flex items-center justify-center rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
         aria-label="前の月"
       >
         <ChevronLeft size={15} />
       </Link>
-      <span className="text-white font-medium text-sm min-w-[80px] text-center">{label}</span>
+      <span className="text-foreground font-medium text-sm min-w-[80px] text-center">{label}</span>
       {isCurrentMonth ? (
-        <span className="h-8 w-8 flex items-center justify-center text-zinc-800" aria-disabled="true">
+        <span className="h-8 w-8 flex items-center justify-center text-muted-foreground/30" aria-disabled="true">
           <ChevronRight size={15} />
         </span>
       ) : (
         <Link
           href={buildHref(nextMonth)}
-          className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#1A1A1A] border border-white/[0.08] text-zinc-500 hover:text-white hover:border-white/20 transition-colors"
+          className="h-8 w-8 flex items-center justify-center rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 transition-colors"
           aria-label="次の月"
         >
           <ChevronRight size={15} />

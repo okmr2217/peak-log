@@ -113,7 +113,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                     type="button"
                     onClick={() => setDateMode(mode)}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95 flex-1 ${
-                      dateMode === mode ? "text-white" : "bg-muted text-muted-foreground hover:bg-secondary"
+                      dateMode === mode ? "text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                     style={
                       dateMode === mode
@@ -162,7 +162,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
 
             {/* Note */}
             <div>
-              <Label htmlFor="edit-log-note" className="text-zinc-500 text-xs mb-1.5 block tracking-wide uppercase">
+              <Label htmlFor="edit-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
                 メモ（任意）
               </Label>
               <Textarea
@@ -204,9 +204,9 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                 maxLength={200}
                 rows={2}
                 placeholder="体験の余韻を残しておこう..."
-                className="bg-white/5 border-0 rounded-xl px-3.5 py-2.5 placeholder:text-zinc-600 resize-none focus-visible:ring-[#7C4DFF]/50 leading-relaxed"
+                className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
               />
-              <p className="text-zinc-700 text-xs text-right mt-1">{note.length}/200</p>
+              <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
@@ -217,7 +217,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                 variant="outline"
                 onClick={onClose}
                 disabled={isPending}
-                className="flex-1 rounded-xl h-auto py-3 border-white/10 text-zinc-300 hover:bg-white/5 hover:text-white"
+                className="flex-1 rounded-xl h-auto py-3 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 キャンセル
               </Button>

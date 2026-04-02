@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useTheme } from "next-themes";
 import { Label } from "@/components/ui/label";
 
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
@@ -15,16 +16,17 @@ interface Props {
 
 export function EmojiPickerField({ value, onChange }: Props) {
   const [showPicker, setShowPicker] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   return (
     <div className="space-y-2">
-      <Label className="text-zinc-500 text-xs uppercase tracking-wide">絵文字</Label>
+      <Label className="text-muted-foreground text-xs uppercase tracking-wide">絵文字</Label>
 
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/8 text-2xl select-none">
+        <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-muted border border-border text-2xl select-none">
           {value || "🏷️"}
         </div>
-        <span className="text-zinc-600 text-xs">現在の選択</span>
+        <span className="text-muted-foreground/60 text-xs">現在の選択</span>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -34,7 +36,7 @@ export function EmojiPickerField({ value, onChange }: Props) {
             type="button"
             onClick={() => onChange(e)}
             className={`w-9 h-9 rounded-lg text-xl flex items-center justify-center transition-colors ${
-              value === e ? "bg-[#7C4DFF]/30 ring-1 ring-[#7C4DFF]" : "bg-white/5 hover:bg-white/10"
+              value === e ? "bg-primary/30 ring-1 ring-primary" : "bg-muted hover:bg-muted/80"
             }`}
             aria-label={e}
             aria-pressed={value === e}
@@ -47,20 +49,20 @@ export function EmojiPickerField({ value, onChange }: Props) {
       <button
         type="button"
         onClick={() => setShowPicker((v) => !v)}
-        className="text-xs text-zinc-400 hover:text-white transition-colors"
+        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
         {showPicker ? "閉じる" : "もっと選ぶ"}
       </button>
 
       {showPicker && (
-        <div className="mt-1 [&_.EmojiPickerReact]:!bg-[#1C1C1C] [&_.EmojiPickerReact]:!border-white/8">
+        <div className="mt-1">
           <EmojiPicker
             onEmojiClick={(data) => {
               onChange(data.emoji);
               setShowPicker(false);
             }}
             // @ts-expect-error theme string is valid
-            theme="dark"
+            theme={resolvedTheme === "dark" ? "dark" : "light"}
             width="100%"
             height={320}
             previewConfig={{ showPreview: false }}

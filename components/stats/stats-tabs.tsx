@@ -17,13 +17,13 @@ export function StatsTabs({ currentTab, month, period }: Props) {
   ];
 
   return (
-    <div className="flex gap-1 p-0.5 bg-white/[0.04] rounded-lg border border-white/[0.06] mb-4">
+    <div className="flex gap-1 p-0.5 bg-muted rounded-lg border border-border mb-4">
       {tabs.map((tab) => (
         <Link
           key={tab.value}
           href={tab.href}
           className={`flex-1 text-xs py-1.5 rounded-md transition-colors font-medium text-center ${
-            currentTab === tab.value ? "bg-white/[0.08] text-white" : "text-zinc-600 hover:text-zinc-400"
+            currentTab === tab.value ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {tab.label}

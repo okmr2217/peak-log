@@ -38,20 +38,20 @@ export function ActivityButton({ activity, onQuickLog, disabled }: ActivityButto
       disabled={pending || disabled}
       className={cn(
         "relative flex flex-col items-center justify-center gap-2 rounded-2xl p-4 min-h-[96px] w-full",
-        "border text-white",
+        "border text-foreground",
         "transition-transform duration-150 active:scale-[0.94]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
       )}
       style={{
         background: color
           ? `linear-gradient(160deg, ${color}30 0%, ${color}1C 100%)`
-          : "rgba(255,255,255,0.05)",
-        borderColor: color ? `${color}55` : "rgba(255,255,255,0.10)",
+          : "hsl(var(--muted))",
+        borderColor: color ? `${color}55` : "hsl(var(--border))",
         boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.15)`,
       }}
     >
       {activity.emoji && <span className="text-[26px] leading-none">{activity.emoji}</span>}
-      <span className="text-[11px] font-medium text-center leading-tight text-white/80">{activity.name}</span>
+      <span className="text-[11px] font-medium text-center leading-tight text-foreground/80">{activity.name}</span>
       {pending && (
         <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

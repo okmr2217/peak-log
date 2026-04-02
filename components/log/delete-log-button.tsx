@@ -36,7 +36,7 @@ export function DeleteLogButton({ logId }: Props) {
       <AlertDialogTrigger asChild>
         <button
           type="button"
-          className="p-1.5 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors"
           aria-label="削除"
         >
           <Trash2 size={14} />

@@ -77,7 +77,7 @@ export function ActivityDetailView({ detail }: Props) {
       {/* 戻るボタン */}
       <Link
         href="/activities"
-        className="inline-flex items-center gap-1 text-zinc-500 hover:text-zinc-300 transition-colors text-sm mb-6"
+        className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
       >
         <ChevronLeft size={16} />
         活動一覧
@@ -92,41 +92,41 @@ export function ActivityDetailView({ detail }: Props) {
           {detail.emoji ?? "⚡"}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-white">{detail.name}</h1>
+          <h1 className="text-xl font-bold text-foreground">{detail.name}</h1>
           {detail.isArchived ? (
-            <span className="text-xs text-zinc-600 mt-1.5 block">アーカイブ済み</span>
+            <span className="text-xs text-muted-foreground/60 mt-1.5 block">アーカイブ済み</span>
           ) : (
-            <span className="text-xs text-zinc-600 mt-1.5 block">この Activity の記録と統計を確認できます</span>
+            <span className="text-xs text-muted-foreground mt-1.5 block">この Activity の記録と統計を確認できます</span>
           )}
         </div>
       </div>
 
       {/* 統計カード */}
-      <div className="bg-[#1A1A1A] rounded-2xl border border-white/5 p-4 mb-6">
+      <div className="bg-card rounded-2xl border border-border p-4 mb-6">
         {stats.totalCount === 0 ? (
-          <p className="text-zinc-600 text-sm text-center py-2">まだ記録がありません</p>
+          <p className="text-muted-foreground text-sm text-center py-2">まだ記録がありません</p>
         ) : (
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             <div>
-              <p className="text-zinc-600 text-[11px] mb-0.5">累計</p>
-              <p className="text-white font-semibold text-lg tabular-nums">
+              <p className="text-muted-foreground/60 text-[11px] mb-0.5">累計</p>
+              <p className="text-foreground font-semibold text-lg tabular-nums">
                 {stats.totalCount}
-                <span className="text-zinc-500 text-sm font-normal ml-0.5">回</span>
+                <span className="text-muted-foreground text-sm font-normal ml-0.5">回</span>
               </p>
             </div>
             {stats.lastPerformedAt && (
               <div>
-                <p className="text-zinc-600 text-[11px] mb-0.5">最後の記録</p>
-                <p className="text-white font-semibold text-lg">
+                <p className="text-muted-foreground/60 text-[11px] mb-0.5">最後の記録</p>
+                <p className="text-foreground font-semibold text-lg">
                   {formatLastPerformedAt(stats.lastPerformedAt)}
-                  <span className="text-zinc-600 text-xs font-normal ml-1.5">{formatPerformedAt(stats.lastPerformedAt)}</span>
+                  <span className="text-muted-foreground text-xs font-normal ml-1.5">{formatPerformedAt(stats.lastPerformedAt)}</span>
                 </p>
               </div>
             )}
             {stats.avgIntervalDays != null && (
               <div>
-                <p className="text-zinc-600 text-[11px] mb-0.5">だいたいの間隔</p>
-                <p className="text-white font-semibold text-lg">{formatAvgInterval(stats.avgIntervalDays)}</p>
+                <p className="text-muted-foreground/60 text-[11px] mb-0.5">だいたいの間隔</p>
+                <p className="text-foreground font-semibold text-lg">{formatAvgInterval(stats.avgIntervalDays)}</p>
               </div>
             )}
           </div>
@@ -136,7 +136,7 @@ export function ActivityDetailView({ detail }: Props) {
       {/* 最近の記録 */}
       {recentLogs.length > 0 && (
         <div>
-          <h2 className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
+          <h2 className="text-muted-foreground text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
           <div className="space-y-3">
             {recentLogs.map((log) => (
               <TimelineItem

@@ -47,7 +47,7 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
       />
       {isEmpty && !isLoading ? (
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-sm text-zinc-500">条件に一致するピークがありません</p>
+          <p className="text-sm text-muted-foreground">条件に一致するピークがありません</p>
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isPanelOpen ? "pt-4" : ""} ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>

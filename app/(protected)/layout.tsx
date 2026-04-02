@@ -5,7 +5,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
   await requireUser();
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <main className="pb-20">{children}</main>
       <BottomNav />
     </div>

@@ -86,7 +86,7 @@ const BottomSheetContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-[70] w-full rounded-t-3xl border border-white/8 bg-[#1C1C1C] shadow-2xl duration-200",
+        "fixed bottom-0 left-0 right-0 z-[70] w-full rounded-t-3xl border border-border bg-card shadow-2xl duration-200",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
@@ -101,7 +101,7 @@ const BottomSheetContent = React.forwardRef<
     >
       {/* Drag handle — mobile only */}
       <div className="flex justify-center pt-3 pb-1 sm:hidden">
-        <div className="w-10 h-1 rounded-full bg-white/15" />
+        <div className="w-10 h-1 rounded-full bg-muted-foreground/20" />
       </div>
       {children}
     </DialogPrimitive.Content>

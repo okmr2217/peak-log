@@ -63,7 +63,7 @@ export function ActivityList({ activities: initialActivities }: Props) {
     <div className="p-4 max-w-lg mx-auto">
       <PageHeader
         title="活動"
-        description="Activity の管理・並び替え・アーカイブができます"
+        description="活動の追加・編集・並び替え・アーカイブができます"
         action={
           <Button onClick={() => setShowCreateModal(true)} size="sm" className="gap-1.5 rounded-xl">
             <Plus size={15} />
@@ -74,8 +74,8 @@ export function ActivityList({ activities: initialActivities }: Props) {
 
       {activities.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-zinc-300 text-sm font-medium mb-1.5">活動を作成しよう</p>
-          <p className="text-zinc-600 text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
+          <p className="text-foreground text-sm font-medium mb-1.5">活動を作成しよう</p>
+          <p className="text-muted-foreground text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -93,19 +93,19 @@ export function ActivityList({ activities: initialActivities }: Props) {
                 className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border shadow-2xl"
                 style={{
                   background: draggingActivity.color
-                    ? `radial-gradient(ellipse at 0% 20%, ${draggingActivity.color}15 0%, transparent 55%), #1A1A1A`
-                    : "#1A1A1A",
-                  borderColor: draggingActivity.color ? `${draggingActivity.color}38` : "rgba(255,255,255,0.08)",
+                    ? `radial-gradient(ellipse at 0% 20%, ${draggingActivity.color}15 0%, transparent 55%), hsl(var(--card))`
+                    : "hsl(var(--card))",
+                  borderColor: draggingActivity.color ? `${draggingActivity.color}38` : "hsl(var(--border))",
                 }}
               >
-                <GripVertical size={16} className="text-zinc-500 flex-shrink-0" />
+                <GripVertical size={16} className="text-muted-foreground flex-shrink-0" />
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
-                  style={{ backgroundColor: draggingActivity.color ? `${draggingActivity.color}28` : "#7C4DFF22" }}
+                  style={{ backgroundColor: draggingActivity.color ? `${draggingActivity.color}28` : "hsl(var(--primary) / 0.13)" }}
                 >
                   {draggingActivity.emoji ?? "⚡"}
                 </div>
-                <span className="text-white text-sm font-semibold truncate">{draggingActivity.name}</span>
+                <span className="text-foreground text-sm font-semibold truncate">{draggingActivity.name}</span>
               </div>
             )}
           </DragOverlay>

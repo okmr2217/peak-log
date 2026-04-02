@@ -48,13 +48,13 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
             className={`
               pointer-events-auto rounded-2xl px-4 py-3.5 shadow-2xl
               flex items-center justify-between gap-4 max-w-sm w-full
-              ${toast.type === "success" ? "bg-[#232323] border border-white/8" : "bg-red-950/90 border border-red-700/40"}
+              ${toast.type === "success" ? "bg-card border border-border" : "bg-red-950/90 border border-red-700/40"}
             `}
           >
             {toast.type === "success" ? (
               <div className="flex items-center gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
-                <span className="text-white text-sm font-medium">記録しました</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                <span className="text-foreground text-sm font-medium">記録しました</span>
               </div>
             ) : (
               <span className="text-red-300 text-sm">{toast.message}</span>

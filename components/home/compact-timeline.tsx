@@ -45,14 +45,14 @@ export function CompactTimelineList({ initialItems, oldestDate, hasMore: initial
   if (daysWithLogs.length === 0) {
     return (
       <div className="py-16 text-center">
-        <p className="text-sm text-zinc-500">この期間のピークはありません</p>
+        <p className="text-sm text-muted-foreground">この期間のピークはありません</p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="divide-y divide-white/[0.04]">
+      <div className="divide-y divide-border">
         {daysWithLogs.map(({ date, logs }) => (
           <div key={date} className="flex flex-col gap-2.5 py-2.5 px-1">
             <span className={`text-sm font-medium tabular-nums ${getDateTextClassName(getDayType(date))}`}>
@@ -66,12 +66,12 @@ export function CompactTimelineList({ initialItems, oldestDate, hasMore: initial
                     key={log.id}
                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border text-sm shrink-0"
                     style={{
-                      background: color ? `${color}22` : "rgba(255,255,255,0.06)",
-                      borderColor: color ? `${color}44` : "rgba(255,255,255,0.08)",
+                      background: color ? `${color}22` : "var(--surface-overlay)",
+                      borderColor: color ? `${color}44` : "hsl(var(--border))",
                     }}
                   >
                     <span className="text-sm leading-none">{log.activity.emoji ?? "·"}</span>
-                    <span className="tabular-nums text-zinc-400 text-sm leading-none">{formatTime(log.performedAt)}</span>
+                    <span className="tabular-nums text-muted-foreground text-sm leading-none">{formatTime(log.performedAt)}</span>
                   </span>
                 );
               })}
@@ -85,7 +85,7 @@ export function CompactTimelineList({ initialItems, oldestDate, hasMore: initial
           <button
             onClick={loadMore}
             disabled={isPending}
-            className="px-5 py-2 text-xs text-zinc-500 hover:text-zinc-300 disabled:text-zinc-700 transition-colors border border-white/8 hover:border-white/15 rounded-full"
+            className="px-5 py-2 text-xs text-muted-foreground hover:text-foreground disabled:opacity-40 transition-colors border border-border hover:border-muted-foreground/30 rounded-full"
           >
             {isPending ? "読み込み中..." : "さらに前を見る"}
           </button>

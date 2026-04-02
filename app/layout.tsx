@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP, Roboto } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -27,10 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className="dark">
+    <html lang="ja" suppressHydrationWarning>
       <body className={`${roboto.variable} ${notoSansJP.variable} antialiased font-sans`}>
-        {children}
-        <Toaster />
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

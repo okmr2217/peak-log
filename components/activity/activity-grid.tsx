@@ -38,11 +38,11 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
   if (activities.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-14 text-center">
-        <p className="text-white font-semibold mb-1.5">まだ活動がありません</p>
-        <p className="text-zinc-500 text-sm mb-5">最初の活動を追加して、ピークを記録しよう</p>
+        <p className="text-foreground font-semibold mb-1.5">まだ活動がありません</p>
+        <p className="text-muted-foreground text-sm mb-5">最初の活動を追加して、ピークを記録しよう</p>
         <Link
           href="/activities"
-          className="text-sm bg-[#7C4DFF] text-white px-4 py-2 rounded-xl hover:bg-[#6B3FE0] active:scale-95 transition-all"
+          className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary/90 active:scale-95 transition-all"
         >
           活動を追加
         </Link>
@@ -64,13 +64,13 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
             className={`
               pointer-events-auto rounded-2xl px-4 py-3.5 shadow-2xl
               flex items-center justify-between gap-4 max-w-sm w-full
-              ${toast.type === "success" ? "bg-[#232323] border border-white/8" : "bg-red-950/90 border border-red-700/40"}
+              ${toast.type === "success" ? "bg-card border border-border" : "bg-red-950/90 border border-red-700/40"}
             `}
           >
             {toast.type === "success" ? (
               <div className="flex items-center gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
-                <span className="text-white text-sm font-medium">記録しました</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                <span className="text-foreground text-sm font-medium">記録しました</span>
               </div>
             ) : (
               <span className="text-red-300 text-sm">{toast.message}</span>

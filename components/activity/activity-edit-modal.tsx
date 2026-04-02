@@ -66,15 +66,15 @@ export function ActivityEditModal({ activity, onClose }: Props) {
         </VisuallyHidden>
         <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white font-semibold text-base">活動を編集</h2>
-            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-zinc-500 hover:text-white">
+            <h2 className="text-foreground font-semibold text-base">活動を編集</h2>
+            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
               <X className="h-4 w-4" />
             </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-activity-name" className="text-zinc-500 text-xs uppercase tracking-wide">
+              <Label htmlFor="edit-activity-name" className="text-muted-foreground text-xs uppercase tracking-wide">
                 名前 *
               </Label>
               <Input
@@ -86,12 +86,12 @@ export function ActivityEditModal({ activity, onClose }: Props) {
                 maxLength={20}
                 required
                 autoFocus
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
+                className="bg-muted border-border rounded-xl px-3.5 py-3 h-auto placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0"
               />
             </div>
             <EmojiPickerField value={emoji} onChange={setEmoji} />
             <div className="space-y-2">
-              <Label className="text-zinc-500 text-xs uppercase tracking-wide">カラー</Label>
+              <Label className="text-muted-foreground text-xs uppercase tracking-wide">カラー</Label>
               <div className="flex flex-wrap gap-2.5">
                 {PRESET_COLORS.map((c) => (
                   <button
@@ -111,7 +111,7 @@ export function ActivityEditModal({ activity, onClose }: Props) {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-activity-description" className="text-zinc-500 text-xs uppercase tracking-wide">
+              <Label htmlFor="edit-activity-description" className="text-muted-foreground text-xs uppercase tracking-wide">
                 説明
               </Label>
               <Textarea
@@ -121,9 +121,9 @@ export function ActivityEditModal({ activity, onClose }: Props) {
                 placeholder="活動の目的やルールなど（任意）"
                 maxLength={200}
                 rows={2}
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0 resize-none"
+                className="bg-muted border-border rounded-xl px-3.5 py-3 placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0 resize-none"
               />
-              <p className="text-zinc-600 text-xs text-right">{description.length}/200</p>
+              <p className="text-muted-foreground/50 text-xs text-right">{description.length}/200</p>
             </div>
             {error && <p className="text-red-400 text-xs">{error}</p>}
             <Button

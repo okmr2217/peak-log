@@ -164,7 +164,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                     type="button"
                     onClick={() => setDateMode(mode)}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95 flex-1 ${
-                      dateMode === mode ? "text-white" : "bg-muted text-muted-foreground hover:bg-secondary"
+                      dateMode === mode ? "text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                     style={
                       dateMode === mode
@@ -215,7 +215,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -268,7 +268,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
               type="button"
               onClick={handleSubmit}
               disabled={isPending || !resolvedActivity}
-              className="w-full rounded-xl py-3 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
+              className="w-full rounded-xl py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
               style={{
                 background: isPending ? "rgba(124,77,255,0.5)" : "linear-gradient(135deg, #7C4DFF 0%, #5533cc 100%)",
                 boxShadow: isPending || !resolvedActivity ? "none" : "0 4px 24px -4px rgba(124,77,255,0.5)",

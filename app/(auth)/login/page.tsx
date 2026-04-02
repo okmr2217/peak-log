@@ -45,20 +45,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white mb-1.5">Peak Log</h1>
-          <p className="text-zinc-500 text-sm">あなたのピーク体験を記録する</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1.5">Peak Log</h1>
+          <p className="text-muted-foreground text-sm">あなたのピーク体験を記録する</p>
         </div>
 
-        <div className="bg-[#1A1A1A] rounded-2xl p-6 border border-white/5">
-          <div className="flex mb-6 bg-[#0A0A0A] rounded-xl p-1 gap-1">
+        <div className="bg-card rounded-2xl p-6 border border-border">
+          <div className="flex mb-6 bg-background rounded-xl p-1 gap-1">
             <button
               type="button"
               onClick={() => { setMode("signin"); setError(""); }}
               className={`flex-1 py-2 text-sm rounded-lg font-medium transition-all ${
-                mode === "signin" ? "bg-[#7C4DFF] text-white" : "text-zinc-500 hover:text-zinc-300"
+                mode === "signin" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               ログイン
@@ -67,7 +67,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => { setMode("signup"); setError(""); }}
               className={`flex-1 py-2 text-sm rounded-lg font-medium transition-all ${
-                mode === "signup" ? "bg-[#7C4DFF] text-white" : "text-zinc-500 hover:text-zinc-300"
+                mode === "signup" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               新規登録
@@ -77,7 +77,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-3.5">
             {mode === "signup" && (
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-zinc-500 text-xs uppercase tracking-wide">
+                <Label htmlFor="name" className="text-muted-foreground text-xs uppercase tracking-wide">
                   名前
                 </Label>
                 <Input
@@ -87,12 +87,12 @@ export default function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   required
                   placeholder="あなたの名前"
-                  className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
+                  className="bg-muted border-border rounded-xl px-3.5 py-3 h-auto placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-0"
                 />
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-500 text-xs uppercase tracking-wide">
+              <Label htmlFor="email" className="text-muted-foreground text-xs uppercase tracking-wide">
                 メールアドレス
               </Label>
               <Input
@@ -103,11 +103,11 @@ export default function LoginPage() {
                 required
                 placeholder="example@email.com"
                 autoComplete="email"
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
+                className="bg-muted border-border rounded-xl px-3.5 py-3 h-auto placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-0"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-zinc-500 text-xs uppercase tracking-wide">
+              <Label htmlFor="password" className="text-muted-foreground text-xs uppercase tracking-wide">
                 パスワード
               </Label>
               <Input
@@ -118,7 +118,7 @@ export default function LoginPage() {
                 required
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="bg-white/5 border-white/8 rounded-xl px-3.5 py-3 h-auto placeholder:text-zinc-600 focus-visible:border-[#7C4DFF]/60 focus-visible:ring-0"
+                className="bg-muted border-border rounded-xl px-3.5 py-3 h-auto placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-0"
               />
             </div>
 
