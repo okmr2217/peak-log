@@ -65,10 +65,6 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
       return;
     }
     const performedAt = getPerformedAt();
-    if (performedAt > new Date()) {
-      setError("未来の日時は記録できません");
-      return;
-    }
     setError(null);
     startTransition(async () => {
       const result = await createLog({ activityId: resolvedActivity.id, performedAt });

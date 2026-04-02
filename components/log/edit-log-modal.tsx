@@ -57,10 +57,6 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
 
   function handleSubmit() {
     const newPerformedAt = getPerformedAt();
-    if (newPerformedAt > new Date()) {
-      setError("未来の日時は記録できません");
-      return;
-    }
     setError(null);
     startTransition(async () => {
       const result = await updateLog({
