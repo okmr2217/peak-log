@@ -135,7 +135,7 @@ export function HomeHeader({
                 currentTab === t ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "detail" ? "詳細" : "コンパクト"}
+              {t === "detail" ? "カード" : "リスト"}
             </button>
           ))}
         </div>

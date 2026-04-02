@@ -127,7 +127,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             {showActivitySelector && (
               <div>
                 <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">活動を選ぶ</Label>
-                <div className="space-y-1.5">
+                <div className="grid grid-cols-2 gap-1.5">
                   {activities!.map((a) => {
                     const isSelected = selectedActivity?.id === a.id;
                     return (
@@ -135,16 +135,15 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                         key={a.id}
                         type="button"
                         onClick={() => setSelectedActivity(a)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all duration-150 active:scale-[0.98] text-left"
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-150 active:scale-[0.98] text-left min-w-0"
                         style={
                           isSelected
                             ? { background: `${a.color ?? "#7C4DFF"}18`, borderColor: `${a.color ?? "#7C4DFF"}50` }
                             : { background: "var(--surface-overlay)", borderColor: "transparent" }
                         }
                       >
-                        <span className="w-0.5 self-stretch rounded-full flex-shrink-0" style={{ background: a.color ?? "#7C4DFF" }} />
-                        {a.emoji && <span className="text-lg leading-none">{a.emoji}</span>}
-                        <span className="text-sm text-foreground/80 font-medium">{a.name}</span>
+                        {a.emoji && <span className="text-base leading-none flex-shrink-0">{a.emoji}</span>}
+                        <span className="text-sm text-foreground/80 font-medium truncate">{a.name}</span>
                       </button>
                     );
                   })}
@@ -220,46 +219,47 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
               </div>
             </div>
 
-            {/* Stars */}
-            <div>
-              <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">スター数（任意）</Label>
-              <div className="flex gap-1.5">
-                {[1, 2, 3, 4, 5].map((v) => (
-                  <button
-                    key={v}
-                    type="button"
-                    onClick={() => setStars(stars === v ? undefined : v)}
-                    className="transition-all duration-150 active:scale-90"
-                    aria-label={`${v}スター`}
-                  >
-                    <Star
-                      className="w-7 h-7"
-                      style={
-                        stars != null && v <= stars
-                          ? { fill: "#FBBF24", color: "#FBBF24" }
-                          : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
-                      }
-                    />
-                  </button>
-                ))}
+            {/* Memo + Stars */}
+            <div className="space-y-2">
+              <div>
+                <Label htmlFor="create-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
+                  メモ
+                </Label>
+                <Textarea
+                  id="create-log-note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  maxLength={200}
+                  rows={2}
+                  placeholder="体験の余韻を残しておこう..."
+                  className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
+                />
+                <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
               </div>
-            </div>
 
-            {/* Memo */}
-            <div>
-              <Label htmlFor="create-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
-                メモ（任意）
-              </Label>
-              <Textarea
-                id="create-log-note"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                maxLength={200}
-                rows={2}
-                placeholder="体験の余韻を残しておこう..."
-                className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
-              />
-              <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
+              <div>
+                <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">スター数</Label>
+                <div className="flex gap-1.5">
+                  {[1, 2, 3, 4, 5].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setStars(stars === v ? undefined : v)}
+                      className="transition-all duration-150 active:scale-90"
+                      aria-label={`${v}スター`}
+                    >
+                      <Star
+                        className="w-7 h-7"
+                        style={
+                          stars != null && v <= stars
+                            ? { fill: "#FBBF24", color: "#FBBF24" }
+                            : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}

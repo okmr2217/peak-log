@@ -7,8 +7,6 @@ type Props = {
 export function MonthlySummarySection({ summary }: Props) {
   return (
     <section className="mb-2 space-y-3">
-      <span className="text-sm text-muted-foreground uppercase tracking-wider font-medium">今月の概要</span>
-
       {summary.totalLogs === 0 ? (
         <div className="bg-card rounded-xl p-6 text-center border border-border">
           <p className="text-muted-foreground text-sm mb-1">この月の記録はまだありません</p>
@@ -18,7 +16,7 @@ export function MonthlySummarySection({ summary }: Props) {
         <>
           <div className="grid grid-cols-3 gap-2">
             <StatCard label="記録" value={summary.totalLogs} />
-            <StatCard label="余韻あり" value={summary.reflectionCount} />
+            <StatCard label="記録日数" value={summary.activeDays} />
             <StatCard label="活動" value={summary.activityCount} />
           </div>
 

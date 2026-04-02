@@ -7,7 +7,7 @@ const TZ = "Asia/Tokyo";
 export type MonthlySummary = {
   month: string;
   totalLogs: number;
-  reflectionCount: number;
+  activeDays: number;
   activityCount: number;
   topActivities: Array<{
     activityId: string;
@@ -53,7 +53,7 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
   });
 
   const totalLogs = logs.length;
-  const reflectionCount = logs.filter((l) => l.reflection !== null).length;
+  const activeDays = new Set(logs.map((l) => formatInTimeZone(l.performedAt, TZ, "yyyy-MM-dd"))).size;
 
   const activityMap = new Map<
     string,
@@ -96,7 +96,7 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
     reflection: log.reflection,
   }));
 
-  return { month, totalLogs, reflectionCount, activityCount, topActivities, peakLogs };
+  return { month, totalLogs, activeDays, activityCount, topActivities, peakLogs };
 }
 
 export async function getLogsForCurrentUser(limit = 20) {

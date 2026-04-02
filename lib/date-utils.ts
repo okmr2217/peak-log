@@ -58,6 +58,13 @@ export function formatPerformedAt(date: Date): string {
   return formatInTimeZone(date, TZ, "M/d HH:mm");
 }
 
+/** 1時間以内は「X分前」、それ以降は「HH:mm」 */
+export function formatCompactTime(date: Date): string {
+  const diffMin = Math.floor((new Date().getTime() - date.getTime()) / 60000);
+  if (diffMin < 60) return `${diffMin}分前`;
+  return formatInTimeZone(date, TZ, "HH:mm");
+}
+
 export function formatRelativeTime(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();

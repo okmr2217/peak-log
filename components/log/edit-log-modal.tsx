@@ -167,46 +167,47 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
               </div>
             </div>
 
-            {/* Stars */}
-            <div>
-              <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">スター数（任意）</Label>
-              <div className="flex gap-1.5">
-                {[1, 2, 3, 4, 5].map((v) => (
-                  <button
-                    key={v}
-                    type="button"
-                    onClick={() => setStars(stars === v ? undefined : v)}
-                    className="transition-all duration-150 active:scale-90"
-                    aria-label={`${v}スター`}
-                  >
-                    <Star
-                      className="w-7 h-7"
-                      style={
-                        stars != null && v <= stars
-                          ? { fill: "#FBBF24", color: "#FBBF24" }
-                          : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
-                      }
-                    />
-                  </button>
-                ))}
+            {/* Note + Stars */}
+            <div className="space-y-2">
+              <div>
+                <Label htmlFor="edit-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
+                  メモ
+                </Label>
+                <Textarea
+                  id="edit-log-note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  maxLength={200}
+                  rows={2}
+                  placeholder="体験の余韻を残しておこう..."
+                  className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
+                />
+                <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
               </div>
-            </div>
 
-            {/* Note */}
-            <div>
-              <Label htmlFor="edit-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
-                メモ（任意）
-              </Label>
-              <Textarea
-                id="edit-log-note"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                maxLength={200}
-                rows={2}
-                placeholder="体験の余韻を残しておこう..."
-                className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
-              />
-              <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
+              <div>
+                <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">スター数</Label>
+                <div className="flex gap-1.5">
+                  {[1, 2, 3, 4, 5].map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => setStars(stars === v ? undefined : v)}
+                      className="transition-all duration-150 active:scale-90"
+                      aria-label={`${v}スター`}
+                    >
+                      <Star
+                        className="w-7 h-7"
+                        style={
+                          stars != null && v <= stars
+                            ? { fill: "#FBBF24", color: "#FBBF24" }
+                            : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}

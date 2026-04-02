@@ -20,7 +20,7 @@ type Props = {
 export default async function StatsPage({ searchParams }: Props) {
   const { tab, month: monthParam, period: periodParam } = await searchParams;
 
-  const currentTab = tab === "category" ? "category" : "monthly";
+  const currentTab = tab === "monthly" ? "monthly" : "category";
   const month = monthParam ?? getCurrentMonth();
   const period: PeriodPreset = VALID_PERIODS.includes(periodParam as PeriodPreset)
     ? (periodParam as PeriodPreset)
@@ -28,13 +28,15 @@ export default async function StatsPage({ searchParams }: Props) {
 
   return (
     <div className="p-4 max-w-lg mx-auto">
-      <PageHeader
-        title="統計"
-        description="記録の傾向を確認できます"
-        action={currentTab === "monthly" ? <MonthNav month={month} baseParams="tab=monthly" basePath="/stats" /> : undefined}
-      />
+      <PageHeader title="統計" description="記録の傾向を確認できます" />
 
       <StatsTabs currentTab={currentTab} month={month} period={period} />
+
+      {currentTab === "monthly" && (
+        <div className="flex justify-center mb-4">
+          <MonthNav month={month} baseParams="tab=monthly" basePath="/stats" />
+        </div>
+      )}
 
       {currentTab === "monthly" ? (
         <MonthlyStatsContent month={month} />
