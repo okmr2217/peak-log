@@ -26,9 +26,7 @@ export type MonthlySummary = {
       color: string | null;
     };
     reflection: {
-      excitement: number | null;
-      achievement: number | null;
-      wantAgain: boolean | null;
+      stars: number | null;
       note: string | null;
     } | null;
   }>;
@@ -49,7 +47,7 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
     where: { userId, performedAt: { gte: start, lt: end } },
     include: {
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { excitement: true, achievement: true, wantAgain: true, note: true } },
+      reflection: { select: { stars: true, note: true } },
     },
     orderBy: [{ performedAt: "desc" }],
   });
@@ -81,7 +79,7 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
   const scored = logs.map((log) => {
     const r = log.reflection;
     const hasReflection = r !== null ? 1000 : 0;
-    const excitement = (r?.excitement ?? 0) * 100;
+    const excitement = (r?.stars ?? 0) * 100;
     const hasNote = r?.note ? 10 : 0;
     return { log, score: hasReflection + excitement + hasNote };
   });
@@ -123,9 +121,7 @@ export type LogItem = {
   };
   reflection: {
     id: string;
-    excitement: number | null;
-    achievement: number | null;
-    wantAgain: boolean | null;
+    stars: number | null;
     note: string | null;
   } | null;
 };
@@ -149,7 +145,7 @@ export async function getLogsRangePageForCurrentUser({
       where: { userId, performedAt: { gte: from, lt: to } },
       include: {
         activity: { select: { id: true, name: true, emoji: true, color: true } },
-        reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+        reflection: { select: { id: true, stars: true, note: true } },
       },
       orderBy: [{ performedAt: "asc" }],
     }),
@@ -177,7 +173,7 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
     where: { userId, performedAt: { gte: start, lt: end } },
     include: {
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+      reflection: { select: { id: true, stars: true, note: true } },
     },
     orderBy: [{ performedAt: "desc" }, { id: "desc" }],
   });
@@ -200,7 +196,7 @@ export async function getLogsSearchForCurrentUser({
     },
     include: {
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+      reflection: { select: { id: true, stars: true, note: true } },
     },
     orderBy: [{ performedAt: "asc" }],
   });

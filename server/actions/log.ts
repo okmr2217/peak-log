@@ -11,8 +11,10 @@ import {
   createLogSchema,
   deleteLogSchema,
   updateLogPerformedAtSchema,
+  updateLogSchema,
   type CreateLogInput,
   type UpdateLogPerformedAtInput,
+  type UpdateLogInput,
 } from "@/server/validators/log";
 import { getLogsRangePageForCurrentUser, type LogItem } from "@/server/queries/log";
 
@@ -71,6 +73,50 @@ export async function fetchMoreDays({ before }: { before: string }): Promise<{ l
   const to = fromZonedTime(before, TZ);
   const from = subDays(to, 30);
   return getLogsRangePageForCurrentUser({ from, to });
+}
+
+export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
+  const parsed = updateLogSchema.safeParse(input);
+  if (!parsed.success) {
+    return fail(parsed.error.issues[0]?.message ?? "正しい日時を入力してください");
+  }
+
+  try {
+    const userId = await requireUserId();
+    const { logId, performedAt, stars, note } = parsed.data;
+
+    const existing = await prisma.log.findFirst({
+      where: { id: logId, userId },
+      select: { id: true },
+    });
+    if (!existing) {
+      return fail("記録が見つかりません");
+    }
+
+    await prisma.log.update({
+      where: { id: logId },
+      data: { performedAt },
+    });
+
+    const noteTrimmed = (note ?? "").trim();
+    const hasReflectionData = stars != null || noteTrimmed !== "";
+
+    if (hasReflectionData) {
+      await prisma.reflection.upsert({
+        where: { logId },
+        create: { logId, userId, stars: stars ?? null, note: noteTrimmed || null },
+        update: { stars: stars ?? null, note: noteTrimmed || null },
+      });
+    } else {
+      await prisma.reflection.deleteMany({ where: { logId, userId } });
+    }
+
+    revalidatePath("/");
+
+    return ok();
+  } catch (e) {
+    return fail(toActionMessage(e, "更新できませんでした"));
+  }
 }
 
 export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Promise<ActionResult> {

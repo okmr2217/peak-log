@@ -92,9 +92,7 @@ export type RecentLog = {
   createdAt: Date;
   reflection: {
     id: string;
-    excitement: number | null;
-    achievement: number | null;
-    wantAgain: boolean | null;
+    stars: number | null;
     note: string | null;
   } | null;
 };
@@ -127,7 +125,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
         id: true,
         performedAt: true,
         createdAt: true,
-        reflection: { select: { id: true, excitement: true, achievement: true, wantAgain: true, note: true } },
+        reflection: { select: { id: true, stars: true, note: true } },
       },
       orderBy: { performedAt: "asc" },
     }),

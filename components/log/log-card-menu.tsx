@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, useTransition } from "react";
-import { MoreVertical, Clock, Trash2, Sparkles } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { deleteLog } from "@/server/actions/log";
-import { EditPerformedAtModal } from "./edit-performed-at-modal";
+import { EditLogModal } from "./edit-log-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,14 +20,14 @@ type Props = {
   logId: string;
   performedAt: Date;
   timeOnly?: boolean;
-  hasReflection: boolean;
-  onAddReflection: () => void;
-  onPerformedAtSaved?: (newDate: Date) => void;
+  stars?: number | null;
+  note?: string | null;
+  onLogEdited?: (data: { newDate: Date; stars: number | null; note: string | null }) => void;
 };
 
-export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAddReflection, onPerformedAtSaved }: Props) {
+export function LogCardMenu({ logId, performedAt, timeOnly, stars, note, onLogEdited }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isEditDateOpen, setIsEditDateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(performedAt);
   const [isPending, startTransition] = useTransition();
@@ -46,9 +46,9 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  function handlePerformedAtSaved(newDate: Date) {
-    setCurrentDate(newDate);
-    onPerformedAtSaved?.(newDate);
+  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
+    setCurrentDate(data.newDate);
+    onLogEdited?.(data);
   }
 
   function handleDelete() {
@@ -59,42 +59,30 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
 
   return (
     <div className="relative flex items-center gap-1" ref={menuRef}>
-      {!timeOnly && <span className="text-zinc-600 text-xs shrink-0 tabular-nums">{timeLabel}</span>}
+      {!timeOnly && <span className="text-muted-foreground text-xs shrink-0 tabular-nums">{timeLabel}</span>}
       <button
         type="button"
         onClick={() => setIsMenuOpen((v) => !v)}
-        className="p-1.5 rounded-lg text-zinc-600 hover:text-zinc-400 hover:bg-white/5 transition-colors"
+        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         aria-label="操作メニュー"
       >
         <MoreVertical size={16} />
       </button>
 
       {isMenuOpen && (
-        <div className="absolute right-0 top-full mt-1 bg-[#1F1F1F] border border-white/10 rounded-xl shadow-xl z-50 min-w-[148px] overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-xl shadow-xl z-50 min-w-[148px] overflow-hidden">
           <button
             type="button"
             onClick={() => {
               setIsMenuOpen(false);
-              onAddReflection();
+              setIsEditOpen(true);
             }}
-            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-foreground hover:bg-muted transition-colors text-left"
           >
-            <Sparkles size={12} className="text-zinc-500 shrink-0" />
-            {hasReflection ? "余韻を編集" : "余韻を追加"}
+            <Pencil size={12} className="text-muted-foreground shrink-0" />
+            記録を編集
           </button>
-          <div className="border-t border-white/[0.06] mx-2" />
-          <button
-            type="button"
-            onClick={() => {
-              setIsMenuOpen(false);
-              setIsEditDateOpen(true);
-            }}
-            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-left"
-          >
-            <Clock size={12} className="text-zinc-500 shrink-0" />
-            時間を変更
-          </button>
-          <div className="border-t border-white/[0.06] mx-2" />
+          <div className="border-t border-border mx-2" />
           <button
             type="button"
             onClick={() => {
@@ -109,12 +97,14 @@ export function LogCardMenu({ logId, performedAt, timeOnly, hasReflection, onAdd
         </div>
       )}
 
-      <EditPerformedAtModal
+      <EditLogModal
         logId={logId}
         performedAt={currentDate}
-        isOpen={isEditDateOpen}
-        onClose={() => setIsEditDateOpen(false)}
-        onSaved={handlePerformedAtSaved}
+        initialStars={stars}
+        initialNote={note}
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSaved={handleLogEdited}
       />
 
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>

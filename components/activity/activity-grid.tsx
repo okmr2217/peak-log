@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { ActivityButton } from "./activity-button";
 import { CreateLogModal } from "@/components/log/create-log-modal";
-import { ReflectionModal } from "@/components/reflection/reflection-modal";
 
 type Activity = {
   id: string;
@@ -13,9 +12,7 @@ type Activity = {
   color: string | null;
 };
 
-type Toast =
-  | { type: "success"; logId: string; hasReflection: boolean }
-  | { type: "error"; message: string };
+type Toast = { type: "success" } | { type: "error"; message: string };
 
 type ActivityGridProps = {
   activities: Activity[];
@@ -24,7 +21,6 @@ type ActivityGridProps = {
 export function ActivityGrid({ activities }: ActivityGridProps) {
   const [pendingActivity, setPendingActivity] = useState<Activity | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
-  const [reflectionLogId, setReflectionLogId] = useState<string | null>(null);
 
   const handleActivityTap = useCallback(
     async (activityId: string) => {
@@ -34,8 +30,8 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
     [activities],
   );
 
-  const handleLogCreated = useCallback((logId: string, hasReflection: boolean) => {
-    setToast({ type: "success", logId, hasReflection });
+  const handleLogCreated = useCallback(() => {
+    setToast({ type: "success" });
     setTimeout(() => setToast(null), 4000);
   }, []);
 
@@ -72,24 +68,10 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
             `}
           >
             {toast.type === "success" ? (
-              <>
-                <div className="flex items-center gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
-                  <span className="text-white text-sm font-medium">記録しました</span>
-                </div>
-                {!toast.hasReflection && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setReflectionLogId(toast.logId);
-                      setToast(null);
-                    }}
-                    className="text-[#00E5FF] text-xs font-medium hover:opacity-80 transition-opacity shrink-0 px-3 py-1.5 rounded-lg bg-[#00E5FF]/10"
-                  >
-                    余韻を追加
-                  </button>
-                )}
-              </>
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
+                <span className="text-white text-sm font-medium">記録しました</span>
+              </div>
             ) : (
               <span className="text-red-300 text-sm">{toast.message}</span>
             )}
@@ -106,9 +88,6 @@ export function ActivityGrid({ activities }: ActivityGridProps) {
         />
       )}
 
-      {reflectionLogId && (
-        <ReflectionModal logId={reflectionLogId} isOpen={true} onClose={() => setReflectionLogId(null)} />
-      )}
     </div>
   );
 }

@@ -148,9 +148,9 @@ model Reflection {
   id          String   @id @default(cuid())
   userId      String
   logId       String   @unique
-  excitement  Int? // 高揚感 (1-5 など、バリデーションはアプリ層で)
-  achievement Int? // 達成感 (1-5 など)
-  wantAgain   Boolean?
+  stars       Int? // スター数 (1-5)
+  achievement Int? // 達成感 (廃止・カラム保持)
+  wantAgain   Boolean? // またやりたい (廃止・カラム保持)
   note        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

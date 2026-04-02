@@ -8,11 +8,9 @@ import type { HistoryDayItem, LogItem } from "@/server/queries/log";
 import { buildDayRange } from "@/lib/date-utils";
 import { TimelineItem } from "./timeline-item";
 
-type ReflectionPayload = {
-  id: string;
-  excitement: number | null;
-  achievement: number | null;
-  wantAgain: boolean | null;
+type LogEditedPayload = {
+  newDate: Date;
+  stars: number | null;
   note: string | null;
 };
 
@@ -34,20 +32,18 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
     setHasMore(initialHasMore);
   }, [initialItems, oldestDate, initialHasMore]);
 
-  function handleReflectionSaved(logId: string, reflection: ReflectionPayload) {
+  function handleLogEdited(logId: string, data: LogEditedPayload) {
     setDayItems((prev) =>
       prev.map((day) => ({
         ...day,
-        logs: day.logs.map((log) => (log.id === logId ? { ...log, reflection } : log)),
-      })),
-    );
-  }
-
-  function handlePerformedAtSaved(logId: string, newDate: Date) {
-    setDayItems((prev) =>
-      prev.map((day) => ({
-        ...day,
-        logs: day.logs.map((log) => (log.id === logId ? { ...log, performedAt: newDate } : log)),
+        logs: day.logs.map((log) => {
+          if (log.id !== logId) return log;
+          const reflection =
+            data.stars != null || data.note != null
+              ? { id: log.reflection?.id ?? "", stars: data.stars, note: data.note }
+              : null;
+          return { ...log, performedAt: data.newDate, reflection };
+        }),
       })),
     );
   }
@@ -74,8 +70,7 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
           <TimelineItem
             key={log.id}
             log={log}
-            onReflectionSaved={handleReflectionSaved}
-            onPerformedAtSaved={handlePerformedAtSaved}
+            onLogEdited={handleLogEdited}
           />
         ))}
       </div>
@@ -85,7 +80,7 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
           <button
             onClick={loadMore}
             disabled={isPending}
-            className="px-5 py-2 text-xs text-zinc-500 hover:text-zinc-300 disabled:text-zinc-700 transition-colors border border-white/8 hover:border-white/15 rounded-full"
+            className="px-5 py-2 text-xs text-muted-foreground hover:text-foreground disabled:opacity-40 transition-colors border border-border hover:border-muted-foreground/30 rounded-full"
           >
             {isPending ? "読み込み中..." : "さらに前を見る"}
           </button>

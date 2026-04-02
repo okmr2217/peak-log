@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { CreateLogModal } from "@/components/log/create-log-modal";
-import { ReflectionModal } from "@/components/reflection/reflection-modal";
 
 type Activity = {
   id: string;
@@ -13,19 +12,16 @@ type Activity = {
   color: string | null;
 };
 
-type Toast =
-  | { type: "success"; logId: string; hasReflection: boolean }
-  | { type: "error"; message: string };
+type Toast = { type: "success" } | { type: "error"; message: string };
 
 export function HomeFab({ activities, defaultActivityId }: { activities: Activity[]; defaultActivityId?: string | null }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
-  const [reflectionLogId, setReflectionLogId] = useState<string | null>(null);
 
-  const handleSuccess = useCallback((logId: string, hasReflection: boolean) => {
+  const handleSuccess = useCallback(() => {
     router.refresh();
-    setToast({ type: "success", logId, hasReflection });
+    setToast({ type: "success" });
     setTimeout(() => setToast(null), 4000);
   }, [router]);
 
@@ -56,24 +52,10 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
             `}
           >
             {toast.type === "success" ? (
-              <>
-                <div className="flex items-center gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
-                  <span className="text-white text-sm font-medium">記録しました</span>
-                </div>
-                {!toast.hasReflection && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setReflectionLogId(toast.logId);
-                      setToast(null);
-                    }}
-                    className="text-[#00E5FF] text-xs font-medium hover:opacity-80 transition-opacity shrink-0 px-3 py-1.5 rounded-lg bg-[#00E5FF]/10"
-                  >
-                    余韻を追加
-                  </button>
-                )}
-              </>
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#7C4DFF] flex-shrink-0" />
+                <span className="text-white text-sm font-medium">記録しました</span>
+              </div>
             ) : (
               <span className="text-red-300 text-sm">{toast.message}</span>
             )}
@@ -89,10 +71,6 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
         onSuccess={handleSuccess}
         defaultActivityId={defaultActivityId}
       />
-
-      {reflectionLogId && (
-        <ReflectionModal logId={reflectionLogId} isOpen={true} onClose={() => setReflectionLogId(null)} />
-      )}
     </>
   );
 }

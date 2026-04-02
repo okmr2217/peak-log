@@ -28,11 +28,9 @@ function formatAvgInterval(days: number): string {
   return rounded % 1 === 0 ? `${rounded}日ごと` : `${rounded.toFixed(1)}日ごと`;
 }
 
-type ReflectionPayload = {
-  id: string;
-  excitement: number | null;
-  achievement: number | null;
-  wantAgain: boolean | null;
+type LogEditedPayload = {
+  newDate: Date;
+  stars: number | null;
   note: string | null;
 };
 
@@ -46,12 +44,17 @@ export function ActivityDetailView({ detail }: Props) {
 
   const [recentLogs, setRecentLogs] = useState<RecentLog[]>(detail.recentLogs);
 
-  function handleReflectionSaved(logId: string, reflection: ReflectionPayload) {
-    setRecentLogs((prev) => prev.map((log) => (log.id === logId ? { ...log, reflection } : log)));
-  }
-
-  function handlePerformedAtSaved(logId: string, newDate: Date) {
-    setRecentLogs((prev) => prev.map((log) => (log.id === logId ? { ...log, performedAt: newDate } : log)));
+  function handleLogEdited(logId: string, data: LogEditedPayload) {
+    setRecentLogs((prev) =>
+      prev.map((log) => {
+        if (log.id !== logId) return log;
+        const reflection =
+          data.stars != null || data.note != null
+            ? { id: log.reflection?.id ?? "", stars: data.stars, note: data.note }
+            : null;
+        return { ...log, performedAt: data.newDate, reflection };
+      }),
+    );
   }
 
   function toLogItem(log: RecentLog): LogItem {
@@ -139,8 +142,7 @@ export function ActivityDetailView({ detail }: Props) {
               <TimelineItem
                 key={log.id}
                 log={toLogItem(log)}
-                onReflectionSaved={handleReflectionSaved}
-                onPerformedAtSaved={handlePerformedAtSaved}
+                onLogEdited={handleLogEdited}
               />
             ))}
           </div>
