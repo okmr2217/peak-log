@@ -168,7 +168,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
             </div>
 
             {/* Note + Stars */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <div>
                 <Label htmlFor="edit-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
                   メモ

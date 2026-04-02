@@ -220,7 +220,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             </div>
 
             {/* Memo + Stars */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <div>
                 <Label htmlFor="create-log-note" className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">
                   メモ

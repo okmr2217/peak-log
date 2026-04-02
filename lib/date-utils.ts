@@ -58,11 +58,26 @@ export function formatPerformedAt(date: Date): string {
   return formatInTimeZone(date, TZ, "M/d HH:mm");
 }
 
-/** 1時間以内は「X分前」、それ以降は「HH:mm」 */
+/**
+ * 記録カード用のコンパクトな日時表示
+ * - 60分以内: 「X分前」
+ * - 今日: 「HH:mm」
+ * - 昨日: 「昨日 HH:mm」
+ * - 一昨日以前: 「M/d HH:mm」
+ */
 export function formatCompactTime(date: Date): string {
-  const diffMin = Math.floor((new Date().getTime() - date.getTime()) / 60000);
+  const now = new Date();
+  const diffMin = Math.floor((now.getTime() - date.getTime()) / 60000);
   if (diffMin < 60) return `${diffMin}分前`;
-  return formatInTimeZone(date, TZ, "HH:mm");
+
+  const time = formatInTimeZone(date, TZ, "HH:mm");
+  const todayJST = formatInTimeZone(now, TZ, "yyyy-MM-dd");
+  const yesterdayJST = formatInTimeZone(subDays(now, 1), TZ, "yyyy-MM-dd");
+  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
+
+  if (dateJST === todayJST) return time;
+  if (dateJST === yesterdayJST) return `昨日 ${time}`;
+  return `${formatInTimeZone(date, TZ, "M/d")} ${time}`;
 }
 
 export function formatRelativeTime(date: Date): string {
