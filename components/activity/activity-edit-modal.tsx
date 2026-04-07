@@ -25,12 +25,20 @@ interface Activity {
   description: string | null;
 }
 
+interface UpdatedActivity {
+  name: string;
+  emoji: string | null;
+  color: string | null;
+  description: string | null;
+}
+
 interface Props {
   activity: Activity;
   onClose: () => void;
+  onSuccess: (updated: UpdatedActivity) => void;
 }
 
-export function ActivityEditModal({ activity, onClose }: Props) {
+export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
   const [name, setName] = useState(activity.name);
   const [emoji, setEmoji] = useState(activity.emoji ?? "");
   const [color, setColor] = useState(activity.color ?? "");
@@ -50,6 +58,7 @@ export function ActivityEditModal({ activity, onClose }: Props) {
         description: description || undefined,
       });
       if (result.ok) {
+        onSuccess({ name, emoji: emoji || null, color: color || null, description: description || null });
         onClose();
       } else {
         setError(result.message);

@@ -8,23 +8,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { archiveActivity } from "@/server/actions/activity";
 import { ActivityEditModal } from "./activity-edit-modal";
-
-interface Activity {
-  id: string;
-  name: string;
-  emoji: string | null;
-  color: string | null;
-  description: string | null;
-  sortOrder: number;
-  isArchived: boolean;
-  stats: {
-    totalCount: number;
-    lastPerformedAt: Date | null;
-  };
-}
+import type { ActivityWithStats } from "@/server/queries/activity";
 
 interface Props {
-  activity: Activity;
+  activity: ActivityWithStats;
+  onUpdate: (updated: ActivityWithStats) => void;
 }
 
 const TZ = "Asia/Tokyo";
@@ -40,7 +28,7 @@ function formatLastPerformedShort(date: Date): string {
   return formatInTimeZone(date, TZ, "M/d");
 }
 
-export function ActivityItem({ activity }: Props) {
+export function ActivityItem({ activity, onUpdate }: Props) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isArchivePending, startArchiveTransition] = useTransition();
 
@@ -54,8 +42,15 @@ export function ActivityItem({ activity }: Props) {
 
   function handleArchive() {
     startArchiveTransition(async () => {
-      await archiveActivity({ activityId: activity.id, isArchived: !activity.isArchived });
+      const result = await archiveActivity({ activityId: activity.id, isArchived: !activity.isArchived });
+      if (result.ok) {
+        onUpdate({ ...activity, isArchived: !activity.isArchived });
+      }
     });
+  }
+
+  function handleEditSuccess(updated: { name: string; emoji: string | null; color: string | null; description: string | null }) {
+    onUpdate({ ...activity, ...updated });
   }
 
   const color = activity.isArchived ? null : activity.color;
@@ -142,7 +137,9 @@ export function ActivityItem({ activity }: Props) {
         </div>
       </div>
 
-      {showEditModal && <ActivityEditModal activity={activity} onClose={() => setShowEditModal(false)} />}
+      {showEditModal && (
+        <ActivityEditModal activity={activity} onClose={() => setShowEditModal(false)} onSuccess={handleEditSuccess} />
+      )}
     </>
   );
 }

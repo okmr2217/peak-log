@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -27,9 +28,14 @@ interface Props {
 }
 
 export function ActivityList({ activities: initialActivities }: Props) {
+  const router = useRouter();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [activities, setActivities] = useState(initialActivities);
   const [draggingActivity, setDraggingActivity] = useState<ActivityWithStats | null>(null);
+
+  useEffect(() => {
+    setActivities(initialActivities);
+  }, [initialActivities]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -38,7 +44,12 @@ export function ActivityList({ activities: initialActivities }: Props) {
 
   function handleCreateSuccess() {
     setShowCreateModal(false);
+    router.refresh();
     toast.success("活動を追加しました");
+  }
+
+  function handleUpdate(updated: ActivityWithStats) {
+    setActivities((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -82,7 +93,7 @@ export function ActivityList({ activities: initialActivities }: Props) {
           <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
             <div className="space-y-2">
               {activities.map((activity) => (
-                <ActivityItem key={activity.id} activity={activity} />
+                <ActivityItem key={activity.id} activity={activity} onUpdate={handleUpdate} />
               ))}
             </div>
           </SortableContext>
