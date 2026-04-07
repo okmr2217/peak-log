@@ -73,7 +73,10 @@ export function TimelineItem({ log, onLogEdited }: Props) {
         <span className="text-xs tabular-nums text-muted-foreground shrink-0">{formatCompactTime(currentDate)}</span>
         <LogCardMenu
           logId={log.id}
+          activity={activity}
           performedAt={currentDate}
+          createdAt={log.createdAt}
+          updatedAt={log.updatedAt}
           timeOnly
           stars={reflection?.stars}
           note={reflection?.note}

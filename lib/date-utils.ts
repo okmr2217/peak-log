@@ -123,6 +123,10 @@ export function groupLogsByDate<T extends { performedAt: Date }>(
   }));
 }
 
+export function formatFullDateTime(date: Date): string {
+  return formatInTimeZone(date, TZ, "yyyy/MM/dd HH:mm");
+}
+
 /** JST の日付文字列 ("YYYY-MM-DD") を UTC の Date に変換する */
 export function jstDateToUtc(dateStr: string): Date {
   return fromZonedTime(dateStr, TZ);

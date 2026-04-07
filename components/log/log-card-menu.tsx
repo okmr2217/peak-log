@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useTransition } from "react";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Eye } from "lucide-react";
 import { deleteLog } from "@/server/actions/log";
 import { EditLogModal } from "./edit-log-modal";
+import { LogDetailModal } from "./log-detail-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,18 +19,24 @@ import { formatTime, formatRelativeTime } from "@/lib/date-utils";
 
 type Props = {
   logId: string;
+  activity: { name: string; emoji: string | null; color: string | null };
   performedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
   timeOnly?: boolean;
   stars?: number | null;
   note?: string | null;
   onLogEdited?: (data: { newDate: Date; stars: number | null; note: string | null }) => void;
 };
 
-export function LogCardMenu({ logId, performedAt, timeOnly, stars, note, onLogEdited }: Props) {
+export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt, timeOnly, stars, note, onLogEdited }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(performedAt);
+  const [currentStars, setCurrentStars] = useState(stars);
+  const [currentNote, setCurrentNote] = useState(note);
   const [isPending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +55,8 @@ export function LogCardMenu({ logId, performedAt, timeOnly, stars, note, onLogEd
 
   function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
     setCurrentDate(data.newDate);
+    setCurrentStars(data.stars);
+    setCurrentNote(data.note);
     onLogEdited?.(data);
   }
 
@@ -75,6 +84,18 @@ export function LogCardMenu({ logId, performedAt, timeOnly, stars, note, onLogEd
             type="button"
             onClick={() => {
               setIsMenuOpen(false);
+              setIsDetailOpen(true);
+            }}
+            className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-foreground hover:bg-muted transition-colors text-left"
+          >
+            <Eye size={12} className="text-muted-foreground shrink-0" />
+            詳細を見る
+          </button>
+          <div className="border-t border-border mx-2" />
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false);
               setIsEditOpen(true);
             }}
             className="flex items-center gap-2 w-full px-3.5 py-2.5 text-xs text-foreground hover:bg-muted transition-colors text-left"
@@ -97,11 +118,26 @@ export function LogCardMenu({ logId, performedAt, timeOnly, stars, note, onLogEd
         </div>
       )}
 
+      <LogDetailModal
+        activity={activity}
+        performedAt={currentDate}
+        stars={currentStars}
+        note={currentNote}
+        createdAt={createdAt}
+        updatedAt={updatedAt}
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        onEditRequest={() => {
+          setIsDetailOpen(false);
+          setIsEditOpen(true);
+        }}
+      />
+
       <EditLogModal
         logId={logId}
         performedAt={currentDate}
-        initialStars={stars}
-        initialNote={note}
+        initialStars={currentStars}
+        initialNote={currentNote}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         onSaved={handleLogEdited}

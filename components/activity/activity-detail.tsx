@@ -62,6 +62,7 @@ export function ActivityDetailView({ detail }: Props) {
       id: log.id,
       performedAt: log.performedAt,
       createdAt: log.createdAt,
+      updatedAt: log.updatedAt,
       activity: {
         id: detail.id,
         name: detail.name,

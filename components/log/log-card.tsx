@@ -14,6 +14,8 @@ type LogCardProps = {
   log: {
     id: string;
     performedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
     activity: {
       id: string;
       name: string;
@@ -69,7 +71,10 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
         </span>
         <LogCardMenu
           logId={log.id}
+          activity={activity}
           performedAt={performedAt}
+          createdAt={log.createdAt}
+          updatedAt={log.updatedAt}
           timeOnly={timeOnly}
           stars={reflection?.stars}
           note={reflection?.note}

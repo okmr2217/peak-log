@@ -113,6 +113,7 @@ export type LogItem = {
   id: string;
   performedAt: Date;
   createdAt: Date;
+  updatedAt: Date;
   activity: {
     id: string;
     name: string;
