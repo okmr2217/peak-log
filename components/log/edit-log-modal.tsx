@@ -173,12 +173,24 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                   id="edit-log-note"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && e.ctrlKey) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
                   maxLength={200}
                   rows={2}
                   placeholder="体験の余韻を残しておこう..."
                   className="bg-muted border-border rounded-xl px-3.5 py-2.5 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
                 />
-                <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-muted-foreground/40 text-xs">
+                    <kbd className="px-1 py-0.5 rounded border border-muted-foreground/20 bg-muted text-[10px] font-mono">Ctrl+Enter</kbd>
+                    <span className="ml-1">で保存</span>
+                  </span>
+                  <p className="text-muted-foreground/50 text-xs">{note.length}/200</p>
+                </div>
               </div>
 
               <div>
