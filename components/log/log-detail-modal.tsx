@@ -49,6 +49,16 @@ export function LogDetailModal({ activity, performedAt, stars, note, createdAt, 
               <p className="text-foreground text-sm">{formatRelativeTime(performedAt)}</p>
             </div>
 
+            {/* Note */}
+            <div>
+              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">メモ</p>
+              {note ? (
+                <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">{note}</p>
+              ) : (
+                <p className="text-muted-foreground text-sm">なし</p>
+              )}
+            </div>
+
             {/* Stars */}
             <div>
               <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1.5">スター</p>
@@ -66,16 +76,6 @@ export function LogDetailModal({ activity, performedAt, stars, note, createdAt, 
                     />
                   ))}
                 </div>
-              ) : (
-                <p className="text-muted-foreground text-sm">なし</p>
-              )}
-            </div>
-
-            {/* Note */}
-            <div>
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">メモ</p>
-              {note ? (
-                <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">{note}</p>
               ) : (
                 <p className="text-muted-foreground text-sm">なし</p>
               )}
