@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { HomeHeader } from "./home-header";
+import { FilterFab } from "./filter-fab";
 import { HomeFab } from "@/components/log/home-fab";
 import { TimelineList } from "@/components/history/timeline-list";
 import { CompactTimelineList } from "./compact-timeline";
@@ -22,10 +23,8 @@ type Props = {
 
 export function HomeContent({ activities, dayItems, oldestDate, hasMore, selectedActivityId, noteKeyword, currentTab }: Props) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [optimisticActivityId, setOptimisticActivityId] = useState(selectedActivityId);
 
-  // サーバーが新しい props を返した = 検索完了
   useEffect(() => {
     setIsLoading(false);
     setOptimisticActivityId(selectedActivityId);
@@ -36,21 +35,13 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
 
   return (
     <>
-      <HomeHeader
-        activities={activities}
-        selectedActivityId={selectedActivityId}
-        noteKeyword={noteKeyword}
-        currentTab={currentTab}
-        onLoadingStart={() => setIsLoading(true)}
-        onOpenChange={setIsPanelOpen}
-        onActivityChange={setOptimisticActivityId}
-      />
+      <HomeHeader selectedActivityId={selectedActivityId} noteKeyword={noteKeyword} currentTab={currentTab} />
       {isEmpty && !isLoading ? (
         <div className="flex items-center justify-center min-h-[50vh]">
           <p className="text-sm text-muted-foreground">条件に一致するピークがありません</p>
         </div>
       ) : (
-        <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isPanelOpen ? "pt-4" : ""} ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
+        <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
           {currentTab === "compact" ? (
             <CompactTimelineList
               key={`compact-${selectedActivityId ?? ""}-${noteKeyword}`}
@@ -68,6 +59,14 @@ export function HomeContent({ activities, dayItems, oldestDate, hasMore, selecte
           )}
         </div>
       )}
+      <FilterFab
+        activities={activities}
+        selectedActivityId={selectedActivityId}
+        noteKeyword={noteKeyword}
+        currentTab={currentTab}
+        onLoadingStart={() => setIsLoading(true)}
+        onActivityChange={setOptimisticActivityId}
+      />
       <HomeFab activities={activities} defaultActivityId={optimisticActivityId} />
     </>
   );
