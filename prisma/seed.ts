@@ -83,9 +83,7 @@ async function main() {
     activityId: string;
     performedAt: Date;
     reflection?: {
-      excitement: number;
-      achievement: number;
-      wantAgain: boolean;
+      stars: number;
       note: string;
     };
   }> = [
@@ -93,7 +91,7 @@ async function main() {
     {
       activityId: exercise.id,
       performedAt: hoursAgo(2),
-      reflection: { excitement: 4, achievement: 5, wantAgain: true, note: "10kmラン完走！自己ベスト更新。ゴール直前の追い込みが最高だった。" },
+      reflection: { stars: 4, note: "10kmラン完走！自己ベスト更新。ゴール直前の追い込みが最高だった。" },
     },
     {
       activityId: creative.id,
@@ -104,50 +102,50 @@ async function main() {
     {
       activityId: social.id,
       performedAt: daysAgo(1),
-      reflection: { excitement: 5, achievement: 4, wantAgain: true, note: "久しぶりに大学の友人と会った。深夜まで語り合えた最高の夜。" },
+      reflection: { stars: 5, note: "久しぶりに大学の友人と会った。深夜まで語り合えた最高の夜。" },
     },
     {
       activityId: study.id,
       performedAt: daysAgo(1),
-      reflection: { excitement: 3, achievement: 4, wantAgain: true, note: "Rustの所有権をようやく理解できた気がする。" },
+      reflection: { stars: 3, note: "Rustの所有権をようやく理解できた気がする。" },
     },
 
     // 2日前
     {
       activityId: peak.id,
       performedAt: daysAgo(2),
-      reflection: { excitement: 5, achievement: 5, wantAgain: true, note: "初めてのクライミングジム体験。難しかったけど課題をクリアした瞬間の達成感がすごい！" },
+      reflection: { stars: 5, note: "初めてのクライミングジム体験。難しかったけど課題をクリアした瞬間の達成感がすごい！" },
     },
     {
       activityId: outing.id,
       performedAt: daysAgo(2),
-      reflection: { excitement: 4, achievement: 3, wantAgain: true, note: "近所の公園でぼーっとする時間。思考が整理された。" },
+      reflection: { stars: 4, note: "近所の公園でぼーっとする時間。思考が整理された。" },
     },
 
     // 3日前
     {
       activityId: creative.id,
       performedAt: daysAgo(3),
-      reflection: { excitement: 4, achievement: 5, wantAgain: true, note: "Peak Logのアクティビティ一覧UIが思い通りに仕上がった。" },
+      reflection: { stars: 4, note: "Peak Logのアクティビティ一覧UIが思い通りに仕上がった。" },
     },
 
     // 5日前
     {
       activityId: exercise.id,
       performedAt: daysAgo(5),
-      reflection: { excitement: 3, achievement: 4, wantAgain: true, note: "ジムで胸トレ。ベンチプレス80kg×5回達成。" },
+      reflection: { stars: 3, note: "ジムで胸トレ。ベンチプレス80kg×5回達成。" },
     },
     {
       activityId: entertainment.id,
       performedAt: daysAgo(5),
-      reflection: { excitement: 5, achievement: 2, wantAgain: true, note: "映画「オッペンハイマー」をやっと観た。圧倒的な映像体験。" },
+      reflection: { stars: 5, note: "映画「オッペンハイマー」をやっと観た。圧倒的な映像体験。" },
     },
 
     // 7日前
     {
       activityId: social.id,
       performedAt: daysAgo(7),
-      reflection: { excitement: 4, achievement: 3, wantAgain: true, note: "家族でホットプレート焼き肉。みんなの笑顔が最高のご馳走。" },
+      reflection: { stars: 4, note: "家族でホットプレート焼き肉。みんなの笑顔が最高のご馳走。" },
     },
     {
       activityId: study.id,
@@ -158,55 +156,55 @@ async function main() {
     {
       activityId: outing.id,
       performedAt: daysAgo(10),
-      reflection: { excitement: 5, achievement: 4, wantAgain: true, note: "高尾山ハイキング。山頂からの景色と達成感が最高だった。次は奥高尾まで行きたい。" },
+      reflection: { stars: 5, note: "高尾山ハイキング。山頂からの景色と達成感が最高だった。次は奥高尾まで行きたい。" },
     },
     {
       activityId: exercise.id,
       performedAt: daysAgo(10),
-      reflection: { excitement: 3, achievement: 3, wantAgain: true, note: "ランニング5km。少し疲れ気味だったが走り切れた。" },
+      reflection: { stars: 3, note: "ランニング5km。少し疲れ気味だったが走り切れた。" },
     },
 
     // 14日前
     {
       activityId: peak.id,
       performedAt: daysAgo(14),
-      reflection: { excitement: 5, achievement: 5, wantAgain: true, note: "人生初の富士登山！御来光は言葉を失う美しさだった。死ぬまでに絶対もう一度登る。" },
+      reflection: { stars: 5, note: "人生初の富士登山！御来光は言葉を失う美しさだった。死ぬまでに絶対もう一度登る。" },
     },
     {
       activityId: creative.id,
       performedAt: daysAgo(14),
-      reflection: { excitement: 4, achievement: 4, wantAgain: true, note: "Yarukotoにダークモード機能を追加完了。思い通りの実装ができた。" },
+      reflection: { stars: 4, note: "Yarukotoにダークモード機能を追加完了。思い通りの実装ができた。" },
     },
 
     // 20日前
     {
       activityId: entertainment.id,
       performedAt: daysAgo(20),
-      reflection: { excitement: 4, achievement: 2, wantAgain: true, note: "お気に入りのアーティストのライブ。生演奏は格が違う。" },
+      reflection: { stars: 4, note: "お気に入りのアーティストのライブ。生演奏は格が違う。" },
     },
     {
       activityId: social.id,
       performedAt: daysAgo(20),
-      reflection: { excitement: 4, achievement: 3, wantAgain: true, note: "職場の新メンバーと歓迎会。いい人たちで安心した。" },
+      reflection: { stars: 4, note: "職場の新メンバーと歓迎会。いい人たちで安心した。" },
     },
 
     // 25日前
     {
       activityId: study.id,
       performedAt: daysAgo(25),
-      reflection: { excitement: 4, achievement: 5, wantAgain: true, note: "技術書「リファクタリング」読了。コードへの見方が変わった気がする。" },
+      reflection: { stars: 4, note: "技術書「リファクタリング」読了。コードへの見方が変わった気がする。" },
     },
     {
       activityId: exercise.id,
       performedAt: daysAgo(25),
-      reflection: { excitement: 3, achievement: 4, wantAgain: true, note: "スイミング初体験。息継ぎが難しいがクロール25m泳げた。" },
+      reflection: { stars: 3, note: "スイミング初体験。息継ぎが難しいがクロール25m泳げた。" },
     },
 
     // 30日前
     {
       activityId: outing.id,
       performedAt: daysAgo(30),
-      reflection: { excitement: 5, achievement: 3, wantAgain: true, note: "箱根温泉旅行。露天風呂から見た紅葉が最高に綺麗だった。" },
+      reflection: { stars: 5, note: "箱根温泉旅行。露天風呂から見た紅葉が最高に綺麗だった。" },
     },
     {
       activityId: creative.id,
