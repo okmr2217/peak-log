@@ -4,6 +4,9 @@ import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
+const demoEmail = process.env.SEED_DEMO_EMAIL ?? "demo@example.com";
+const demoPassword = process.env.SEED_DEMO_PASSWORD ?? "password123";
+
 function daysAgo(n: number): Date {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -20,7 +23,6 @@ async function main() {
   console.log("🌱 シード開始...");
 
   // ユーザー作成
-  const demoEmail = "demo@example.com";
   const existingUser = await prisma.user.findUnique({ where: { email: demoEmail } });
   if (existingUser) {
     console.log(`  ⏭️  ユーザースキップ（既存）: ${demoEmail}`);
@@ -28,7 +30,7 @@ async function main() {
     return;
   }
 
-  const hashed = await hashPassword("password123");
+  const hashed = await hashPassword(demoPassword);
   const userId = randomUUID();
 
   await prisma.user.create({
