@@ -4,6 +4,7 @@ import ChangePasswordCard from "@/components/settings/change-password-card";
 import { ThemeSelector } from "@/components/settings/theme-selector";
 import { APP_VERSION } from "@/lib/app-version";
 import { PageHeader } from "@/components/layout/page-header";
+import { DeleteAccountDialog } from "@/components/settings/delete-account-dialog";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -55,9 +56,8 @@ export default async function SettingsPage() {
             <span className="text-xs text-muted-foreground">今後追加予定</span>
           </div>
           <div className="border-t border-border" />
-          <div className="flex items-center justify-between opacity-40 cursor-not-allowed">
-            <span className="text-sm text-destructive">アカウントを削除</span>
-            <span className="text-xs text-muted-foreground">今後追加予定</span>
+          <div className="flex items-center justify-between">
+            <DeleteAccountDialog />
           </div>
         </div>
       </section>
