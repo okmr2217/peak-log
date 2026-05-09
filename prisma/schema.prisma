@@ -26,11 +26,10 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  sessions    Session[]
-  accounts    Account[]
-  activities  Activity[]
-  logs        Log[]
-  reflections Reflection[]
+  sessions   Session[]
+  accounts   Account[]
+  activities Activity[]
+  logs       Log[]
 
   @@map("users")
 }
@@ -129,9 +128,8 @@ model Log {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activity   Activity    @relation(fields: [activityId], references: [id], onDelete: Restrict)
-  reflection Reflection?
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Restrict)
 
   @@index([userId])
   @@index([userId, performedAt(sort: Desc)])
@@ -140,27 +138,3 @@ model Log {
   @@map("logs")
 }
 
-// ---------------------------------------------------------------------------
-// Reflection
-// Log に対する余韻・感想・評価。Log とは分離した独立モデル。
-// Log 1件につき最大 1件（logId に @unique）。
-// 将来的な項目追加（mood, tags など）を想定してシンプルに保つ。
-// ---------------------------------------------------------------------------
-model Reflection {
-  id          String   @id @default(cuid())
-  userId      String
-  logId       String   @unique
-  stars       Int? // スター数 (1-5)
-  achievement Int? // 達成感 (廃止・カラム保持)
-  wantAgain   Boolean? // またやりたい (廃止・カラム保持)
-  note        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  log  Log  @relation(fields: [logId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([userId, createdAt(sort: Desc)])
-  @@map("reflections")
-}
