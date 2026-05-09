@@ -8,6 +8,7 @@ type LogEditedPayload = {
   newDate: Date;
   stars: number | null;
   note: string | null;
+  fieldValues: Record<string, string | string[]> | null;
 };
 
 type Props = {
@@ -27,7 +28,7 @@ export function TimelineList({ initialItems }: Props) {
         ...day,
         logs: day.logs.map((log): LogItem => {
           if (log.id !== logId) return log;
-          return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note };
+          return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note, fieldValues: data.fieldValues };
         }),
       })),
     );

@@ -21,6 +21,7 @@ function CompactLogChip({ log }: ChipProps) {
   const [performedAt, setPerformedAt] = useState(log.performedAt);
   const [stars, setStars] = useState(log.stars ?? null);
   const [note, setNote] = useState(log.note ?? null);
+  const [fieldValues, setFieldValues] = useState(log.fieldValues);
 
   const color = log.activity.color;
 
@@ -28,6 +29,7 @@ function CompactLogChip({ log }: ChipProps) {
     setPerformedAt(data.newDate);
     setStars(data.stars);
     setNote(data.note);
+    setFieldValues(data.fieldValues);
   }
 
   return (
@@ -73,7 +75,8 @@ function CompactLogChip({ log }: ChipProps) {
         performedAt={performedAt}
         initialStars={stars}
         initialNote={note}
-        activity={{ id: log.activity.id, color: log.activity.color, fields: [] }}
+        activity={log.activity}
+        initialFieldValues={fieldValues}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         onSaved={handleLogEdited}

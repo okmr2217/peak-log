@@ -6,19 +6,17 @@ import { formatCompactTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
 import { LogFieldValuesPreview } from "@/components/log/log-field-values-preview";
 import type { LogItem } from "@/server/queries/log";
-import type { ActivityFieldDTO } from "@/server/queries/activity";
 
 type Props = {
   log: LogItem;
   onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
-  fieldValues?: Record<string, string | string[]> | null;
-  fields?: ActivityFieldDTO[];
 };
 
-export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
+export function TimelineItem({ log, onLogEdited }: Props) {
   const [stars, setStars] = useState<number | null>(log.stars ?? null);
   const [note, setNote] = useState<string | null>(log.note ?? null);
   const [currentDate, setCurrentDate] = useState(log.performedAt);
+  const [fieldValues, setFieldValues] = useState<Record<string, string | string[]> | null>(log.fieldValues);
   const { activity } = log;
   const color = activity.color;
 
@@ -26,6 +24,7 @@ export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
     setCurrentDate(data.newDate);
     setStars(data.stars);
     setNote(data.note);
+    setFieldValues(data.fieldValues);
     onLogEdited(log.id, data);
   }
 
@@ -69,7 +68,7 @@ export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
         <span className="text-xs tabular-nums text-muted-foreground shrink-0">{formatCompactTime(currentDate)}</span>
         <LogCardMenu
           logId={log.id}
-          activity={{ ...activity, fields: fields ?? [] }}
+          activity={activity}
           performedAt={currentDate}
           createdAt={log.createdAt}
           updatedAt={log.updatedAt}
@@ -82,8 +81,8 @@ export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
       </div>
 
       {/* Field values preview */}
-      {fieldValues != null && fields && fields.length > 0 && (
-        <LogFieldValuesPreview fieldValues={fieldValues} fields={fields} />
+      {fieldValues != null && activity.fields.length > 0 && (
+        <LogFieldValuesPreview fieldValues={fieldValues} fields={activity.fields} />
       )}
 
       {/* Note row - only when exists, left-aligned with activity name */}

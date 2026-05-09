@@ -6,7 +6,6 @@ import { ChevronLeft } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
-import type { LogItem } from "@/server/queries/log";
 import { formatPerformedAt } from "@/lib/date-utils";
 import { TimelineItem } from "@/components/history/timeline-item";
 
@@ -54,7 +53,7 @@ export function ActivityDetailView({ detail }: Props) {
     );
   }
 
-  function toLogItem(log: RecentLog): LogItem {
+  function toLogItem(log: RecentLog) {
     return {
       id: log.id,
       performedAt: log.performedAt,
@@ -62,11 +61,13 @@ export function ActivityDetailView({ detail }: Props) {
       updatedAt: log.updatedAt,
       stars: log.stars,
       note: log.note,
+      fieldValues: log.fieldValues,
       activity: {
         id: detail.id,
         name: detail.name,
         emoji: detail.emoji,
         color: detail.color,
+        fields: detail.fields.filter((f) => !f.isArchived),
       },
     };
   }
@@ -142,8 +143,6 @@ export function ActivityDetailView({ detail }: Props) {
                 key={log.id}
                 log={toLogItem(log)}
                 onLogEdited={handleLogEdited}
-                fieldValues={log.fieldValues}
-                fields={detail.fields}
               />
             ))}
           </div>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import type { FieldType } from "@prisma/client";
 
 const TZ = "Asia/Tokyo";
 
@@ -117,11 +118,13 @@ export type LogItem = {
   updatedAt: Date;
   stars: number | null;
   note: string | null;
+  fieldValues: Record<string, string | string[]> | null;
   activity: {
     id: string;
     name: string;
     emoji: string | null;
     color: string | null;
+    fields: { id: string; name: string; type: FieldType; options: string[] }[];
   };
 };
 
@@ -129,6 +132,11 @@ export type HistoryDayItem = {
   date: string; // YYYY-MM-DD
   logs: LogItem[];
 };
+
+const ACTIVITY_FIELDS_SELECT = {
+  where: { isArchived: false },
+  select: { id: true, name: true, type: true, options: true },
+} as const;
 
 export async function getLogsRangePageForCurrentUser({
   from,
@@ -139,7 +147,7 @@ export async function getLogsRangePageForCurrentUser({
 }): Promise<{ logs: LogItem[]; hasMore: boolean }> {
   const userId = await requireUserId();
 
-  const [logs, olderLog] = await Promise.all([
+  const [rawLogs, olderLog] = await Promise.all([
     prisma.log.findMany({
       where: { userId, performedAt: { gte: from, lt: to } },
       select: {
@@ -149,7 +157,8 @@ export async function getLogsRangePageForCurrentUser({
         updatedAt: true,
         stars: true,
         note: true,
-        activity: { select: { id: true, name: true, emoji: true, color: true } },
+        fieldValues: true,
+        activity: { select: { id: true, name: true, emoji: true, color: true, fields: ACTIVITY_FIELDS_SELECT } },
       },
       orderBy: [{ performedAt: "asc" }],
     }),
@@ -159,6 +168,7 @@ export async function getLogsRangePageForCurrentUser({
     }),
   ]);
 
+  const logs: LogItem[] = rawLogs.map((log) => ({ ...log, fieldValues: log.fieldValues as LogItem["fieldValues"] }));
   return { logs, hasMore: olderLog !== null };
 }
 
@@ -173,7 +183,7 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
   const start = fromZonedTime(`${yearStr}-${monthStr}-01`, TZ);
   const end = fromZonedTime(`${endYear}-${String(endMonth).padStart(2, "0")}-01`, TZ);
 
-  return prisma.log.findMany({
+  const rawLogs = await prisma.log.findMany({
     where: { userId, performedAt: { gte: start, lt: end } },
     select: {
       id: true,
@@ -182,10 +192,12 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
       updatedAt: true,
       stars: true,
       note: true,
-      activity: { select: { id: true, name: true, emoji: true, color: true } },
+      fieldValues: true,
+      activity: { select: { id: true, name: true, emoji: true, color: true, fields: ACTIVITY_FIELDS_SELECT } },
     },
     orderBy: [{ performedAt: "desc" }, { id: "desc" }],
   });
+  return rawLogs.map((log) => ({ ...log, fieldValues: log.fieldValues as LogItem["fieldValues"] }));
 }
 
 export async function getLogsSearchForCurrentUser({
@@ -201,7 +213,7 @@ export async function getLogsSearchForCurrentUser({
 }): Promise<{ logs: LogItem[]; hasMore: boolean }> {
   const userId = await requireUserId();
 
-  const [logs, olderLog] = await Promise.all([
+  const [rawLogs, olderLog] = await Promise.all([
     prisma.log.findMany({
       where: {
         userId,
@@ -216,7 +228,8 @@ export async function getLogsSearchForCurrentUser({
         updatedAt: true,
         stars: true,
         note: true,
-        activity: { select: { id: true, name: true, emoji: true, color: true } },
+        fieldValues: true,
+        activity: { select: { id: true, name: true, emoji: true, color: true, fields: ACTIVITY_FIELDS_SELECT } },
       },
       orderBy: [{ performedAt: "asc" }],
     }),
@@ -231,6 +244,7 @@ export async function getLogsSearchForCurrentUser({
     }),
   ]);
 
+  const logs: LogItem[] = rawLogs.map((log) => ({ ...log, fieldValues: log.fieldValues as LogItem["fieldValues"] }));
   return { logs, hasMore: olderLog !== null };
 }
 

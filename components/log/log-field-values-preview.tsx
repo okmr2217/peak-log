@@ -5,7 +5,6 @@ type ActivityField = {
   name: string;
   type: FieldType;
   options: string[];
-  isArchived: boolean;
 };
 
 interface Props {
@@ -19,7 +18,6 @@ export function LogFieldValuesPreview({ fieldValues, fields }: Props) {
   const entries: { fieldId: string; name: string; displayValue: string }[] = [];
 
   for (const field of fields) {
-    if (field.isArchived) continue;
     const raw = fieldValues[field.id];
     if (raw === undefined) continue;
 
