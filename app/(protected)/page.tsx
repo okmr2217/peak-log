@@ -1,9 +1,8 @@
 import { addDays, subDays } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { getActiveActivitiesForCurrentUser } from "@/server/queries/activity";
-import { getLogsRangePageForCurrentUser, getLogsSearchForCurrentUser } from "@/server/queries/log";
+import { getLogsSearchForCurrentUser } from "@/server/queries/log";
 import type { LogItem, HistoryDayItem } from "@/server/queries/log";
-import { buildDayRange } from "@/lib/date-utils";
 import { HomeContent } from "@/components/home/home-content";
 
 const RANGE_DAYS = 30;
@@ -22,41 +21,44 @@ function groupToHistoryDays(logs: LogItem[]): HistoryDayItem[] {
     .map(([date, dayLogs]) => ({ date, logs: dayLogs }));
 }
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ activityId?: string; note?: string; tab?: string }> }) {
-  const { activityId, note, tab } = await searchParams;
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ activityId?: string; note?: string; tab?: string; from?: string; to?: string }>;
+}) {
+  const { activityId, note, tab, from: fromParam, to: toParam } = await searchParams;
   const currentTab = tab === "compact" ? "compact" : "detail";
-  const hasFilters = !!(activityId || note);
 
   const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
   const todayStart = fromZonedTime(todayJST, TZ);
-  const to = addDays(todayStart, 1);
-  const from = subDays(todayStart, RANGE_DAYS - 1);
-  const oldestDate = formatInTimeZone(from, TZ, "yyyy-MM-dd");
+  const defaultFromStr = formatInTimeZone(subDays(todayStart, RANGE_DAYS - 1), TZ, "yyyy-MM-dd");
+  const defaultToStr = todayJST;
+
+  const fromStr = fromParam ?? defaultFromStr;
+  const toStr = toParam ?? defaultToStr;
+
+  const fromDate = fromZonedTime(fromStr, TZ);
+  const toDate = addDays(fromZonedTime(toStr, TZ), 1);
 
   const activities = await getActiveActivitiesForCurrentUser();
+  const { logs, hasMore } = await getLogsSearchForCurrentUser({
+    activityId: activityId || undefined,
+    noteKeyword: note || undefined,
+    fromDate,
+    toDate,
+  });
 
-  let dayItems: HistoryDayItem[];
-  let hasMore = false;
-
-  if (hasFilters) {
-    const logs = await getLogsSearchForCurrentUser({
-      activityId: activityId || undefined,
-      noteKeyword: note || undefined,
-    });
-    dayItems = groupToHistoryDays(logs);
-  } else {
-    const result = await getLogsRangePageForCurrentUser({ from, to }).catch(() => null);
-    const { logs, hasMore: _hasMore } = result ?? { logs: [], hasMore: false };
-    dayItems = buildDayRange(logs, from, to);
-    hasMore = _hasMore;
-  }
+  const dayItems = groupToHistoryDays(logs);
 
   return (
     <HomeContent
       activities={activities}
       dayItems={dayItems}
-      oldestDate={oldestDate}
       hasMore={hasMore}
+      fromDate={fromStr}
+      toDate={toStr}
+      defaultFromDate={defaultFromStr}
+      defaultToDate={defaultToStr}
       selectedActivityId={activityId ?? null}
       noteKeyword={note ?? ""}
       currentTab={currentTab}

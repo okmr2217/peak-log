@@ -8,10 +8,12 @@ type Tab = "detail" | "compact";
 type Props = {
   selectedActivityId: string | null;
   noteKeyword: string;
+  fromDate: string;
+  toDate: string;
   currentTab: Tab;
 };
 
-export function HomeHeader({ selectedActivityId, noteKeyword, currentTab }: Props) {
+export function HomeHeader({ selectedActivityId, noteKeyword, fromDate, toDate, currentTab }: Props) {
   const router = useRouter();
 
   const handleTabChange = (tab: Tab) => {
@@ -19,8 +21,9 @@ export function HomeHeader({ selectedActivityId, noteKeyword, currentTab }: Prop
     if (selectedActivityId) params.set("activityId", selectedActivityId);
     if (noteKeyword) params.set("note", noteKeyword);
     if (tab !== "detail") params.set("tab", tab);
-    const qs = params.toString();
-    router.push(qs ? `/?${qs}` : "/");
+    params.set("from", fromDate);
+    params.set("to", toDate);
+    router.push(`/?${params.toString()}`);
   };
 
   return (

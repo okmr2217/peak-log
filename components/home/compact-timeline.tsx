@@ -1,21 +1,14 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import { subDays } from "date-fns";
-import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
-import { fetchMoreDays } from "@/server/actions/log";
+import { useState, useEffect } from "react";
 import type { HistoryDayItem, LogItem } from "@/server/queries/log";
-import { buildDayRange, formatDayFull, formatTime } from "@/lib/date-utils";
+import { formatDayFull, formatTime } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { LogDetailModal } from "@/components/log/log-detail-modal";
 import { EditLogModal } from "@/components/log/edit-log-modal";
 
-const TZ = "Asia/Tokyo";
-
 type Props = {
   initialItems: HistoryDayItem[];
-  oldestDate: string;
-  hasMore: boolean;
 };
 
 type ChipProps = {
@@ -88,29 +81,12 @@ function CompactLogChip({ log }: ChipProps) {
   );
 }
 
-export function CompactTimelineList({ initialItems, oldestDate, hasMore: initialHasMore }: Props) {
+export function CompactTimelineList({ initialItems }: Props) {
   const [dayItems, setDayItems] = useState<HistoryDayItem[]>(initialItems);
-  const [oldest, setOldest] = useState(oldestDate);
-  const [hasMore, setHasMore] = useState(initialHasMore);
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setDayItems(initialItems);
-    setOldest(oldestDate);
-    setHasMore(initialHasMore);
-  }, [initialItems, oldestDate, initialHasMore]);
-
-  function loadMore() {
-    startTransition(async () => {
-      const { logs, hasMore: nextHasMore } = await fetchMoreDays({ before: oldest });
-      const to = fromZonedTime(oldest, TZ);
-      const from = subDays(to, 30);
-      const newItems = buildDayRange(logs as LogItem[], from, to);
-      setDayItems((prev) => [...prev, ...newItems]);
-      setOldest(formatInTimeZone(from, TZ, "yyyy-MM-dd"));
-      setHasMore(nextHasMore);
-    });
-  }
+  }, [initialItems]);
 
   const daysWithLogs = dayItems.filter((d) => d.logs.length > 0);
 
@@ -123,33 +99,19 @@ export function CompactTimelineList({ initialItems, oldestDate, hasMore: initial
   }
 
   return (
-    <>
-      <div>
-        {daysWithLogs.map(({ date, logs }) => (
-          <div key={date} className="flex flex-col gap-1 py-1.5 px-1">
-            <span className={`text-sm font-semibold tabular-nums ${getDateTextClassName(getDayType(date))}`}>
-              {formatDayFull(date)}
-            </span>
-            <span className="flex flex-wrap gap-x-1.5 gap-y-2">
-              {logs.map((log) => (
-                <CompactLogChip key={log.id} log={log} />
-              ))}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {hasMore && (
-        <div className="mt-8 flex justify-center">
-          <button
-            onClick={loadMore}
-            disabled={isPending}
-            className="px-5 py-2 text-xs text-muted-foreground hover:text-foreground disabled:opacity-40 transition-colors border border-border hover:border-muted-foreground/30 rounded-full"
-          >
-            {isPending ? "読み込み中..." : "さらに前を見る"}
-          </button>
+    <div>
+      {daysWithLogs.map(({ date, logs }) => (
+        <div key={date} className="flex flex-col gap-1 py-1.5 px-1">
+          <span className={`text-sm font-semibold tabular-nums ${getDateTextClassName(getDayType(date))}`}>
+            {formatDayFull(date)}
+          </span>
+          <span className="flex flex-wrap gap-x-1.5 gap-y-2">
+            {logs.map((log) => (
+              <CompactLogChip key={log.id} log={log} />
+            ))}
+          </span>
         </div>
-      )}
-    </>
+      ))}
+    </div>
   );
 }

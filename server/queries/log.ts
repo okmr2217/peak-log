@@ -191,29 +191,47 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
 export async function getLogsSearchForCurrentUser({
   activityId,
   noteKeyword,
+  fromDate,
+  toDate,
 }: {
   activityId?: string;
   noteKeyword?: string;
-}): Promise<LogItem[]> {
+  fromDate: Date;
+  toDate: Date;
+}): Promise<{ logs: LogItem[]; hasMore: boolean }> {
   const userId = await requireUserId();
 
-  return prisma.log.findMany({
-    where: {
-      userId,
-      ...(activityId ? { activityId } : {}),
-      ...(noteKeyword ? { note: { contains: noteKeyword, mode: "insensitive" } } : {}),
-    },
-    select: {
-      id: true,
-      performedAt: true,
-      createdAt: true,
-      updatedAt: true,
-      stars: true,
-      note: true,
-      activity: { select: { id: true, name: true, emoji: true, color: true } },
-    },
-    orderBy: [{ performedAt: "asc" }],
-  });
+  const [logs, olderLog] = await Promise.all([
+    prisma.log.findMany({
+      where: {
+        userId,
+        performedAt: { gte: fromDate, lt: toDate },
+        ...(activityId ? { activityId } : {}),
+        ...(noteKeyword ? { note: { contains: noteKeyword, mode: "insensitive" } } : {}),
+      },
+      select: {
+        id: true,
+        performedAt: true,
+        createdAt: true,
+        updatedAt: true,
+        stars: true,
+        note: true,
+        activity: { select: { id: true, name: true, emoji: true, color: true } },
+      },
+      orderBy: [{ performedAt: "asc" }],
+    }),
+    prisma.log.findFirst({
+      where: {
+        userId,
+        performedAt: { lt: fromDate },
+        ...(activityId ? { activityId } : {}),
+        ...(noteKeyword ? { note: { contains: noteKeyword, mode: "insensitive" } } : {}),
+      },
+      select: { id: true },
+    }),
+  ]);
+
+  return { logs, hasMore: olderLog !== null };
 }
 
 export type PeriodPreset = "thisMonth" | "3months" | "thisYear" | "all";
