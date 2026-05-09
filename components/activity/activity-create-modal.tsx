@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { createActivity } from "@/server/actions/activity";
-import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -48,10 +48,10 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
   }
 
   return (
-    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <BottomSheetContent>
-        <DialogTitle className="sr-only">活動を追加</DialogTitle>
-        <DialogDescription className="sr-only">新しい活動を作成します。名前、絵文字、カラーを設定してください。</DialogDescription>
+    <ResponsiveDialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDialogContent>
+        <ResponsiveDialogTitle className="sr-only">活動を追加</ResponsiveDialogTitle>
+        <ResponsiveDialogDescription className="sr-only">新しい活動を作成します。名前、絵文字、カラーを設定してください。</ResponsiveDialogDescription>
         <div className="flex items-center justify-between px-6 pt-3 sm:pt-5 pb-4">
           <h2 className="text-foreground font-semibold text-base">活動を追加</h2>
           <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
@@ -126,7 +126,7 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
             </Button>
           </div>
         </form>
-      </BottomSheetContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

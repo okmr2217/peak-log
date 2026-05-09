@@ -6,7 +6,7 @@ import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
 import { createLog } from "@/server/actions/log";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -111,11 +111,11 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
   const otherDateLabel = format(otherDate, "M月d日");
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <BottomSheetContent className="max-h-[90dvh] overflow-y-auto">
+    <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDialogContent className="overflow-y-auto">
         <VisuallyHidden>
-          <DialogTitle>ピークを記録</DialogTitle>
-          <DialogDescription>アクティビティの実施日時と余韻を記録します。</DialogDescription>
+          <ResponsiveDialogTitle>ピークを記録</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>アクティビティの実施日時と余韻を記録します。</ResponsiveDialogDescription>
         </VisuallyHidden>
 
         <div className="h-[2px] mx-8 rounded-full opacity-70 mb-1" style={{ background: "linear-gradient(90deg, #7C4DFF, #00E5FF, #7C4DFF)" }} />
@@ -347,7 +347,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             </button>
           </div>
         </div>
-      </BottomSheetContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

@@ -7,7 +7,7 @@ import { format, startOfDay } from "date-fns";
 import { updateLog } from "@/server/actions/log";
 import { type DateMode, floorToNearest30, TIME_OPTIONS, DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -111,11 +111,11 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, ac
   const otherDateLabel = format(otherDate, "M月d日");
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <BottomSheetContent>
+    <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDialogContent>
         <VisuallyHidden>
-          <DialogTitle>記録を編集</DialogTitle>
-          <DialogDescription>記録の日時・スター数・メモを編集します。</DialogDescription>
+          <ResponsiveDialogTitle>記録を編集</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>記録の日時・スター数・メモを編集します。</ResponsiveDialogDescription>
         </VisuallyHidden>
         <div className="px-6 pt-4 pb-6 sm:pt-5">
           <div className="flex items-center justify-between mb-4">
@@ -307,7 +307,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, ac
             </div>
           </div>
         </div>
-      </BottomSheetContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

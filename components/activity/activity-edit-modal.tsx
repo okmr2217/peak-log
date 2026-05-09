@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { updateActivity } from "@/server/actions/activity";
 import { getActivityFieldsForEdit } from "@/server/actions/activity-field-queries";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -88,11 +88,11 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
   const activeFieldsCount = fields.filter((f) => !f.isArchived).length;
 
   return (
-    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <BottomSheetContent>
+    <ResponsiveDialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDialogContent>
         <VisuallyHidden>
-          <DialogTitle>活動を編集</DialogTitle>
-          <DialogDescription>活動の名前、絵文字、カラーを編集します。</DialogDescription>
+          <ResponsiveDialogTitle>活動を編集</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>活動の名前、絵文字、カラーを編集します。</ResponsiveDialogDescription>
         </VisuallyHidden>
         <div className="flex items-center justify-between px-6 pt-3 sm:pt-5 pb-4">
           <h2 className="text-foreground font-semibold text-base">活動を編集</h2>
@@ -219,7 +219,7 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
             </Button>
           </div>
         </form>
-      </BottomSheetContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }
