@@ -101,16 +101,6 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
   return { month, totalLogs, activeDays, activityCount, topActivities, peakLogs };
 }
 
-export async function getLogsForCurrentUser(limit = 20) {
-  const userId = await requireUserId();
-  return prisma.log.findMany({
-    where: { userId },
-    include: { activity: true },
-    orderBy: { performedAt: "desc" },
-    take: limit,
-  });
-}
-
 export type LogItem = {
   id: string;
   performedAt: Date;
@@ -137,68 +127,6 @@ const ACTIVITY_FIELDS_SELECT = {
   where: { isArchived: false },
   select: { id: true, name: true, type: true, options: true },
 } as const;
-
-export async function getLogsRangePageForCurrentUser({
-  from,
-  to,
-}: {
-  from: Date;
-  to: Date;
-}): Promise<{ logs: LogItem[]; hasMore: boolean }> {
-  const userId = await requireUserId();
-
-  const [rawLogs, olderLog] = await Promise.all([
-    prisma.log.findMany({
-      where: { userId, performedAt: { gte: from, lt: to } },
-      select: {
-        id: true,
-        performedAt: true,
-        createdAt: true,
-        updatedAt: true,
-        stars: true,
-        note: true,
-        fieldValues: true,
-        activity: { select: { id: true, name: true, emoji: true, color: true, fields: ACTIVITY_FIELDS_SELECT } },
-      },
-      orderBy: [{ performedAt: "asc" }],
-    }),
-    prisma.log.findFirst({
-      where: { userId, performedAt: { lt: from } },
-      select: { id: true },
-    }),
-  ]);
-
-  const logs: LogItem[] = rawLogs.map((log) => ({ ...log, fieldValues: log.fieldValues as LogItem["fieldValues"] }));
-  return { logs, hasMore: olderLog !== null };
-}
-
-export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogItem[]> {
-  const userId = await requireUserId();
-
-  const [yearStr, monthStr] = month.split("-");
-  const year = parseInt(yearStr, 10);
-  const monthNum = parseInt(monthStr, 10);
-  const endYear = monthNum === 12 ? year + 1 : year;
-  const endMonth = monthNum === 12 ? 1 : monthNum + 1;
-  const start = fromZonedTime(`${yearStr}-${monthStr}-01`, TZ);
-  const end = fromZonedTime(`${endYear}-${String(endMonth).padStart(2, "0")}-01`, TZ);
-
-  const rawLogs = await prisma.log.findMany({
-    where: { userId, performedAt: { gte: start, lt: end } },
-    select: {
-      id: true,
-      performedAt: true,
-      createdAt: true,
-      updatedAt: true,
-      stars: true,
-      note: true,
-      fieldValues: true,
-      activity: { select: { id: true, name: true, emoji: true, color: true, fields: ACTIVITY_FIELDS_SELECT } },
-    },
-    orderBy: [{ performedAt: "desc" }, { id: "desc" }],
-  });
-  return rawLogs.map((log) => ({ ...log, fieldValues: log.fieldValues as LogItem["fieldValues"] }));
-}
 
 export async function getLogsSearchForCurrentUser({
   activityId,
@@ -340,10 +268,3 @@ export async function getCategoryStatsForCurrentUser(period: PeriodPreset): Prom
     });
 }
 
-export async function getLogById(id: string) {
-  const userId = await requireUserId();
-  return prisma.log.findFirst({
-    where: { id, userId },
-    include: { activity: true },
-  });
-}

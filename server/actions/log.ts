@@ -10,10 +10,8 @@ import { normalizeFieldValues } from "@/lib/normalize-field-values";
 import {
   createLogSchema,
   deleteLogSchema,
-  updateLogPerformedAtSchema,
   updateLogSchema,
   type CreateLogInput,
-  type UpdateLogPerformedAtInput,
   type UpdateLogInput,
 } from "@/server/validators/log";
 
@@ -134,32 +132,3 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
   }
 }
 
-export async function updateLogPerformedAt(input: UpdateLogPerformedAtInput): Promise<ActionResult> {
-  const parsed = updateLogPerformedAtSchema.safeParse(input);
-  if (!parsed.success) {
-    return fail(parsed.error.issues[0]?.message ?? "正しい日時を入力してください");
-  }
-
-  try {
-    const userId = await requireUserId();
-
-    const existing = await prisma.log.findFirst({
-      where: { id: parsed.data.logId, userId },
-      select: { id: true },
-    });
-    if (!existing) {
-      return fail("記録が見つかりません");
-    }
-
-    await prisma.log.update({
-      where: { id: parsed.data.logId },
-      data: { performedAt: parsed.data.performedAt },
-    });
-
-    revalidatePath("/");
-
-    return ok();
-  } catch (e) {
-    return fail(toActionMessage(e, "更新できませんでした"));
-  }
-}

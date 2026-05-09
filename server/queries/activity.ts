@@ -11,22 +11,6 @@ export type ActivityFieldDTO = {
   isArchived: boolean;
 };
 
-export async function getActivitiesForCurrentUser() {
-  const userId = await requireUserId();
-  return prisma.activity.findMany({
-    where: { userId },
-    select: {
-      id: true,
-      name: true,
-      emoji: true,
-      color: true,
-      sortOrder: true,
-      isArchived: true,
-    },
-    orderBy: { sortOrder: "asc" },
-  });
-}
-
 export async function getActiveActivitiesForCurrentUser() {
   const userId = await requireUserId();
   return prisma.activity.findMany({
@@ -61,19 +45,6 @@ const FIELD_SELECT = {
   sortOrder: true,
   isArchived: true,
 } as const;
-
-export async function getActivityById(id: string) {
-  const userId = await requireUserId();
-  return prisma.activity.findFirst({
-    where: { id, userId },
-    include: {
-      fields: {
-        orderBy: { createdAt: "asc" },
-        select: FIELD_SELECT,
-      },
-    },
-  });
-}
 
 export type ActivityStats = {
   totalCount: number;
