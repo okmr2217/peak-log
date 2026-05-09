@@ -94,16 +94,16 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
           <DialogTitle>活動を編集</DialogTitle>
           <DialogDescription>活動の名前、絵文字、カラーを編集します。</DialogDescription>
         </VisuallyHidden>
-        <div className="px-6 pt-4 pb-8 sm:pb-6 sm:pt-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-foreground font-semibold text-base">活動を編集</h2>
-            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="flex items-center justify-between px-6 pt-3 sm:pt-5 pb-4">
+          <h2 className="text-foreground font-semibold text-base">活動を編集</h2>
+          <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          <div className="flex-1 overflow-y-auto px-6 space-y-3 pb-3">
+            <div className="space-y-1">
               <Label htmlFor="edit-activity-name" className="text-muted-foreground text-xs uppercase tracking-wide">
                 名前 *
               </Label>
@@ -116,11 +116,11 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                 maxLength={20}
                 required
                 autoFocus
-                className="bg-muted border-border rounded-xl px-3.5 py-3 h-auto placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0"
+                className="bg-muted border-border rounded-xl px-3.5 py-2 h-auto placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0"
               />
             </div>
             <EmojiPickerField value={emoji} onChange={setEmoji} />
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label className="text-muted-foreground text-xs uppercase tracking-wide">カラー</Label>
               <div className="flex flex-wrap gap-2.5">
                 {PRESET_COLORS.map((c) => (
@@ -140,7 +140,7 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                 ))}
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="edit-activity-description" className="text-muted-foreground text-xs uppercase tracking-wide">
                 説明
               </Label>
@@ -151,12 +151,11 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                 placeholder="活動の目的やルールなど（任意）"
                 maxLength={200}
                 rows={2}
-                className="bg-muted border-border rounded-xl px-3.5 py-3 placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0 resize-none"
+                className="bg-muted border-border rounded-xl px-3.5 py-2 placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0 resize-none"
               />
               <p className="text-muted-foreground/50 text-xs text-right">{description.length}/200</p>
             </div>
 
-            {/* カスタムフィールド */}
             <div className="space-y-2 pt-2 border-t border-border">
               <div className="flex items-center justify-between">
                 <Label className="text-muted-foreground text-xs uppercase tracking-wide">
@@ -207,8 +206,10 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                 )}
               </div>
             </div>
+          </div>
 
-            {error && <p className="text-red-400 text-xs">{error}</p>}
+          <div className="px-6 pb-8 sm:pb-6 pt-3 border-t border-border">
+            {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
             <Button
               type="submit"
               disabled={isPending}
@@ -216,8 +217,8 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
             >
               {isPending ? "保存中..." : "保存する"}
             </Button>
-          </form>
-        </div>
+          </div>
+        </form>
       </BottomSheetContent>
     </Dialog>
   );

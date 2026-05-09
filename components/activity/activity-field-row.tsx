@@ -22,7 +22,7 @@ export function ActivityFieldRow({ field, onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 bg-[#18181B] border border-[#27272A] rounded-xl p-3 text-left transition-colors hover:border-primary/30 active:scale-[0.99] ${field.isArchived ? "opacity-50" : ""}`}
+      className={`w-full flex items-center gap-2.5 bg-muted border border-border rounded-xl p-3 text-left transition-colors hover:border-primary/30 active:scale-[0.99] ${field.isArchived ? "opacity-50" : ""}`}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">

@@ -31,7 +31,7 @@ export function OptionsEditor({ options, onChange, maxOptions = 20 }: Props) {
         {options.map((opt, idx) => (
           <span
             key={`${opt}-${idx}`}
-            className="inline-flex items-center gap-1.5 bg-[#27272A] rounded-full pl-3 pr-2 py-1 text-xs text-foreground"
+            className="inline-flex items-center gap-1.5 bg-muted rounded-full pl-3 pr-2 py-1 text-xs text-foreground"
           >
             {opt}
             <button
