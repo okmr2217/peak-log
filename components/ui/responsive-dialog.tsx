@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
@@ -60,7 +61,6 @@ const ResponsiveDialogClose = ({ className, children, ...props }: ResponsiveDial
   return <Component className={className} {...props}>{children}</Component>;
 };
 
-// モーダルは独自のクローズボタンを持つため、built-in close button なし
 const ResponsiveDialogContent = ({ className, children }: ResponsiveDialogProps) => {
   const isDesktop = useMediaQuery(desktop);
   if (isDesktop) {
@@ -78,6 +78,10 @@ const ResponsiveDialogContent = ({ className, children }: ResponsiveDialogProps)
           )}
         >
           {children}
+          <DialogPrimitive.Close className="absolute right-4 top-4 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-1 focus:ring-ring disabled:pointer-events-none">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
         </DialogPrimitive.Content>
       </DialogPortal>
     );
@@ -93,8 +97,18 @@ const ResponsiveDialogDescription = ({ className, children, ...props }: Responsi
 
 const ResponsiveDialogHeader = ({ className, children, ...props }: ResponsiveDialogProps) => {
   const isDesktop = useMediaQuery(desktop);
-  const Component = isDesktop ? DialogHeader : DrawerHeader;
-  return <Component className={className} {...props}>{children}</Component>;
+  if (isDesktop) {
+    return (
+      <DialogHeader className={cn("p-6 pb-2 text-left", className)} {...props}>
+        {children}
+      </DialogHeader>
+    );
+  }
+  return (
+    <DrawerHeader className={cn("text-left", className)} {...props}>
+      {children}
+    </DrawerHeader>
+  );
 };
 
 const ResponsiveDialogTitle = ({ className, children, ...props }: ResponsiveDialogProps) => {
@@ -105,7 +119,7 @@ const ResponsiveDialogTitle = ({ className, children, ...props }: ResponsiveDial
 
 const ResponsiveDialogBody = ({ className, children, ...props }: Omit<ResponsiveDialogProps, "asChild">) => {
   return (
-    <div className={cn("px-4 md:px-0", className)} {...props}>
+    <div className={cn("px-4 md:px-6", className)} {...props}>
       {children}
     </div>
   );
@@ -113,8 +127,18 @@ const ResponsiveDialogBody = ({ className, children, ...props }: Omit<Responsive
 
 const ResponsiveDialogFooter = ({ className, children, ...props }: ResponsiveDialogProps) => {
   const isDesktop = useMediaQuery(desktop);
-  const Component = isDesktop ? DialogFooter : DrawerFooter;
-  return <Component className={className} {...props}>{children}</Component>;
+  if (isDesktop) {
+    return (
+      <DialogFooter className={cn("p-6 pt-2", className)} {...props}>
+        {children}
+      </DialogFooter>
+    );
+  }
+  return (
+    <DrawerFooter className={className} {...props}>
+      {children}
+    </DrawerFooter>
+  );
 };
 
 export {

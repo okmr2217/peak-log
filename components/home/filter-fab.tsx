@@ -5,7 +5,16 @@ import { useRouter } from "next/navigation";
 import { format, parse } from "date-fns";
 import { SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { Dialog, BottomSheetContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from "@/components/ui/responsive-dialog";
+import { Button } from "@/components/ui/button";
 import { DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
 
 type Activity = { id: string; name: string; emoji: string | null; color: string | null };
@@ -143,21 +152,14 @@ export function FilterFab({
         </button>
       </div>
 
-      <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setActiveDateField(null); }}>
-        <BottomSheetContent>
-          <div className="px-4 pb-6 pt-2 max-h-[80dvh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <DialogTitle className="text-base font-semibold">絞り込み</DialogTitle>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="text-muted-foreground hover:text-foreground transition-colors p-1"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+      <ResponsiveDialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setActiveDateField(null); }}>
+        <ResponsiveDialogContent>
+          <ResponsiveDialogHeader>
+            <ResponsiveDialogTitle>絞り込み</ResponsiveDialogTitle>
+            <ResponsiveDialogDescription>活動・期間・メモで記録を絞り込みます。</ResponsiveDialogDescription>
+          </ResponsiveDialogHeader>
 
-            <div className="space-y-4">
+          <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">活動</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -239,20 +241,18 @@ export function FilterFab({
                 />
               </div>
 
-              {hasFilters && (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-border bg-muted text-foreground hover:bg-secondary transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                  絞り込みをクリア
-                </button>
-              )}
-            </div>
-          </div>
-        </BottomSheetContent>
-      </Dialog>
+          </ResponsiveDialogBody>
+
+          {hasFilters && (
+            <ResponsiveDialogFooter>
+              <Button type="button" variant="outline" onClick={handleClear}>
+                <X className="w-3 h-3" />
+                絞り込みをクリア
+              </Button>
+            </ResponsiveDialogFooter>
+          )}
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </>
   );
 }

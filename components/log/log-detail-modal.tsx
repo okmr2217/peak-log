@@ -1,8 +1,15 @@
 "use client";
 
 import { Star, Pencil } from "lucide-react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { formatRelativeTime, formatFullDateTime } from "@/lib/date-utils";
 
@@ -22,15 +29,10 @@ export function LogDetailModal({ activity, performedAt, stars, note, createdAt, 
   const color = activity.color;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <BottomSheetContent>
-        <VisuallyHidden>
-          <DialogTitle>記録の詳細</DialogTitle>
-          <DialogDescription>記録の詳細情報を表示します。</DialogDescription>
-        </VisuallyHidden>
-        <div className="px-6 pt-4 pb-8 sm:pt-5">
-          {/* Header */}
-          <div className="flex items-center gap-2.5 mb-5">
+    <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDialogContent>
+        <ResponsiveDialogHeader>
+          <div className="flex items-center gap-2.5">
             {activity.emoji && (
               <span
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-base leading-none shrink-0"
@@ -39,10 +41,12 @@ export function LogDetailModal({ activity, performedAt, stars, note, createdAt, 
                 {activity.emoji}
               </span>
             )}
-            <h2 className="text-foreground font-semibold text-base flex-1 min-w-0 truncate">{activity.name}</h2>
+            <ResponsiveDialogTitle className="flex-1 min-w-0 truncate">{activity.name}</ResponsiveDialogTitle>
           </div>
+          <ResponsiveDialogDescription className="sr-only">記録の詳細情報を表示します。</ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
 
-          <div className="space-y-4">
+        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
             {/* performedAt */}
             <div>
               <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">記録日時</p>
@@ -93,19 +97,18 @@ export function LogDetailModal({ activity, performedAt, stars, note, createdAt, 
               </div>
             </div>
 
-            {/* Edit button */}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onEditRequest}
-              className="w-full rounded-xl h-auto py-3 border-border gap-2"
-            >
-              <Pencil size={14} />
-              編集する
-            </Button>
-          </div>
-        </div>
-      </BottomSheetContent>
-    </Dialog>
+        </ResponsiveDialogBody>
+
+        <ResponsiveDialogFooter>
+          <Button type="button" variant="outline" onClick={onClose}>
+            閉じる
+          </Button>
+          <Button type="button" onClick={onEditRequest}>
+            <Pencil size={14} />
+            編集する
+          </Button>
+        </ResponsiveDialogFooter>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

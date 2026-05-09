@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateActivity } from "@/server/actions/activity";
 import { getActivityFieldsForEdit } from "@/server/actions/activity-field-queries";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from "@/components/ui/responsive-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -90,19 +96,13 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
   return (
     <ResponsiveDialog open={true} onOpenChange={(open) => !open && onClose()}>
       <ResponsiveDialogContent>
-        <VisuallyHidden>
+        <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>活動を編集</ResponsiveDialogTitle>
-          <ResponsiveDialogDescription>活動の名前、絵文字、カラーを編集します。</ResponsiveDialogDescription>
-        </VisuallyHidden>
-        <div className="flex items-center justify-between px-6 pt-3 sm:pt-5 pb-4">
-          <h2 className="text-foreground font-semibold text-base">活動を編集</h2>
-          <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+          <ResponsiveDialogDescription>活動の名前、絵文字、カラー、カスタムフィールドを編集します。</ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
-          <div className="flex-1 overflow-y-auto px-6 space-y-3 pb-3">
+          <ResponsiveDialogBody className="flex-1 overflow-y-auto space-y-3 pb-3">
             <div className="space-y-1">
               <Label htmlFor="edit-activity-name" className="text-muted-foreground text-xs uppercase tracking-wide">
                 名前 *
@@ -206,18 +206,17 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                 )}
               </div>
             </div>
-          </div>
+            {error && <p className="text-red-400 text-xs">{error}</p>}
+          </ResponsiveDialogBody>
 
-          <div className="px-6 pb-8 sm:pb-6 pt-3 border-t border-border">
-            {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="w-full rounded-xl h-auto py-3.5"
-            >
+          <ResponsiveDialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
+              キャンセル
+            </Button>
+            <Button type="submit" disabled={isPending}>
               {isPending ? "保存中..." : "保存する"}
             </Button>
-          </div>
+          </ResponsiveDialogFooter>
         </form>
       </ResponsiveDialogContent>
     </ResponsiveDialog>

@@ -1,13 +1,20 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { X, ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
 import { updateLog } from "@/server/actions/log";
 import { type DateMode, floorToNearest30, TIME_OPTIONS, DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -113,19 +120,12 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, ac
   return (
     <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <ResponsiveDialogContent>
-        <VisuallyHidden>
+        <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>記録を編集</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>記録の日時・スター数・メモを編集します。</ResponsiveDialogDescription>
-        </VisuallyHidden>
-        <div className="px-6 pt-4 pb-6 sm:pt-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-foreground font-semibold text-base">記録を編集</h2>
-            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+        </ResponsiveDialogHeader>
 
-          <div className="space-y-4">
+        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
             {/* Date section */}
             <div>
               <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">日付</Label>
@@ -285,28 +285,16 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, ac
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
+        </ResponsiveDialogBody>
 
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isPending}
-                className="flex-1 rounded-xl h-auto py-3 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
-                キャンセル
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isPending}
-                className="flex-1 rounded-xl h-auto py-3"
-              >
-                {isPending ? "保存中..." : "保存する"}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ResponsiveDialogFooter>
+          <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
+            キャンセル
+          </Button>
+          <Button type="button" onClick={handleSubmit} disabled={isPending}>
+            {isPending ? "保存中..." : "保存する"}
+          </Button>
+        </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </ResponsiveDialog>
   );

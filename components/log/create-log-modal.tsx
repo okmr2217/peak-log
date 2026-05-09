@@ -1,12 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { X, ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
 import { createLog } from "@/server/actions/log";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogTitle, ResponsiveDialogDescription } from "@/components/ui/responsive-dialog";
+import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from "@/components/ui/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -112,27 +119,14 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
 
   return (
     <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ResponsiveDialogContent className="overflow-y-auto">
-        <VisuallyHidden>
+      <ResponsiveDialogContent>
+        <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>ピークを記録</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>アクティビティの実施日時と余韻を記録します。</ResponsiveDialogDescription>
-        </VisuallyHidden>
+        </ResponsiveDialogHeader>
 
-        <div className="h-[2px] mx-8 rounded-full opacity-70 mb-1" style={{ background: "linear-gradient(90deg, #7C4DFF, #00E5FF, #7C4DFF)" }} />
-
-        <div className="px-6 pt-3 pb-6 sm:pb-5 sm:pt-5">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-foreground font-semibold text-base">ピークを記録</h2>
-            </div>
-            <Button type="button" variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-muted-foreground hover:text-foreground">
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            {/* Activity selector */}
+        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
+          {/* Activity selector */}
             {showActivitySelector && (
               <div>
                 <Label className="text-muted-foreground text-xs mb-1.5 block tracking-wide uppercase">活動を選ぶ</Label>
@@ -332,21 +326,16 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             </div>
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
+        </ResponsiveDialogBody>
 
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isPending || !resolvedActivity}
-              className="w-full rounded-xl py-3 text-sm font-semibold text-primary-foreground transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
-              style={{
-                background: isPending ? "rgba(124,77,255,0.5)" : "linear-gradient(135deg, #7C4DFF 0%, #5533cc 100%)",
-                boxShadow: isPending || !resolvedActivity ? "none" : "0 4px 24px -4px rgba(124,77,255,0.5)",
-              }}
-            >
-              {isPending ? "記録中..." : "記録する"}
-            </button>
-          </div>
-        </div>
+        <ResponsiveDialogFooter>
+          <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
+            キャンセル
+          </Button>
+          <Button type="button" onClick={handleSubmit} disabled={isPending || !resolvedActivity}>
+            {isPending ? "記録中..." : "記録する"}
+          </Button>
+        </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </ResponsiveDialog>
   );
