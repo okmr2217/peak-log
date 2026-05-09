@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { updateActivity } from "@/server/actions/activity";
+import { getActivityFieldsForEdit } from "@/server/actions/activity-field-queries";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
+import { ActivityFieldRow } from "@/components/activity/activity-field-row";
+import { ActivityFieldEditor } from "@/components/activity/activity-field-editor";
+import type { ActivityFieldDTO } from "@/server/queries/activity";
 
 const PRESET_COLORS = [
   "#7C4DFF", "#00E5FF", "#FF4081", "#FF6D00", "#FFD740",
@@ -39,12 +44,26 @@ interface Props {
 }
 
 export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
+  const router = useRouter();
   const [name, setName] = useState(activity.name);
   const [emoji, setEmoji] = useState(activity.emoji ?? "");
   const [color, setColor] = useState(activity.color ?? "");
   const [description, setDescription] = useState(activity.description ?? "");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const [fields, setFields] = useState<ActivityFieldDTO[]>([]);
+  const [expandedFieldId, setExpandedFieldId] = useState<string | "new" | null>(null);
+
+  useEffect(() => {
+    getActivityFieldsForEdit(activity.id).then(setFields);
+  }, [activity.id]);
+
+  function handleFieldChange() {
+    setExpandedFieldId(null);
+    getActivityFieldsForEdit(activity.id).then(setFields);
+    router.refresh();
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,6 +84,8 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
       }
     });
   }
+
+  const activeFieldsCount = fields.filter((f) => !f.isArchived).length;
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
@@ -134,6 +155,59 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
               />
               <p className="text-muted-foreground/50 text-xs text-right">{description.length}/200</p>
             </div>
+
+            {/* カスタムフィールド */}
+            <div className="space-y-2 pt-2 border-t border-border">
+              <div className="flex items-center justify-between">
+                <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+                  カスタムフィールド
+                </Label>
+                <span className="text-muted-foreground/50 text-xs">{activeFieldsCount} / 8</span>
+              </div>
+
+              <div className="space-y-2">
+                {fields
+                  .filter((f) => !f.isArchived)
+                  .map((field) =>
+                    expandedFieldId === field.id ? (
+                      <ActivityFieldEditor
+                        key={field.id}
+                        activityId={activity.id}
+                        field={field}
+                        onSave={handleFieldChange}
+                        onCancel={() => setExpandedFieldId(null)}
+                        onArchive={handleFieldChange}
+                      />
+                    ) : (
+                      <ActivityFieldRow
+                        key={field.id}
+                        field={field}
+                        onClick={() => setExpandedFieldId(field.id)}
+                      />
+                    ),
+                  )}
+
+                {expandedFieldId === "new" ? (
+                  <ActivityFieldEditor
+                    activityId={activity.id}
+                    field={null}
+                    onSave={handleFieldChange}
+                    onCancel={() => setExpandedFieldId(null)}
+                  />
+                ) : (
+                  activeFieldsCount < 8 && (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedFieldId("new")}
+                      className="w-full rounded-xl py-2.5 text-sm border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors active:scale-[0.99]"
+                    >
+                      + フィールドを追加
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+
             {error && <p className="text-red-400 text-xs">{error}</p>}
             <Button
               type="submit"

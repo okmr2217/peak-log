@@ -1,5 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import type { FieldType } from "@prisma/client";
+
+export type ActivityFieldDTO = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+  sortOrder: number;
+  isArchived: boolean;
+};
 
 export async function getActivitiesForCurrentUser() {
   const userId = await requireUserId();
@@ -32,10 +42,25 @@ export async function getActiveActivitiesForCurrentUser() {
   });
 }
 
+const FIELD_SELECT = {
+  id: true,
+  name: true,
+  type: true,
+  options: true,
+  sortOrder: true,
+  isArchived: true,
+} as const;
+
 export async function getActivityById(id: string) {
   const userId = await requireUserId();
   return prisma.activity.findFirst({
     where: { id, userId },
+    include: {
+      fields: {
+        orderBy: { createdAt: "asc" },
+        select: FIELD_SELECT,
+      },
+    },
   });
 }
 
@@ -101,6 +126,7 @@ export type ActivityDetail = {
   emoji: string | null;
   color: string | null;
   isArchived: boolean;
+  fields: ActivityFieldDTO[];
   stats: {
     totalCount: number;
     lastPerformedAt: Date | null;
@@ -116,6 +142,12 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
   const [activity, logs] = await Promise.all([
     prisma.activity.findFirst({
       where: { id: activityId, userId },
+      include: {
+        fields: {
+          orderBy: { createdAt: "asc" },
+          select: FIELD_SELECT,
+        },
+      },
     }),
     prisma.log.findMany({
       where: { userId, activityId, performedAt: { lte: now } },
@@ -154,6 +186,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
     emoji: activity.emoji,
     color: activity.color,
     isArchived: activity.isArchived,
+    fields: activity.fields,
     stats: { totalCount, lastPerformedAt, avgIntervalDays },
     recentLogs,
   };
