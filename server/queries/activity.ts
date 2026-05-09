@@ -37,6 +37,17 @@ export async function getActiveActivitiesForCurrentUser() {
       emoji: true,
       color: true,
       sortOrder: true,
+      fields: {
+        where: { isArchived: false },
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          options: true,
+          isArchived: true,
+        },
+      },
     },
     orderBy: { sortOrder: "asc" },
   });

@@ -10,7 +10,13 @@ import { TimelineList } from "@/components/history/timeline-list";
 import { CompactTimelineList } from "./compact-timeline";
 import type { HistoryDayItem } from "@/server/queries/log";
 
-type Activity = { id: string; name: string; emoji: string | null; color: string | null };
+type Activity = {
+  id: string;
+  name: string;
+  emoji: string | null;
+  color: string | null;
+  fields: { id: string; name: string; type: import("@prisma/client").FieldType; options: string[]; isArchived: boolean }[];
+};
 type Tab = "detail" | "compact";
 
 type Props = {

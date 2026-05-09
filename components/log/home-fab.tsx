@@ -10,6 +10,7 @@ type Activity = {
   name: string;
   emoji: string | null;
   color: string | null;
+  fields: { id: string; name: string; type: import("@prisma/client").FieldType; options: string[]; isArchived: boolean }[];
 };
 
 type Toast = { type: "success" } | { type: "error"; message: string };

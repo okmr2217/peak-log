@@ -1,8 +1,13 @@
 import { z } from "zod";
 
+const fieldValuesSchema = z.record(z.string(), z.union([z.string(), z.array(z.string())])).optional();
+
 export const createLogSchema = z.object({
   activityId: z.string().min(1, "アクティビティを選択してください"),
   performedAt: z.coerce.date().optional(),
+  stars: z.number().int().min(1).max(5).optional(),
+  note: z.string().trim().max(200, "メモは200文字以内で入力してください").optional(),
+  fieldValues: fieldValuesSchema,
 });
 
 export const deleteLogSchema = z.object({
@@ -23,6 +28,7 @@ export const updateLogSchema = z.object({
     .refine((d) => !isNaN(d.getTime()), { message: "正しい日時を入力してください" }),
   stars: z.number().int().min(1).max(5).optional(),
   note: z.string().max(200, "メモは200文字以内で入力してください").optional(),
+  fieldValues: fieldValuesSchema,
 });
 
 export type CreateLogInput = z.infer<typeof createLogSchema>;

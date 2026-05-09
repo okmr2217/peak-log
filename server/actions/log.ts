@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { type ActionResult, ok, fail } from "@/lib/action-result";
 import { toActionMessage } from "@/lib/app-error";
+import { normalizeFieldValues } from "@/lib/normalize-field-values";
 import {
   createLogSchema,
   deleteLogSchema,
@@ -15,6 +17,13 @@ import {
   type UpdateLogInput,
 } from "@/server/validators/log";
 
+const ACTIVITY_FIELDS_SELECT = {
+  id: true,
+  type: true,
+  options: true,
+  isArchived: true,
+} as const;
+
 export async function createLog(input: CreateLogInput): Promise<ActionResult<{ logId: string }>> {
   const parsed = createLogSchema.safeParse(input);
   if (!parsed.success) {
@@ -23,19 +32,30 @@ export async function createLog(input: CreateLogInput): Promise<ActionResult<{ l
 
   try {
     const userId = await requireUserId();
+    const { activityId, performedAt, stars, note, fieldValues: rawFieldValues } = parsed.data;
 
     const activity = await prisma.activity.findFirst({
-      where: { id: parsed.data.activityId, userId },
+      where: { id: activityId, userId },
+      select: {
+        id: true,
+        fields: { select: ACTIVITY_FIELDS_SELECT },
+      },
     });
     if (!activity) {
       return fail("アクティビティが見つかりません");
     }
 
+    const fieldValues = normalizeFieldValues(rawFieldValues, activity.fields);
+    const noteTrimmed = (note ?? "").trim();
+
     const log = await prisma.log.create({
       data: {
         userId,
-        activityId: parsed.data.activityId,
-        performedAt: parsed.data.performedAt ?? new Date(),
+        activityId,
+        performedAt: performedAt ?? new Date(),
+        stars: stars ?? null,
+        note: noteTrimmed || null,
+        ...(fieldValues !== null && { fieldValues }),
       },
     });
     revalidatePath("/");
@@ -73,17 +93,28 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
 
   try {
     const userId = await requireUserId();
-    const { logId, performedAt, stars, note } = parsed.data;
+    const { logId, performedAt, stars, note, fieldValues: rawFieldValues } = parsed.data;
 
     const existing = await prisma.log.findFirst({
       where: { id: logId, userId },
-      select: { id: true },
+      select: {
+        id: true,
+        activity: {
+          select: {
+            fields: { select: ACTIVITY_FIELDS_SELECT },
+          },
+        },
+      },
     });
     if (!existing) {
       return fail("記録が見つかりません");
     }
 
     const noteTrimmed = (note ?? "").trim();
+    const fieldValuesData =
+      rawFieldValues !== undefined
+        ? normalizeFieldValues(rawFieldValues, existing.activity.fields)
+        : undefined;
 
     await prisma.log.update({
       where: { id: logId },
@@ -91,6 +122,7 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
         performedAt,
         stars: stars ?? null,
         note: noteTrimmed || null,
+        ...(fieldValuesData !== undefined && { fieldValues: fieldValuesData ?? Prisma.DbNull }),
       },
     });
 

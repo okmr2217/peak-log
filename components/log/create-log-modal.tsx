@@ -5,20 +5,30 @@ import { X, ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
 import { createLog } from "@/server/actions/log";
-import { upsertReflection } from "@/server/actions/reflection";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FieldValueInput } from "@/components/log/field-value-input";
 
 import { type DateMode, floorToNearest30, TIME_OPTIONS, DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
+import type { FieldType } from "@prisma/client";
+
+type ActivityField = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+  isArchived: boolean;
+};
 
 type Activity = {
   id: string;
   name: string;
   emoji: string | null;
   color: string | null;
+  fields: ActivityField[];
 };
 
 type Props = {
@@ -39,11 +49,17 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(new Date()));
   const [stars, setStars] = useState<number | undefined>();
   const [note, setNote] = useState("");
+  const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const resolvedActivity = activity ?? selectedActivity;
   const showActivitySelector = !activity && activities && activities.length > 0;
+
+  function handleActivityChange(a: Activity) {
+    setSelectedActivity(a);
+    setFieldValues({});
+  }
 
   function getPerformedAt(): Date {
     let date: Date;
@@ -67,22 +83,19 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
     const performedAt = getPerformedAt();
     setError(null);
     startTransition(async () => {
-      const result = await createLog({ activityId: resolvedActivity.id, performedAt });
+      const result = await createLog({
+        activityId: resolvedActivity.id,
+        performedAt,
+        stars,
+        note: note.trim() || undefined,
+        fieldValues: Object.keys(fieldValues).length > 0 ? fieldValues : undefined,
+      });
       if (!result.ok) {
         setError(result.message);
         return;
       }
-      const logId = result.data.logId;
-      const noteTrimmed = note.trim();
-      const hasReflectionData = stars !== undefined || noteTrimmed !== "";
-      if (hasReflectionData) {
-        await upsertReflection({
-          logId,
-          stars,
-          note: noteTrimmed || undefined,
-        });
-      }
-      onSuccess(logId, hasReflectionData);
+      const hasReflection = stars !== undefined || note.trim() !== "";
+      onSuccess(result.data.logId, hasReflection);
       onClose();
     });
   }
@@ -130,7 +143,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                       <button
                         key={a.id}
                         type="button"
-                        onClick={() => setSelectedActivity(a)}
+                        onClick={() => handleActivityChange(a)}
                         className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-150 active:scale-[0.98] text-left min-w-0"
                         style={
                           isSelected
@@ -214,6 +227,54 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                 </div>
               </div>
             </div>
+
+            {/* Custom fields */}
+            {resolvedActivity && resolvedActivity.fields && resolvedActivity.fields.length > 0 && (
+              <div
+                className="rounded-2xl p-3 space-y-3"
+                style={{
+                  background: `${resolvedActivity.color ?? "#7C4DFF"}0A`,
+                  border: `1px solid ${resolvedActivity.color ?? "#7C4DFF"}25`,
+                }}
+              >
+                <div className="flex items-center gap-1.5">
+                  {resolvedActivity.emoji && <span className="text-xs">{resolvedActivity.emoji}</span>}
+                  <Label
+                    className="text-xs uppercase tracking-wide font-medium"
+                    style={{ color: `${resolvedActivity.color ?? "#7C4DFF"}DD` }}
+                  >
+                    {resolvedActivity.name}の記録
+                  </Label>
+                </div>
+
+                {resolvedActivity.fields.map((field) => (
+                  <div key={field.id}>
+                    <Label className="text-muted-foreground text-xs mb-1.5 block">
+                      {field.name}
+                      {field.type === "MULTI_SELECT" && (
+                        <span className="ml-1.5 text-[10px] text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">複数選択</span>
+                      )}
+                    </Label>
+                    <FieldValueInput
+                      field={field}
+                      value={fieldValues[field.id]}
+                      onChange={(v) =>
+                        setFieldValues((prev) => {
+                          const next = { ...prev };
+                          if (v === undefined) {
+                            delete next[field.id];
+                          } else {
+                            next[field.id] = v;
+                          }
+                          return next;
+                        })
+                      }
+                      activityColor={resolvedActivity.color}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Memo + Stars */}
             <div className="space-y-1">
