@@ -32,6 +32,7 @@ type LogEditedPayload = {
   newDate: Date;
   stars: number | null;
   note: string | null;
+  fieldValues: Record<string, string | string[]> | null;
 };
 
 interface Props {
@@ -48,7 +49,7 @@ export function ActivityDetailView({ detail }: Props) {
     setRecentLogs((prev) =>
       prev.map((log) => {
         if (log.id !== logId) return log;
-        return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note };
+        return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note, fieldValues: data.fieldValues };
       }),
     );
   }

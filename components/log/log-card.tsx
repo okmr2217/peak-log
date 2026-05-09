@@ -20,7 +20,7 @@ type LogCardProps = {
     };
   };
   usage: "home" | "history";
-  onLogEdited?: (logId: string, data: { newDate: Date; stars: number | null; note: string | null }) => void;
+  onLogEdited?: (logId: string, data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
 };
 
 export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
@@ -38,7 +38,7 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
     boxShadow: color ? `0 4px 20px -8px ${color}38` : undefined,
   };
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
+  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
     setStars(data.stars);
     setNote(data.note);
     onLogEdited?.(log.id, data);

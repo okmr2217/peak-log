@@ -16,20 +16,29 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { formatTime, formatRelativeTime } from "@/lib/date-utils";
+import type { FieldType } from "@prisma/client";
+
+type ActivityField = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+};
 
 type Props = {
   logId: string;
-  activity: { name: string; emoji: string | null; color: string | null };
+  activity: { id: string; name: string; emoji: string | null; color: string | null; fields?: ActivityField[] };
   performedAt: Date;
   createdAt: Date;
   updatedAt: Date;
   timeOnly?: boolean;
   stars?: number | null;
   note?: string | null;
-  onLogEdited?: (data: { newDate: Date; stars: number | null; note: string | null }) => void;
+  fieldValues?: Record<string, string | string[]> | null;
+  onLogEdited?: (data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
 };
 
-export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt, timeOnly, stars, note, onLogEdited }: Props) {
+export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt, timeOnly, stars, note, fieldValues, onLogEdited }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -53,7 +62,7 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
+  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
     setCurrentDate(data.newDate);
     setCurrentStars(data.stars);
     setCurrentNote(data.note);
@@ -138,6 +147,8 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
         performedAt={currentDate}
         initialStars={currentStars}
         initialNote={currentNote}
+        activity={{ id: activity.id, color: activity.color, fields: activity.fields ?? [] }}
+        initialFieldValues={fieldValues}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         onSaved={handleLogEdited}

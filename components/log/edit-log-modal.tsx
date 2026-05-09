@@ -11,15 +11,30 @@ import { Dialog, BottomSheetContent, DialogTitle, DialogDescription } from "@/co
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FieldValueInput } from "@/components/log/field-value-input";
+import type { FieldType } from "@prisma/client";
+
+type ActivityField = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+};
 
 type Props = {
   logId: string;
   performedAt: Date;
   initialStars?: number | null;
   initialNote?: string | null;
+  activity: {
+    id: string;
+    color: string | null;
+    fields: ActivityField[];
+  };
+  initialFieldValues?: Record<string, string | string[]> | null;
   isOpen: boolean;
   onClose: () => void;
-  onSaved?: (data: { newDate: Date; stars: number | null; note: string | null }) => void;
+  onSaved?: (data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
 };
 
 function getInitialDateMode(performedAt: Date): DateMode {
@@ -32,12 +47,22 @@ function getInitialDateMode(performedAt: Date): DateMode {
   return "other";
 }
 
-export function EditLogModal({ logId, performedAt, initialStars, initialNote, isOpen, onClose, onSaved }: Props) {
+export function EditLogModal({ logId, performedAt, initialStars, initialNote, activity, initialFieldValues, isOpen, onClose, onSaved }: Props) {
   const [dateMode, setDateMode] = useState<DateMode>(() => getInitialDateMode(performedAt));
   const [otherDate, setOtherDate] = useState<Date>(() => startOfDay(performedAt));
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(performedAt));
   const [stars, setStars] = useState<number | undefined>(initialStars ?? undefined);
   const [note, setNote] = useState(initialNote ?? "");
+  const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>(() => {
+    if (!initialFieldValues) return {};
+    const cleaned: Record<string, string | string[]> = {};
+    for (const [k, v] of Object.entries(initialFieldValues)) {
+      if (typeof v === "string" || (Array.isArray(v) && v.every((x) => typeof x === "string"))) {
+        cleaned[k] = v;
+      }
+    }
+    return cleaned;
+  });
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -59,17 +84,20 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
     const newPerformedAt = getPerformedAt();
     setError(null);
     startTransition(async () => {
+      const shouldSendFieldValues = activity.fields.length > 0;
       const result = await updateLog({
         logId,
         performedAt: newPerformedAt,
         stars,
         note: note.trim() || undefined,
+        ...(shouldSendFieldValues && { fieldValues }),
       });
       if (result.ok) {
         onSaved?.({
           newDate: newPerformedAt,
           stars: stars ?? null,
           note: note.trim() || null,
+          fieldValues: Object.keys(fieldValues).length > 0 ? fieldValues : null,
         });
         onClose();
       } else {
@@ -162,6 +190,44 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, is
                 </div>
               </div>
             </div>
+
+            {/* カスタムフィールド */}
+            {activity.fields.length > 0 && (
+              <div
+                className="rounded-2xl p-3 space-y-3"
+                style={{
+                  background: `${activity.color ?? "#7C4DFF"}0A`,
+                  border: `1px solid ${activity.color ?? "#7C4DFF"}25`,
+                }}
+              >
+                {activity.fields.map((field) => (
+                  <div key={field.id}>
+                    <Label className="text-muted-foreground text-xs mb-1.5 block">
+                      {field.name}
+                      {field.type === "MULTI_SELECT" && (
+                        <span className="ml-1.5 text-[10px] text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">複数選択</span>
+                      )}
+                    </Label>
+                    <FieldValueInput
+                      field={field}
+                      value={fieldValues[field.id]}
+                      onChange={(v) =>
+                        setFieldValues((prev) => {
+                          const next = { ...prev };
+                          if (v === undefined) {
+                            delete next[field.id];
+                          } else {
+                            next[field.id] = v;
+                          }
+                          return next;
+                        })
+                      }
+                      activityColor={activity.color}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Note + Stars */}
             <div className="space-y-1">

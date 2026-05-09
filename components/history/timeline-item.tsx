@@ -10,7 +10,7 @@ import type { ActivityFieldDTO } from "@/server/queries/activity";
 
 type Props = {
   log: LogItem;
-  onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null }) => void;
+  onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
   fieldValues?: Record<string, string | string[]> | null;
   fields?: ActivityFieldDTO[];
 };
@@ -22,7 +22,7 @@ export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
   const { activity } = log;
   const color = activity.color;
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
+  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
     setCurrentDate(data.newDate);
     setStars(data.stars);
     setNote(data.note);
@@ -69,13 +69,14 @@ export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
         <span className="text-xs tabular-nums text-muted-foreground shrink-0">{formatCompactTime(currentDate)}</span>
         <LogCardMenu
           logId={log.id}
-          activity={activity}
+          activity={{ ...activity, fields: fields ?? [] }}
           performedAt={currentDate}
           createdAt={log.createdAt}
           updatedAt={log.updatedAt}
           timeOnly
           stars={stars}
           note={note}
+          fieldValues={fieldValues}
           onLogEdited={handleLogEdited}
         />
       </div>
