@@ -4,25 +4,20 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { LogCardMenu } from "./log-card-menu";
 
-type ReflectionValues = {
-  id: string;
-  stars: number | null;
-  note: string | null;
-};
-
 type LogCardProps = {
   log: {
     id: string;
     performedAt: Date;
     createdAt: Date;
     updatedAt: Date;
+    stars: number | null;
+    note: string | null;
     activity: {
       id: string;
       name: string;
       emoji: string | null;
       color: string | null;
     };
-    reflection: ReflectionValues | null;
   };
   usage: "home" | "history";
   onLogEdited?: (logId: string, data: { newDate: Date; stars: number | null; note: string | null }) => void;
@@ -31,7 +26,8 @@ type LogCardProps = {
 export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
   const { activity, performedAt } = log;
   const timeOnly = usage === "history";
-  const [reflection, setReflection] = useState<ReflectionValues | null>(log.reflection);
+  const [stars, setStars] = useState<number | null>(log.stars ?? null);
+  const [note, setNote] = useState<string | null>(log.note ?? null);
 
   const color = activity.color;
   const cardStyle = {
@@ -43,13 +39,12 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
   };
 
   function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
-    setReflection((prev) =>
-      data.stars != null || data.note != null
-        ? { id: prev?.id ?? "", stars: data.stars, note: data.note }
-        : null,
-    );
+    setStars(data.stars);
+    setNote(data.note);
     onLogEdited?.(log.id, data);
   }
+
+  const hasReflection = stars != null || note != null;
 
   return (
     <div
@@ -76,14 +71,14 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
           createdAt={log.createdAt}
           updatedAt={log.updatedAt}
           timeOnly={timeOnly}
-          stars={reflection?.stars}
-          note={reflection?.note}
+          stars={stars}
+          note={note}
           onLogEdited={handleLogEdited}
         />
       </div>
 
       {/* Reflection area - only shown when reflection exists */}
-      {reflection && (
+      {hasReflection && (
         <div
           className="pb-4 border-t"
           style={{
@@ -94,14 +89,14 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
           }}
         >
           <div className="pt-3 space-y-2.5">
-            {reflection.stars != null && (
+            {stars != null && (
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((v) => (
                   <Star
                     key={v}
                     className="w-3 h-3"
                     style={
-                      v <= reflection.stars!
+                      v <= stars
                         ? { fill: "#FBBF24", color: "#FBBF24" }
                         : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
                     }
@@ -109,8 +104,8 @@ export function LogCard({ log, usage, onLogEdited }: LogCardProps) {
                 ))}
               </div>
             )}
-            {reflection.note && (
-              <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{reflection.note}</p>
+            {note && (
+              <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2 whitespace-pre-wrap">{note}</p>
             )}
           </div>
         </div>

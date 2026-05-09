@@ -19,16 +19,14 @@ export type MonthlySummary = {
   peakLogs: Array<{
     id: string;
     performedAt: Date;
+    stars: number | null;
+    note: string | null;
     activity: {
       id: string;
       name: string;
       emoji: string | null;
       color: string | null;
     };
-    reflection: {
-      stars: number | null;
-      note: string | null;
-    } | null;
   }>;
 };
 
@@ -45,9 +43,12 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
 
   const logs = await prisma.log.findMany({
     where: { userId, performedAt: { gte: start, lt: end } },
-    include: {
+    select: {
+      id: true,
+      performedAt: true,
+      stars: true,
+      note: true,
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { stars: true, note: true } },
     },
     orderBy: [{ performedAt: "desc" }],
   });
@@ -75,13 +76,12 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
 
   const activityCount = activityMap.size;
 
-  // Score each log: reflection presence > excitement > note > recency
+  // Score each log: stars/note presence > excitement > note > recency
   const scored = logs.map((log) => {
-    const r = log.reflection;
-    const hasReflection = r !== null ? 1000 : 0;
-    const excitement = (r?.stars ?? 0) * 100;
-    const hasNote = r?.note ? 10 : 0;
-    return { log, score: hasReflection + excitement + hasNote };
+    const hasData = log.stars != null || log.note != null ? 1000 : 0;
+    const excitement = (log.stars ?? 0) * 100;
+    const hasNote = log.note ? 10 : 0;
+    return { log, score: hasData + excitement + hasNote };
   });
 
   scored.sort((a, b) => {
@@ -92,8 +92,9 @@ export async function getMonthlySummaryForCurrentUser(month: string): Promise<Mo
   const peakLogs = scored.slice(0, 3).map(({ log }) => ({
     id: log.id,
     performedAt: log.performedAt,
+    stars: log.stars,
+    note: log.note,
     activity: log.activity,
-    reflection: log.reflection,
   }));
 
   return { month, totalLogs, activeDays, activityCount, topActivities, peakLogs };
@@ -103,7 +104,7 @@ export async function getLogsForCurrentUser(limit = 20) {
   const userId = await requireUserId();
   return prisma.log.findMany({
     where: { userId },
-    include: { activity: true, reflection: true },
+    include: { activity: true },
     orderBy: { performedAt: "desc" },
     take: limit,
   });
@@ -114,17 +115,14 @@ export type LogItem = {
   performedAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  stars: number | null;
+  note: string | null;
   activity: {
     id: string;
     name: string;
     emoji: string | null;
     color: string | null;
   };
-  reflection: {
-    id: string;
-    stars: number | null;
-    note: string | null;
-  } | null;
 };
 
 export type HistoryDayItem = {
@@ -144,9 +142,14 @@ export async function getLogsRangePageForCurrentUser({
   const [logs, olderLog] = await Promise.all([
     prisma.log.findMany({
       where: { userId, performedAt: { gte: from, lt: to } },
-      include: {
+      select: {
+        id: true,
+        performedAt: true,
+        createdAt: true,
+        updatedAt: true,
+        stars: true,
+        note: true,
         activity: { select: { id: true, name: true, emoji: true, color: true } },
-        reflection: { select: { id: true, stars: true, note: true } },
       },
       orderBy: [{ performedAt: "asc" }],
     }),
@@ -172,9 +175,14 @@ export async function getMonthlyLogsForCurrentUser(month: string): Promise<LogIt
 
   return prisma.log.findMany({
     where: { userId, performedAt: { gte: start, lt: end } },
-    include: {
+    select: {
+      id: true,
+      performedAt: true,
+      createdAt: true,
+      updatedAt: true,
+      stars: true,
+      note: true,
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { id: true, stars: true, note: true } },
     },
     orderBy: [{ performedAt: "desc" }, { id: "desc" }],
   });
@@ -193,11 +201,16 @@ export async function getLogsSearchForCurrentUser({
     where: {
       userId,
       ...(activityId ? { activityId } : {}),
-      ...(noteKeyword ? { reflection: { note: { contains: noteKeyword, mode: "insensitive" } } } : {}),
+      ...(noteKeyword ? { note: { contains: noteKeyword, mode: "insensitive" } } : {}),
     },
-    include: {
+    select: {
+      id: true,
+      performedAt: true,
+      createdAt: true,
+      updatedAt: true,
+      stars: true,
+      note: true,
       activity: { select: { id: true, name: true, emoji: true, color: true } },
-      reflection: { select: { id: true, stars: true, note: true } },
     },
     orderBy: [{ performedAt: "asc" }],
   });
@@ -299,6 +312,6 @@ export async function getLogById(id: string) {
   const userId = await requireUserId();
   return prisma.log.findFirst({
     where: { id, userId },
-    include: { activity: true, reflection: true },
+    include: { activity: true },
   });
 }

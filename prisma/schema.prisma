@@ -124,6 +124,8 @@ model Log {
   userId      String
   activityId  String
   performedAt DateTime @default(now())
+  stars       Int?
+  note        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

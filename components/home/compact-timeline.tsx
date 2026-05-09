@@ -26,8 +26,8 @@ function CompactLogChip({ log }: ChipProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [performedAt, setPerformedAt] = useState(log.performedAt);
-  const [stars, setStars] = useState(log.reflection?.stars ?? null);
-  const [note, setNote] = useState(log.reflection?.note ?? null);
+  const [stars, setStars] = useState(log.stars ?? null);
+  const [note, setNote] = useState(log.note ?? null);
 
   const color = log.activity.color;
 

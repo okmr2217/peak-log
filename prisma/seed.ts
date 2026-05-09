@@ -213,23 +213,13 @@ async function main() {
   ];
 
   for (const { activityId, performedAt, reflection } of logsData) {
-    const log = await prisma.log.create({
-      data: { userId, activityId, performedAt },
+    await prisma.log.create({
+      data: { userId, activityId, performedAt, stars: reflection?.stars, note: reflection?.note },
     });
-
-    if (reflection) {
-      await prisma.reflection.create({
-        data: {
-          userId,
-          logId: log.id,
-          ...reflection,
-        },
-      });
-    }
   }
 
   console.log(`  ✅ ログ作成: ${logsData.length}件`);
-  console.log(`  ✅ 余韻作成: ${logsData.filter((l) => l.reflection).length}件`);
+  console.log(`  ✅ 余韻込み: ${logsData.filter((l) => l.reflection).length}件`);
   console.log("\n🎉 シード完了!");
   console.log("\n📋 デモアカウント:");
   console.log("   Email: demo@example.com");

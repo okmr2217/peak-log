@@ -6,30 +6,22 @@ import { formatCompactTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
 import type { LogItem } from "@/server/queries/log";
 
-type ReflectionValues = {
-  id: string;
-  stars: number | null;
-  note: string | null;
-};
-
 type Props = {
   log: LogItem;
   onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null }) => void;
 };
 
 export function TimelineItem({ log, onLogEdited }: Props) {
-  const [reflection, setReflection] = useState<ReflectionValues | null>(log.reflection);
+  const [stars, setStars] = useState<number | null>(log.stars ?? null);
+  const [note, setNote] = useState<string | null>(log.note ?? null);
   const [currentDate, setCurrentDate] = useState(log.performedAt);
   const { activity } = log;
   const color = activity.color;
 
   function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null }) {
     setCurrentDate(data.newDate);
-    setReflection((prev) =>
-      data.stars != null || data.note != null
-        ? { id: prev?.id ?? "", stars: data.stars, note: data.note }
-        : null,
-    );
+    setStars(data.stars);
+    setNote(data.note);
     onLogEdited(log.id, data);
   }
 
@@ -54,14 +46,14 @@ export function TimelineItem({ log, onLogEdited }: Props) {
 
         <span className="text-sm font-medium text-foreground truncate flex-1 min-w-0">{activity.name}</span>
 
-        {reflection?.stars != null && (
+        {stars != null && (
           <div className="flex items-center gap-0.5 shrink-0">
             {[1, 2, 3, 4, 5].map((v) => (
               <Star
                 key={v}
                 className="w-2.5 h-2.5"
                 style={
-                  v <= reflection.stars!
+                  v <= stars
                     ? { fill: "#FBBF24", color: "#FBBF24" }
                     : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
                 }
@@ -78,16 +70,16 @@ export function TimelineItem({ log, onLogEdited }: Props) {
           createdAt={log.createdAt}
           updatedAt={log.updatedAt}
           timeOnly
-          stars={reflection?.stars}
-          note={reflection?.note}
+          stars={stars}
+          note={note}
           onLogEdited={handleLogEdited}
         />
       </div>
 
       {/* Note row - only when exists, left-aligned with activity name */}
-      {reflection?.note && (
+      {note && (
         <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 whitespace-pre-wrap pl-[46px] pr-3 pb-2">
-          {reflection.note}
+          {note}
         </p>
       )}
     </div>

@@ -93,23 +93,16 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
       return fail("記録が見つかりません");
     }
 
+    const noteTrimmed = (note ?? "").trim();
+
     await prisma.log.update({
       where: { id: logId },
-      data: { performedAt },
+      data: {
+        performedAt,
+        stars: stars ?? null,
+        note: noteTrimmed || null,
+      },
     });
-
-    const noteTrimmed = (note ?? "").trim();
-    const hasReflectionData = stars != null || noteTrimmed !== "";
-
-    if (hasReflectionData) {
-      await prisma.reflection.upsert({
-        where: { logId },
-        create: { logId, userId, stars: stars ?? null, note: noteTrimmed || null },
-        update: { stars: stars ?? null, note: noteTrimmed || null },
-      });
-    } else {
-      await prisma.reflection.deleteMany({ where: { logId, userId } });
-    }
 
     revalidatePath("/");
 

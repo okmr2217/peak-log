@@ -38,11 +38,7 @@ export function TimelineList({ initialItems, oldestDate, hasMore: initialHasMore
         ...day,
         logs: day.logs.map((log) => {
           if (log.id !== logId) return log;
-          const reflection =
-            data.stars != null || data.note != null
-              ? { id: log.reflection?.id ?? "", stars: data.stars, note: data.note }
-              : null;
-          return { ...log, performedAt: data.newDate, reflection };
+          return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note };
         }),
       })),
     );

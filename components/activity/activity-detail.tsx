@@ -48,11 +48,7 @@ export function ActivityDetailView({ detail }: Props) {
     setRecentLogs((prev) =>
       prev.map((log) => {
         if (log.id !== logId) return log;
-        const reflection =
-          data.stars != null || data.note != null
-            ? { id: log.reflection?.id ?? "", stars: data.stars, note: data.note }
-            : null;
-        return { ...log, performedAt: data.newDate, reflection };
+        return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note };
       }),
     );
   }
@@ -63,13 +59,14 @@ export function ActivityDetailView({ detail }: Props) {
       performedAt: log.performedAt,
       createdAt: log.createdAt,
       updatedAt: log.updatedAt,
+      stars: log.stars,
+      note: log.note,
       activity: {
         id: detail.id,
         name: detail.name,
         emoji: detail.emoji,
         color: detail.color,
       },
-      reflection: log.reflection,
     };
   }
 
