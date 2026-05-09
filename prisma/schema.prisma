@@ -104,8 +104,9 @@ model Activity {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  logs Log[]
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs   Log[]
+  fields ActivityField[]
 
   @@index([userId])
   @@index([userId, isArchived])
@@ -125,6 +126,7 @@ model Log {
   performedAt DateTime @default(now())
   stars       Int?
   note        String?
+  fieldValues Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -136,5 +138,37 @@ model Log {
   @@index([userId, activityId])
   @@index([activityId])
   @@map("logs")
+}
+
+// ---------------------------------------------------------------------------
+// ActivityField
+// Activity ごとに定義するカスタムフィールド。
+// 値は Log.fieldValues (JSON) に格納されるため、フィールド名変更で
+// 過去データが壊れないよう ActivityField.id を JSON キーとして使う。
+// ---------------------------------------------------------------------------
+model ActivityField {
+  id         String    @id @default(cuid())
+  activityId String
+  name       String
+  type       FieldType
+  options    String[]  @default([])
+  sortOrder  Int       @default(0)
+  isArchived Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@index([activityId])
+  @@index([activityId, isArchived])
+  @@index([activityId, sortOrder])
+  @@map("activity_fields")
+}
+
+enum FieldType {
+  TEXT
+  TEXTAREA
+  SELECT
+  MULTI_SELECT
 }
 
