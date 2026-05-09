@@ -141,6 +141,8 @@ export function ActivityDetailView({ detail }: Props) {
                 key={log.id}
                 log={toLogItem(log)}
                 onLogEdited={handleLogEdited}
+                fieldValues={log.fieldValues}
+                fields={detail.fields}
               />
             ))}
           </div>

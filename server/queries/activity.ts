@@ -129,6 +129,7 @@ export type RecentLog = {
   updatedAt: Date;
   stars: number | null;
   note: string | null;
+  fieldValues: Record<string, string | string[]> | null;
 };
 
 export type ActivityDetail = {
@@ -169,6 +170,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
         updatedAt: true,
         stars: true,
         note: true,
+        fieldValues: true,
       },
       orderBy: { performedAt: "asc" },
     }),
@@ -189,7 +191,10 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
   }
 
   // 最新30件（新しい順）
-  const recentLogs = logs.slice(-30).reverse();
+  const recentLogs = logs.slice(-30).reverse().map((log) => ({
+    ...log,
+    fieldValues: log.fieldValues as Record<string, string | string[]> | null,
+  }));
 
   return {
     id: activity.id,

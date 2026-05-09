@@ -4,14 +4,18 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { formatCompactTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
+import { LogFieldValuesPreview } from "@/components/log/log-field-values-preview";
 import type { LogItem } from "@/server/queries/log";
+import type { ActivityFieldDTO } from "@/server/queries/activity";
 
 type Props = {
   log: LogItem;
   onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null }) => void;
+  fieldValues?: Record<string, string | string[]> | null;
+  fields?: ActivityFieldDTO[];
 };
 
-export function TimelineItem({ log, onLogEdited }: Props) {
+export function TimelineItem({ log, onLogEdited, fieldValues, fields }: Props) {
   const [stars, setStars] = useState<number | null>(log.stars ?? null);
   const [note, setNote] = useState<string | null>(log.note ?? null);
   const [currentDate, setCurrentDate] = useState(log.performedAt);
@@ -75,6 +79,11 @@ export function TimelineItem({ log, onLogEdited }: Props) {
           onLogEdited={handleLogEdited}
         />
       </div>
+
+      {/* Field values preview */}
+      {fieldValues != null && fields && fields.length > 0 && (
+        <LogFieldValuesPreview fieldValues={fieldValues} fields={fields} />
+      )}
 
       {/* Note row - only when exists, left-aligned with activity name */}
       {note && (
