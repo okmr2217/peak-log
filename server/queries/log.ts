@@ -132,6 +132,7 @@ export type HistoryDayItem = {
 
 const ACTIVITY_FIELDS_SELECT = {
   where: { isArchived: false },
+  orderBy: { sortOrder: "asc" as const },
   select: { id: true, name: true, type: true, options: true },
 } as const;
 
