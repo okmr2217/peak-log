@@ -1,7 +1,8 @@
 "use client";
 
-import { Star, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { NoteText } from "./note-text";
+import { StarRating } from "@/components/ui/star-rating";
 import {
   ResponsiveDialog,
   ResponsiveDialogContent,
@@ -98,19 +99,7 @@ export function LogDetailModal({
           {/* Stars */}
           {stars != null && (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((v) => (
-                  <Star
-                    key={v}
-                    className="w-4 h-4"
-                    style={
-                      v <= stars
-                        ? { fill: "#FBBF24", color: "#FBBF24" }
-                        : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
-                    }
-                  />
-                ))}
-              </div>
+              <StarRating value={stars} size="sm" />
               <span className="text-xs text-muted-foreground">{stars}/5</span>
             </div>
           )}

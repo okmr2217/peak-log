@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
 import { createLog } from "@/server/actions/log";
@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldValueInput } from "@/components/log/field-value-input";
+import { StarRating } from "@/components/ui/star-rating";
 
 import { type DateMode, floorToNearest30, TIME_OPTIONS, DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
 import type { FieldType } from "@prisma/client";
@@ -293,26 +294,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
           {/* Stars */}
           <div>
             <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">スター数</Label>
-            <div className="flex gap-1.5">
-              {[1, 2, 3, 4, 5].map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setStars(stars === v ? undefined : v)}
-                  className="transition-all duration-150 active:scale-90"
-                  aria-label={`${v}スター`}
-                >
-                  <Star
-                    className="w-7 h-7"
-                    style={
-                      stars != null && v <= stars
-                        ? { fill: "#FBBF24", color: "#FBBF24" }
-                        : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
-                    }
-                  />
-                </button>
-              ))}
-            </div>
+            <StarRating value={stars} onChange={setStars} />
           </div>
 
           {error && <p className="text-red-400 text-xs">{error}</p>}
