@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import { differenceInCalendarDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
+import type { LogEditedPayload } from "@/server/queries/log";
 import { formatPerformedAt } from "@/lib/date-utils";
 import { TimelineItem } from "@/components/history/timeline-item";
 
@@ -26,13 +27,6 @@ function formatAvgInterval(days: number): string {
   const rounded = Math.round(days * 10) / 10;
   return rounded % 1 === 0 ? `${rounded}日ごと` : `${rounded.toFixed(1)}日ごと`;
 }
-
-type LogEditedPayload = {
-  newDate: Date;
-  stars: number | null;
-  note: string | null;
-  fieldValues: Record<string, string | string[]> | null;
-};
 
 interface Props {
   detail: ActivityDetail;

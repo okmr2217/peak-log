@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { HistoryDayItem, LogItem } from "@/server/queries/log";
+import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
 import { formatDayFull, formatTime } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { LogDetailModal } from "@/components/log/log-detail-modal";
@@ -25,7 +25,7 @@ function CompactLogChip({ log }: ChipProps) {
 
   const color = log.activity.color;
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
+  function handleLogEdited(data: LogEditedPayload) {
     setPerformedAt(data.newDate);
     setStars(data.stars);
     setNote(data.note);

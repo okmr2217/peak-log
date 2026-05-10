@@ -5,11 +5,11 @@ import { Star } from "lucide-react";
 import { formatCompactTime } from "@/lib/date-utils";
 import { LogCardMenu } from "@/components/log/log-card-menu";
 import { LogFieldValuesPreview } from "@/components/log/log-field-values-preview";
-import type { LogItem } from "@/server/queries/log";
+import type { LogEditedPayload, LogItem } from "@/server/queries/log";
 
 type Props = {
   log: LogItem;
-  onLogEdited: (logId: string, data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
+  onLogEdited: (logId: string, data: LogEditedPayload) => void;
 };
 
 export function TimelineItem({ log, onLogEdited }: Props) {
@@ -20,7 +20,7 @@ export function TimelineItem({ log, onLogEdited }: Props) {
   const { activity } = log;
   const color = activity.color;
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
+  function handleLogEdited(data: LogEditedPayload) {
     setCurrentDate(data.newDate);
     setStars(data.stars);
     setNote(data.note);

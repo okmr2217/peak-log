@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { formatTime, formatRelativeTime } from "@/lib/date-utils";
+import type { LogEditedPayload } from "@/server/queries/log";
 import type { FieldType } from "@prisma/client";
 
 type ActivityField = {
@@ -35,7 +36,7 @@ type Props = {
   stars?: number | null;
   note?: string | null;
   fieldValues?: Record<string, string | string[]> | null;
-  onLogEdited?: (data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
+  onLogEdited?: (data: LogEditedPayload) => void;
 };
 
 export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt, timeOnly, stars, note, fieldValues, onLogEdited }: Props) {
@@ -62,7 +63,7 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  function handleLogEdited(data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) {
+  function handleLogEdited(data: LogEditedPayload) {
     setCurrentDate(data.newDate);
     setCurrentStars(data.stars);
     setCurrentNote(data.note);

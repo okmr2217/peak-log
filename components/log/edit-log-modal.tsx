@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldValueInput } from "@/components/log/field-value-input";
+import type { LogEditedPayload } from "@/server/queries/log";
 import type { FieldType } from "@prisma/client";
 
 type ActivityField = {
@@ -41,7 +42,7 @@ type Props = {
   initialFieldValues?: Record<string, string | string[]> | null;
   isOpen: boolean;
   onClose: () => void;
-  onSaved?: (data: { newDate: Date; stars: number | null; note: string | null; fieldValues: Record<string, string | string[]> | null }) => void;
+  onSaved?: (data: LogEditedPayload) => void;
 };
 
 function getInitialDateMode(performedAt: Date): DateMode {

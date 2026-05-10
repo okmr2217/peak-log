@@ -5,6 +5,13 @@ import type { FieldType } from "@prisma/client";
 
 const TZ = "Asia/Tokyo";
 
+export type LogEditedPayload = {
+  newDate: Date;
+  stars: number | null;
+  note: string | null;
+  fieldValues: Record<string, string | string[]> | null;
+};
+
 export type MonthlySummary = {
   month: string;
   totalLogs: number;

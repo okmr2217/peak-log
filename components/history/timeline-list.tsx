@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { HistoryDayItem, LogItem } from "@/server/queries/log";
+import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
 import { TimelineItem } from "./timeline-item";
-
-type LogEditedPayload = {
-  newDate: Date;
-  stars: number | null;
-  note: string | null;
-  fieldValues: Record<string, string | string[]> | null;
-};
 
 type Props = {
   initialItems: HistoryDayItem[];
