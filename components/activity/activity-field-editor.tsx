@@ -8,6 +8,16 @@ import { createActivityField, updateActivityField, archiveActivityField } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { OptionsEditor } from "./options-editor";
 
 const TYPE_LABELS: Record<FieldType, string> = {
@@ -33,6 +43,7 @@ export function ActivityFieldEditor({ activityId, field, onSave, onCancel, onArc
   const [options, setOptions] = useState<string[]>(field?.options ?? []);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
 
   function handleTypeChange(next: FieldType) {
     setType(next);
@@ -58,7 +69,11 @@ export function ActivityFieldEditor({ activityId, field, onSave, onCancel, onArc
 
   function handleArchive() {
     if (!field || !onArchive) return;
-    if (!confirm(`フィールド「${field.name}」をアーカイブしますか？\n過去のログに残された値はそのまま保持されます。`)) return;
+    setIsArchiveDialogOpen(true);
+  }
+
+  function handleArchiveConfirm() {
+    if (!field || !onArchive) return;
     setError(null);
     startTransition(async () => {
       const result = await archiveActivityField({ fieldId: field.id });
@@ -71,6 +86,7 @@ export function ActivityFieldEditor({ activityId, field, onSave, onCancel, onArc
   }
 
   return (
+    <>
     <div
       className="rounded-xl p-3.5 space-y-3"
       style={{ background: "rgba(124,77,255,0.06)", border: "1px solid rgba(124,77,255,0.3)" }}
@@ -152,5 +168,27 @@ export function ActivityFieldEditor({ activityId, field, onSave, onCancel, onArc
         {isPending ? "保存中..." : "保存する"}
       </Button>
     </div>
+
+    <AlertDialog open={isArchiveDialogOpen} onOpenChange={setIsArchiveDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>フィールドをアーカイブしますか？</AlertDialogTitle>
+          <AlertDialogDescription>
+            過去のログに残された値はそのまま保持されます。
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>キャンセル</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleArchiveConfirm}
+            disabled={isPending}
+            className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/20"
+          >
+            {isPending ? "処理中..." : "アーカイブする"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
