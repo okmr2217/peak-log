@@ -107,9 +107,9 @@ export function LogDetailModal({
 
           {/* Field values */}
           {visibleFields.length > 0 && (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+            <div className="grid grid-cols-2 gap-2">
               {visibleFields.map((entry) => (
-                <div key={entry.id} className="min-w-0">
+                <div key={entry.id} className="rounded-xl p-3 bg-muted min-w-0">
                   <p className="text-xs text-muted-foreground mb-0.5 truncate">{entry.name}</p>
                   <p className="text-sm font-medium truncate">{entry.displayValue}</p>
                 </div>
@@ -118,7 +118,7 @@ export function LogDetailModal({
           )}
 
           {/* Timestamps */}
-          <div className="border-t border-border pt-3 space-y-1">
+          <div className="flex gap-3">
             <p className="text-xs text-muted-foreground">作成 {formatFullDateTime(createdAt)}</p>
             {isUpdated && <p className="text-xs text-muted-foreground">更新 {formatFullDateTime(updatedAt)}</p>}
           </div>
