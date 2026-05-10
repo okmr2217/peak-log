@@ -5,6 +5,7 @@ import type { PeriodPreset } from "@/server/queries/log";
 
 type Props = {
   currentPeriod: PeriodPreset;
+  basePath: string;
 };
 
 const PRESETS: { value: PeriodPreset; label: string }[] = [
@@ -14,13 +15,13 @@ const PRESETS: { value: PeriodPreset; label: string }[] = [
   { value: "all", label: "全期間" },
 ];
 
-export function PeriodFilter({ currentPeriod }: Props) {
+export function PeriodFilter({ currentPeriod, basePath }: Props) {
   return (
     <div className="flex gap-1.5 mb-4">
       {PRESETS.map(({ value, label }) => (
         <Link
           key={value}
-          href={`/stats?tab=category&period=${value}`}
+          href={`${basePath}?period=${value}`}
           className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
             currentPeriod === value
               ? "bg-primary/20 text-primary border-primary/30"

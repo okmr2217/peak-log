@@ -1,63 +1,40 @@
-import { getMonthlySummaryForCurrentUser, getCategoryStatsForCurrentUser } from "@/server/queries/log";
+import { getActivityListStatsForCurrentUser } from "@/server/queries/log";
 import type { PeriodPreset } from "@/server/queries/log";
-import { MonthlySummarySection } from "@/components/history/monthly-summary";
-import { MonthNav } from "@/components/history/month-nav";
 import { PageHeader } from "@/components/layout/page-header";
-import { StatsTabs } from "@/components/stats/stats-tabs";
-import { CategoryStatsSection } from "@/components/stats/category-stats-section";
-
-function getCurrentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
+import { PeriodFilter } from "@/components/stats/period-filter";
+import { ActivityStatCard } from "@/components/stats/activity-stat-card";
 
 const VALID_PERIODS: PeriodPreset[] = ["thisMonth", "3months", "thisYear", "all"];
 
 type Props = {
-  searchParams: Promise<{ tab?: string; month?: string; period?: string }>;
+  searchParams: Promise<{ period?: string }>;
 };
 
 export default async function StatsPage({ searchParams }: Props) {
-  const { tab, month: monthParam, period: periodParam } = await searchParams;
+  const { period: periodParam } = await searchParams;
+  const period: PeriodPreset = VALID_PERIODS.includes(periodParam as PeriodPreset) ? (periodParam as PeriodPreset) : "thisMonth";
 
-  const currentTab = tab === "monthly" ? "monthly" : "category";
-  const month = monthParam ?? getCurrentMonth();
-  const period: PeriodPreset = VALID_PERIODS.includes(periodParam as PeriodPreset)
-    ? (periodParam as PeriodPreset)
-    : "thisMonth";
+  const stats = await getActivityListStatsForCurrentUser(period).catch(() => []);
 
   return (
     <div className="p-4 max-w-lg mx-auto">
-      <PageHeader title="統計" description="記録の傾向を確認できます" />
+      <PageHeader title="統計" description="活動ごとの記録を確認できます" />
+      <PeriodFilter currentPeriod={period} basePath="/stats" />
 
-      <StatsTabs currentTab={currentTab} month={month} period={period} />
-
-      {currentTab === "monthly" && (
-        <div className="flex justify-center mb-4">
-          <MonthNav month={month} baseParams="tab=monthly" basePath="/stats" />
+      {stats.length === 0 ? (
+        <div className="bg-card rounded-xl p-6 text-center border border-border">
+          <p className="text-muted-foreground text-sm mb-1">この期間の記録はありません</p>
+          <p className="text-muted-foreground/60 text-xs">記録すると、ここに統計が表示されます</p>
         </div>
-      )}
-
-      {currentTab === "monthly" ? (
-        <MonthlyStatsContent month={month} />
       ) : (
-        <CategoryStatsContent period={period} />
+        <ul className="space-y-2">
+          {stats.map((stat, index) => (
+            <li key={stat.activityId}>
+              <ActivityStatCard stat={stat} rank={index + 1} period={period} />
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
-}
-
-async function MonthlyStatsContent({ month }: { month: string }) {
-  const summary = await getMonthlySummaryForCurrentUser(month).catch(() => null);
-
-  if (!summary) {
-    return <p className="text-muted-foreground text-sm">統計の読み込みに失敗しました</p>;
-  }
-
-  return <MonthlySummarySection summary={summary} />;
-}
-
-async function CategoryStatsContent({ period }: { period: PeriodPreset }) {
-  const stats = await getCategoryStatsForCurrentUser(period).catch(() => []);
-  return <CategoryStatsSection stats={stats} period={period} />;
 }

@@ -11,7 +11,7 @@ type Props = {
 export function CategoryStatsSection({ stats, period }: Props) {
   return (
     <div>
-      <PeriodFilter currentPeriod={period} />
+      <PeriodFilter currentPeriod={period} basePath="/stats" />
 
       {stats.length === 0 ? (
         <div className="bg-card rounded-xl p-6 text-center border border-border">
