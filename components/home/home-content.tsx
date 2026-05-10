@@ -6,9 +6,10 @@ import { format, subDays, parse } from "date-fns";
 import { HomeHeader } from "./home-header";
 import { FilterFab } from "./filter-fab";
 import { HomeFab } from "@/components/log/home-fab";
-import { CardTimeline } from "./card-timeline";
-import { ListTimeline } from "./list-timeline";
-import type { HistoryDayItem } from "@/server/queries/log";
+import { TimelineDayGroup } from "./timeline-day-group";
+import { LogDayCards } from "./log-day-cards";
+import { LogChip } from "./log-chip";
+import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
 
 type Activity = {
   id: string;
@@ -49,6 +50,7 @@ export function HomeContent({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [optimisticActivityId, setOptimisticActivityId] = useState(selectedActivityId);
   const [activeTab, setActiveTab] = useState<Tab>(currentTab);
+  const [localDayItems, setLocalDayItems] = useState<HistoryDayItem[]>(dayItems);
 
   useEffect(() => {
     setIsLoading(false);
@@ -57,9 +59,26 @@ export function HomeContent({
     setActiveTab(currentTab);
   }, [selectedActivityId, noteKeyword, fromDate, toDate, currentTab]);
 
+  useEffect(() => {
+    setLocalDayItems(dayItems);
+  }, [dayItems]);
+
+  function handleLogEdited(logId: string, data: LogEditedPayload) {
+    setLocalDayItems((prev) =>
+      prev.map((day) => ({
+        ...day,
+        logs: day.logs.map((log): LogItem => {
+          if (log.id !== logId) return log;
+          return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note, fieldValues: data.fieldValues };
+        }),
+      })),
+    );
+  }
+
+  const daysWithLogs = localDayItems.filter((d) => d.logs.length > 0);
   const hasNonDefaultDates = fromDate !== defaultFromDate || toDate !== defaultToDate;
   const hasActiveFilters = !!(selectedActivityId || noteKeyword || hasNonDefaultDates);
-  const isEmpty = hasActiveFilters && dayItems.length === 0;
+  const isEmpty = hasActiveFilters && daysWithLogs.length === 0;
 
   function handleTabChange(tab: Tab) {
     setActiveTab(tab);
@@ -100,17 +119,21 @@ export function HomeContent({
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
-          {activeTab === "list" ? (
-            <ListTimeline
-              key={`list-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
-              initialItems={dayItems}
-            />
-          ) : (
-            <CardTimeline
-              key={`card-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
-              initialItems={dayItems}
-            />
-          )}
+          <div className="space-y-4">
+            {daysWithLogs.map(({ date, logs }) => (
+              <TimelineDayGroup key={date} date={date}>
+                {activeTab === "list" ? (
+                  <span className="flex flex-wrap gap-x-1.5 gap-y-2">
+                    {logs.map((log) => (
+                      <LogChip key={log.id} log={log} />
+                    ))}
+                  </span>
+                ) : (
+                  <LogDayCards logs={logs} onLogEdited={handleLogEdited} />
+                )}
+              </TimelineDayGroup>
+            ))}
+          </div>
           {hasMore && (
             <div className="mt-8 flex justify-center">
               <button

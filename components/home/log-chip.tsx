@@ -1,24 +1,19 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Star } from "lucide-react";
-import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
-import { formatDayFull, formatTime } from "@/lib/date-utils";
-import { getDayType, getDateTextClassName } from "@/lib/day-type";
+import type { LogItem, LogEditedPayload } from "@/server/queries/log";
+import { formatTime } from "@/lib/date-utils";
 import { LogDetailModal } from "@/components/log/log-detail-modal";
 import { EditLogModal } from "@/components/log/edit-log-modal";
 import { deleteLog } from "@/server/actions/log";
 import { DeleteLogAlertDialog } from "@/components/log/delete-log-alert-dialog";
 
 type Props = {
-  initialItems: HistoryDayItem[];
-};
-
-type ChipProps = {
   log: LogItem;
 };
 
-function LogChip({ log }: ChipProps) {
+export function LogChip({ log }: Props) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -120,9 +115,7 @@ function LogChip({ log }: ChipProps) {
                 </div>
               )}
               {hasFields && hasNote && <div className="my-2" style={{ borderTop: "0.5px solid hsl(var(--border))" }} />}
-              {hasNote && (
-                <p className="text-[12px] text-muted-foreground leading-[1.55] break-words">{note}</p>
-              )}
+              {hasNote && <p className="text-[12px] text-muted-foreground leading-[1.55] break-words">{note}</p>}
             </>
           )}
         </div>
@@ -166,41 +159,6 @@ function LogChip({ log }: ChipProps) {
         onConfirm={handleDelete}
         isPending={isPending}
       />
-    </div>
-  );
-}
-
-export function ListTimeline({ initialItems }: Props) {
-  const [dayItems, setDayItems] = useState<HistoryDayItem[]>(initialItems);
-
-  useEffect(() => {
-    setDayItems(initialItems);
-  }, [initialItems]);
-
-  const daysWithLogs = dayItems.filter((d) => d.logs.length > 0);
-
-  if (daysWithLogs.length === 0) {
-    return (
-      <div className="py-16 text-center">
-        <p className="text-sm text-muted-foreground">この期間のピークはありません</p>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {daysWithLogs.map(({ date, logs }) => (
-        <div key={date} className="flex flex-col gap-1 py-1.5 px-1">
-          <span className={`text-sm font-semibold tabular-nums ${getDateTextClassName(getDayType(date))}`}>
-            {formatDayFull(date)}
-          </span>
-          <span className="flex flex-wrap gap-x-1.5 gap-y-2">
-            {logs.map((log) => (
-              <LogChip key={log.id} log={log} />
-            ))}
-          </span>
-        </div>
-      ))}
     </div>
   );
 }
