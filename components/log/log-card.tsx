@@ -6,16 +6,7 @@ import { LogDetailModal } from "./log-detail-modal";
 import { EditLogModal } from "./edit-log-modal";
 import { NoteText } from "./note-text";
 import { deleteLog } from "@/server/actions/log";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DeleteLogAlertDialog } from "@/components/log/delete-log-alert-dialog";
 import type { LogEditedPayload, LogItem } from "@/server/queries/log";
 
 type Props = {
@@ -144,24 +135,12 @@ export function LogCard({ log, onLogEdited }: Props) {
         onSaved={handleLogEdited}
       />
 
-      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>この記録を削除しますか？</AlertDialogTitle>
-            <AlertDialogDescription>削除した記録は元に戻せません。</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>キャンセル</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isPending}
-              className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/20"
-            >
-              {isPending ? "削除中..." : "削除する"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteLogAlertDialog
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        onConfirm={handleDelete}
+        isPending={isPending}
+      />
     </>
   );
 }
