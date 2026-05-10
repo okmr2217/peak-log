@@ -133,6 +133,7 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
         performedAt={currentDate}
         stars={currentStars}
         note={currentNote}
+        fieldValues={fieldValues}
         createdAt={createdAt}
         updatedAt={updatedAt}
         isOpen={isDetailOpen}
@@ -141,6 +142,10 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
           setIsDetailOpen(false);
           setIsEditOpen(true);
         }}
+        onDelete={() => {
+          setIsDetailOpen(false);
+          setIsDeleteOpen(true);
+        }}
       />
 
       <EditLogModal
@@ -148,7 +153,7 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
         performedAt={currentDate}
         initialStars={currentStars}
         initialNote={currentNote}
-        activity={{ id: activity.id, color: activity.color, fields: activity.fields ?? [] }}
+        activity={{ id: activity.id, name: activity.name, emoji: activity.emoji, color: activity.color, fields: activity.fields ?? [] }}
         initialFieldValues={fieldValues}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
