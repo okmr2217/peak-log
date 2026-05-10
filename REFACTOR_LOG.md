@@ -50,6 +50,32 @@
 
 ---
 
+## 第2回実施コミット（2026-05-11, 4件）
+
+| コミット | 対応項目 | 内容 |
+|---|---|---|
+| `f7e2c37` | 4-6 | useMediaQuery を useSyncExternalStore に移行してSSR不整合を解消 |
+| `85371fc` | 1-4 | StarRating コンポーネントを新設し create-log-modal / edit-log-modal / log-detail-modal の重複実装を集約 |
+| `cb817fc` | 1-2 | ActivityFormFields を切り出し activity-create-modal / activity-edit-modal の名前・絵文字・カラー・説明フォームの重複を解消 |
+| `29e6846` | 1-1 | LogFormBody を切り出し CreateLogModal(332行→173行) / EditLogModal(311行→169行) の重複を解消 |
+
+### 第2回スキップ項目
+
+| 項目 | 理由 |
+|---|---|
+| 1-3: ログ表示カード 3 種統合 | CompactLogChip と LogCard は用途・レイアウトが異なり共通化の恩恵が小さい |
+| 1-5: トースト二系統の統一 | HomeFab の自前トーストの削除は UI 振る舞い変更になる |
+| 1-8: Activity / ActivityField DTO 一元化 | 既存の local 型が微妙に異なり、全ファイル波及のリスクあり |
+| 1-9: Prisma select フラグメント整理 | コスト S だが log.ts 側と actions 側で形が違うため慎重に行うべき |
+| 4-1: props→state コピー useEffect の撤去 | 振る舞い変更（レンダリング挙動）を伴うため慎重な確認が必要 |
+| 4-2: クリック外検出を Radix に置き換え | 振る舞い変更（操作体験）を伴う |
+| 4-3: Props バケツリレー解消 | Context 化は設計変更が大きい |
+| 4-4, 7-1, 7-2: ハードコード色のトークン化 | スタイル変更を伴う。デザイン確認が必要 |
+| 4-5: confirm() → AlertDialog | UI 振る舞い変更 |
+| 8-x: Prisma クエリ最適化全般 | クエリ変更で振る舞いが変わる可能性あり |
+
+---
+
 ## 補足
 
 - REFACTOR_PLAN.md の「6-3: ResponsiveDialogTrigger 等が未使用」は誤り。grep 確認で activity-create-modal, log-detail-modal, activity-edit-modal, filter-fab, edit-log-modal, create-log-modal の 6 ファイルから実際に import されていた。
