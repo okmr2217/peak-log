@@ -27,7 +27,7 @@ export default async function HomePage({
   searchParams: Promise<{ activityId?: string; note?: string; tab?: string; from?: string; to?: string }>;
 }) {
   const { activityId, note, tab, from: fromParam, to: toParam } = await searchParams;
-  const currentTab = tab === "compact" ? "compact" : "detail";
+  const currentTab = tab === "list" ? "list" : "card";
 
   const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
   const todayStart = fromZonedTime(todayJST, TZ);

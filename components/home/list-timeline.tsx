@@ -18,7 +18,7 @@ type ChipProps = {
   log: LogItem;
 };
 
-function CompactLogChip({ log }: ChipProps) {
+function LogChip({ log }: ChipProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -121,7 +121,7 @@ function CompactLogChip({ log }: ChipProps) {
               )}
               {hasFields && hasNote && <div className="my-2" style={{ borderTop: "0.5px solid hsl(var(--border))" }} />}
               {hasNote && (
-                <p className="text-[12px] text-muted-foreground leading-[1.55] line-clamp-3 whitespace-pre-wrap break-words">{note}</p>
+                <p className="text-[12px] text-muted-foreground leading-[1.55] break-words">{note}</p>
               )}
             </>
           )}
@@ -170,7 +170,7 @@ function CompactLogChip({ log }: ChipProps) {
   );
 }
 
-export function CompactTimelineList({ initialItems }: Props) {
+export function ListTimeline({ initialItems }: Props) {
   const [dayItems, setDayItems] = useState<HistoryDayItem[]>(initialItems);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ export function CompactTimelineList({ initialItems }: Props) {
           </span>
           <span className="flex flex-wrap gap-x-1.5 gap-y-2">
             {logs.map((log) => (
-              <CompactLogChip key={log.id} log={log} />
+              <LogChip key={log.id} log={log} />
             ))}
           </span>
         </div>

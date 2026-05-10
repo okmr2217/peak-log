@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
 
 type Activity = { id: string; name: string; emoji: string | null; color: string | null };
-type Tab = "detail" | "compact";
+type Tab = "card" | "list";
 
 type Props = {
   activities: Activity[];
@@ -81,7 +81,7 @@ export function FilterFab({
     const params = new URLSearchParams();
     if (actId) params.set("activityId", actId);
     if (note) params.set("note", note);
-    if (tab !== "detail") params.set("tab", tab);
+    if (tab !== "card") params.set("tab", tab);
     params.set("from", from);
     params.set("to", to);
     return params;

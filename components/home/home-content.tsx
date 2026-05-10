@@ -6,8 +6,8 @@ import { format, subDays, parse } from "date-fns";
 import { HomeHeader } from "./home-header";
 import { FilterFab } from "./filter-fab";
 import { HomeFab } from "@/components/log/home-fab";
-import { TimelineList } from "@/components/history/timeline-list";
-import { CompactTimelineList } from "./compact-timeline";
+import { CardTimeline } from "./card-timeline";
+import { ListTimeline } from "./list-timeline";
 import type { HistoryDayItem } from "@/server/queries/log";
 
 type Activity = {
@@ -17,7 +17,7 @@ type Activity = {
   color: string | null;
   fields: { id: string; name: string; type: import("@prisma/client").FieldType; options: string[]; isArchived: boolean }[];
 };
-type Tab = "detail" | "compact";
+type Tab = "card" | "list";
 
 type Props = {
   activities: Activity[];
@@ -48,16 +48,29 @@ export function HomeContent({
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [optimisticActivityId, setOptimisticActivityId] = useState(selectedActivityId);
+  const [activeTab, setActiveTab] = useState<Tab>(currentTab);
 
   useEffect(() => {
     setIsLoading(false);
     setIsLoadingMore(false);
     setOptimisticActivityId(selectedActivityId);
-  }, [selectedActivityId, noteKeyword, fromDate, toDate]);
+    setActiveTab(currentTab);
+  }, [selectedActivityId, noteKeyword, fromDate, toDate, currentTab]);
 
   const hasNonDefaultDates = fromDate !== defaultFromDate || toDate !== defaultToDate;
   const hasActiveFilters = !!(selectedActivityId || noteKeyword || hasNonDefaultDates);
   const isEmpty = hasActiveFilters && dayItems.length === 0;
+
+  function handleTabChange(tab: Tab) {
+    setActiveTab(tab);
+    const params = new URLSearchParams();
+    if (selectedActivityId) params.set("activityId", selectedActivityId);
+    if (noteKeyword) params.set("note", noteKeyword);
+    if (tab !== "card") params.set("tab", tab);
+    params.set("from", fromDate);
+    params.set("to", toDate);
+    window.history.replaceState(null, "", `/?${params.toString()}`);
+  }
 
   function handleLoadMore() {
     setIsLoadingMore(true);
@@ -65,7 +78,7 @@ export function HomeContent({
     const params = new URLSearchParams();
     if (selectedActivityId) params.set("activityId", selectedActivityId);
     if (noteKeyword) params.set("note", noteKeyword);
-    if (currentTab !== "detail") params.set("tab", currentTab);
+    if (activeTab !== "card") params.set("tab", activeTab);
     params.set("from", newFrom);
     params.set("to", toDate);
     router.push(`/?${params.toString()}`, { scroll: false });
@@ -78,7 +91,8 @@ export function HomeContent({
         noteKeyword={noteKeyword}
         fromDate={fromDate}
         toDate={toDate}
-        currentTab={currentTab}
+        currentTab={activeTab}
+        onTabChange={handleTabChange}
       />
       {isEmpty && !isLoading ? (
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -86,14 +100,14 @@ export function HomeContent({
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
-          {currentTab === "compact" ? (
-            <CompactTimelineList
-              key={`compact-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
+          {activeTab === "list" ? (
+            <ListTimeline
+              key={`list-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
               initialItems={dayItems}
             />
           ) : (
-            <TimelineList
-              key={`detail-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
+            <CardTimeline
+              key={`card-${selectedActivityId ?? ""}-${noteKeyword}-${fromDate}-${toDate}`}
               initialItems={dayItems}
             />
           )}
@@ -118,7 +132,7 @@ export function HomeContent({
         toDate={toDate}
         defaultFromDate={defaultFromDate}
         defaultToDate={defaultToDate}
-        currentTab={currentTab}
+        currentTab={activeTab}
         onLoadingStart={() => setIsLoading(true)}
         onActivityChange={setOptimisticActivityId}
       />
