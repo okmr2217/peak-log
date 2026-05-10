@@ -3,25 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { differenceInCalendarDays } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
 import type { LogEditedPayload } from "@/server/queries/log";
-import { formatPerformedAt } from "@/lib/date-utils";
+import { formatLastPerformed, formatPerformedAt } from "@/lib/date-utils";
 import { TimelineItem } from "@/components/history/timeline-item";
-
-const TZ = "Asia/Tokyo";
-
-function formatLastPerformedAt(date: Date): string {
-  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
-  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
-  const diffDays = differenceInCalendarDays(new Date(todayJST), new Date(dateJST));
-
-  if (diffDays === 0) return "今日";
-  if (diffDays === 1) return "昨日";
-  if (diffDays < 7) return `${diffDays}日前`;
-  return formatInTimeZone(date, TZ, "M/d");
-}
 
 function formatAvgInterval(days: number): string {
   const rounded = Math.round(days * 10) / 10;
@@ -112,7 +97,7 @@ export function ActivityDetailView({ detail }: Props) {
               <div>
                 <p className="text-muted-foreground/60 text-[11px] mb-0.5">最後の記録</p>
                 <p className="text-foreground font-semibold text-lg">
-                  {formatLastPerformedAt(stats.lastPerformedAt)}
+                  {formatLastPerformed(stats.lastPerformedAt)}
                   <span className="text-muted-foreground text-xs font-normal ml-1.5">{formatPerformedAt(stats.lastPerformedAt)}</span>
                 </p>
               </div>

@@ -1,8 +1,19 @@
-import { subDays } from "date-fns";
+import { differenceInCalendarDays, subDays } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 const TZ = "Asia/Tokyo";
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
+
+export function formatLastPerformed(date: Date): string {
+  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
+  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
+  const diffDays = differenceInCalendarDays(new Date(todayJST), new Date(dateJST));
+
+  if (diffDays === 0) return "今日";
+  if (diffDays === 1) return "昨日";
+  if (diffDays < 7) return `${diffDays}日前`;
+  return formatInTimeZone(date, TZ, "M/d");
+}
 
 export function formatDayFull(dateStr: string): string {
   const d = new Date(dateStr);

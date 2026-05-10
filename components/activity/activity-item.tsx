@@ -2,30 +2,16 @@
 
 import { useState, useTransition } from "react";
 import { Pencil, Archive, ArchiveRestore, GripVertical } from "lucide-react";
-import { differenceInCalendarDays } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { archiveActivity } from "@/server/actions/activity";
+import { formatLastPerformed } from "@/lib/date-utils";
 import { ActivityEditModal } from "./activity-edit-modal";
 import type { ActivityWithStats } from "@/server/queries/activity";
 
 interface Props {
   activity: ActivityWithStats;
   onUpdate: (updated: ActivityWithStats) => void;
-}
-
-const TZ = "Asia/Tokyo";
-
-function formatLastPerformedShort(date: Date): string {
-  const todayJST = formatInTimeZone(new Date(), TZ, "yyyy-MM-dd");
-  const dateJST = formatInTimeZone(date, TZ, "yyyy-MM-dd");
-  const diffDays = differenceInCalendarDays(new Date(todayJST), new Date(dateJST));
-
-  if (diffDays === 0) return "今日";
-  if (diffDays === 1) return "昨日";
-  if (diffDays < 7) return `${diffDays}日前`;
-  return formatInTimeZone(date, TZ, "M/d");
 }
 
 export function ActivityItem({ activity, onUpdate }: Props) {
@@ -106,7 +92,7 @@ export function ActivityItem({ activity, onUpdate }: Props) {
                   <>
                     <span className="text-muted-foreground/40 text-[11px]">·</span>
                     <span className="text-[11px] text-muted-foreground/60">
-                      {formatLastPerformedShort(activity.stats.lastPerformedAt)}
+                      {formatLastPerformed(activity.stats.lastPerformedAt)}
                     </span>
                   </>
                 )}
