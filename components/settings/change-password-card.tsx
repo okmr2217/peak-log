@@ -7,7 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 type FieldErrors = Partial<Record<"currentPassword" | "newPassword" | "confirmPassword", string>>;
 
-export default function ChangePasswordCard() {
+export function ChangePasswordCard() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

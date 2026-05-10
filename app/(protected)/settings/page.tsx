@@ -1,6 +1,6 @@
 import { requireUser } from "@/lib/session";
-import LogoutButton from "@/components/logout-button";
-import ChangePasswordCard from "@/components/settings/change-password-card";
+import { LogoutButton } from "@/components/logout-button";
+import { ChangePasswordCard } from "@/components/settings/change-password-card";
 import { ThemeSelector } from "@/components/settings/theme-selector";
 import { APP_VERSION } from "@/lib/app-version";
 import { PageHeader } from "@/components/layout/page-header";
