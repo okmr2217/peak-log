@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateActivity } from "@/server/actions/activity";
-import { getActivityFieldsForEdit } from "@/server/actions/activity-field-queries";
+import { getActivityFieldsForEdit } from "@/server/queries/activity-field";
 import {
   ResponsiveDialog,
   ResponsiveDialogContent,
