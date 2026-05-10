@@ -3,15 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import type { ActivityFieldDTO } from "@/server/queries/activity";
-
-const FIELD_SELECT = {
-  id: true,
-  name: true,
-  type: true,
-  options: true,
-  sortOrder: true,
-  isArchived: true,
-} as const;
+import { ACTIVITY_FIELD_SELECT } from "@/server/queries/activity";
 
 export async function getActivityFieldsForEdit(activityId: string): Promise<ActivityFieldDTO[]> {
   const userId = await requireUserId();
@@ -20,7 +12,7 @@ export async function getActivityFieldsForEdit(activityId: string): Promise<Acti
     select: {
       fields: {
         orderBy: { sortOrder: "asc" },
-        select: FIELD_SELECT,
+        select: ACTIVITY_FIELD_SELECT,
       },
     },
   });

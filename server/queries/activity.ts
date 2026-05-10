@@ -37,7 +37,7 @@ export async function getActiveActivitiesForCurrentUser() {
   });
 }
 
-const FIELD_SELECT = {
+export const ACTIVITY_FIELD_SELECT = {
   id: true,
   name: true,
   type: true,
@@ -128,7 +128,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
       include: {
         fields: {
           orderBy: { sortOrder: "asc" },
-          select: FIELD_SELECT,
+          select: ACTIVITY_FIELD_SELECT,
         },
       },
     }),
