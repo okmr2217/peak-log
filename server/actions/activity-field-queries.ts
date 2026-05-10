@@ -19,7 +19,7 @@ export async function getActivityFieldsForEdit(activityId: string): Promise<Acti
     where: { id: activityId, userId },
     select: {
       fields: {
-        orderBy: { createdAt: "asc" },
+        orderBy: { sortOrder: "asc" },
         select: FIELD_SELECT,
       },
     },

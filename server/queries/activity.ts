@@ -23,7 +23,7 @@ export async function getActiveActivitiesForCurrentUser() {
       sortOrder: true,
       fields: {
         where: { isArchived: false },
-        orderBy: { createdAt: "asc" },
+        orderBy: { sortOrder: "asc" },
         select: {
           id: true,
           name: true,
@@ -127,7 +127,7 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
       where: { id: activityId, userId },
       include: {
         fields: {
-          orderBy: { createdAt: "asc" },
+          orderBy: { sortOrder: "asc" },
           select: FIELD_SELECT,
         },
       },
