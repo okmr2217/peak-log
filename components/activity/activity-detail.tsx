@@ -1,12 +1,7 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
-import type { LogEditedPayload } from "@/server/queries/log";
+import type { ActivityDetail } from "@/server/queries/activity";
 import { formatLastPerformed, formatPerformedAt } from "@/lib/date-utils";
-import { LogCard } from "@/components/log/log-card";
 
 function formatAvgInterval(days: number): string {
   const rounded = Math.round(days * 10) / 10;
@@ -20,36 +15,6 @@ interface Props {
 export function ActivityDetailView({ detail }: Props) {
   const { stats } = detail;
   const accentColor = detail.color;
-
-  const [recentLogs, setRecentLogs] = useState<RecentLog[]>(detail.recentLogs);
-
-  function handleLogEdited(logId: string, data: LogEditedPayload) {
-    setRecentLogs((prev) =>
-      prev.map((log) => {
-        if (log.id !== logId) return log;
-        return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note, fieldValues: data.fieldValues };
-      }),
-    );
-  }
-
-  function toLogItem(log: RecentLog) {
-    return {
-      id: log.id,
-      performedAt: log.performedAt,
-      createdAt: log.createdAt,
-      updatedAt: log.updatedAt,
-      stars: log.stars,
-      note: log.note,
-      fieldValues: log.fieldValues,
-      activity: {
-        id: detail.id,
-        name: detail.name,
-        emoji: detail.emoji,
-        color: detail.color,
-        fields: detail.fields.filter((f) => !f.isArchived),
-      },
-    };
-  }
 
   return (
     <div className="p-4 max-w-lg mx-auto">
@@ -111,18 +76,6 @@ export function ActivityDetailView({ detail }: Props) {
           </div>
         )}
       </div>
-
-      {/* 最近の記録 */}
-      {recentLogs.length > 0 && (
-        <div>
-          <h2 className="text-muted-foreground text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
-          <div className="space-y-3">
-            {recentLogs.map((log) => (
-              <LogCard key={log.id} log={toLogItem(log)} onLogEdited={handleLogEdited} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

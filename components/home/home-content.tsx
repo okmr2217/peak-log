@@ -119,7 +119,7 @@ export function HomeContent({
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
-          <div className="space-y-4">
+          <div className="space-y-1.5">
             {daysWithLogs.map(({ date, logs }) => (
               <TimelineDayGroup key={date} date={date}>
                 {activeTab === "list" ? (

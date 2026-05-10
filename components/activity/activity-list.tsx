@@ -16,7 +16,7 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ActivityItem } from "./activity-item";
+import { ActivityCard } from "./activity-card";
 import { ActivityCreateModal } from "./activity-create-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
@@ -93,22 +93,14 @@ export function ActivityList({ activities: initialActivities }: Props) {
           <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
             <div className="space-y-2">
               {activities.map((activity) => (
-                <ActivityItem key={activity.id} activity={activity} onUpdate={handleUpdate} />
+                <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} />
               ))}
             </div>
           </SortableContext>
 
           <DragOverlay>
             {draggingActivity && (
-              <div
-                className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border shadow-2xl"
-                style={{
-                  background: draggingActivity.color
-                    ? `radial-gradient(ellipse at 0% 20%, ${draggingActivity.color}15 0%, transparent 55%), hsl(var(--card))`
-                    : "hsl(var(--card))",
-                  borderColor: draggingActivity.color ? `${draggingActivity.color}38` : "hsl(var(--border))",
-                }}
-              >
+              <div className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border border-border bg-card shadow-2xl">
                 <GripVertical size={16} className="text-muted-foreground flex-shrink-0" />
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"

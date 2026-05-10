@@ -61,11 +61,6 @@ export const ACTIVITY_FIELD_SELECT = {
   isArchived: true,
 } as const;
 
-export type ActivityStats = {
-  totalCount: number;
-  lastPerformedAt: Date | null;
-};
-
 export type ActivityWithStats = {
   id: string;
   name: string;
@@ -74,38 +69,25 @@ export type ActivityWithStats = {
   description: string | null;
   sortOrder: number;
   isArchived: boolean;
-  stats: ActivityStats;
+  createdAt: Date;
 };
 
 export async function getActivitiesWithStatsForCurrentUser(): Promise<ActivityWithStats[]> {
   const userId = await requireUserId();
-  const now = new Date();
 
-  const [activities, logStats] = await Promise.all([
-    prisma.activity.findMany({
-      where: { userId },
-      select: { id: true, name: true, emoji: true, color: true, description: true, sortOrder: true, isArchived: true },
-      orderBy: { sortOrder: "asc" },
-    }),
-    prisma.log.groupBy({
-      by: ["activityId"],
-      where: { userId, performedAt: { lte: now } },
-      _count: { id: true },
-      _max: { performedAt: true },
-    }),
-  ]);
+  return prisma.activity.findMany({
+    where: { userId },
+    select: { id: true, name: true, emoji: true, color: true, description: true, sortOrder: true, isArchived: true, createdAt: true },
+    orderBy: { sortOrder: "asc" },
+  });
+}
 
-  const statsMap = new Map(
-    logStats.map((s) => [
-      s.activityId,
-      { totalCount: s._count.id, lastPerformedAt: s._max.performedAt },
-    ]),
-  );
-
-  return activities.map((a) => ({
-    ...a,
-    stats: statsMap.get(a.id) ?? { totalCount: 0, lastPerformedAt: null },
-  }));
+export async function getActivityForEdit(activityId: string) {
+  const userId = await requireUserId();
+  return prisma.activity.findFirst({
+    where: { id: activityId, userId },
+    select: { id: true, name: true, emoji: true, color: true, description: true },
+  });
 }
 
 export type RecentLog = {
