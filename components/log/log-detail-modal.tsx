@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, Pencil } from "lucide-react";
+import { Star, Pencil, Trash2 } from "lucide-react";
 import {
   ResponsiveDialog,
   ResponsiveDialogContent,
@@ -10,103 +10,156 @@ import {
   ResponsiveDialogBody,
   ResponsiveDialogFooter,
 } from "@/components/ui/responsive-dialog";
-import { Button } from "@/components/ui/button";
 import { formatRelativeTime, formatFullDateTime } from "@/lib/date-utils";
+import type { FieldType } from "@prisma/client";
+
+type ActivityField = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+};
 
 type Props = {
-  activity: { name: string; emoji: string | null; color: string | null };
+  activity: {
+    name: string;
+    emoji: string | null;
+    color: string | null;
+    fields?: ActivityField[];
+  };
   performedAt: Date;
   stars: number | null | undefined;
   note: string | null | undefined;
+  fieldValues?: Record<string, string | string[]> | null;
   createdAt: Date;
   updatedAt: Date;
   isOpen: boolean;
   onClose: () => void;
   onEditRequest: () => void;
+  onDelete: () => void;
 };
 
-export function LogDetailModal({ activity, performedAt, stars, note, createdAt, updatedAt, isOpen, onClose, onEditRequest }: Props) {
+export function LogDetailModal({
+  activity,
+  performedAt,
+  stars,
+  note,
+  fieldValues,
+  createdAt,
+  updatedAt,
+  isOpen,
+  onClose,
+  onEditRequest,
+  onDelete,
+}: Props) {
   const color = activity.color;
+
+  const visibleFields = (activity.fields ?? [])
+    .filter((field) => {
+      const val = fieldValues?.[field.id];
+      if (val === undefined || val === null) return false;
+      if (Array.isArray(val)) return val.length > 0;
+      return (val as string).trim() !== "";
+    })
+    .map((field) => {
+      const val = fieldValues![field.id];
+      return {
+        id: field.id,
+        name: field.name,
+        displayValue: Array.isArray(val) ? val.join(", ") : val,
+      };
+    });
+
+  const isUpdated = updatedAt.getTime() !== createdAt.getTime();
 
   return (
     <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
-          <div className="flex items-center gap-2.5">
-            {activity.emoji && (
-              <span
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-base leading-none shrink-0"
-                style={{ backgroundColor: color ? `${color}28` : "var(--surface-overlay)" }}
-              >
-                {activity.emoji}
-              </span>
-            )}
-            <ResponsiveDialogTitle className="flex-1 min-w-0 truncate">{activity.name}</ResponsiveDialogTitle>
+          <div className="flex items-start gap-3 pr-6">
+            <span
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl leading-none shrink-0 mt-0.5"
+              style={{ backgroundColor: color ? `${color}28` : "var(--surface-overlay)" }}
+            >
+              {activity.emoji ?? "·"}
+            </span>
+            <div className="flex-1 min-w-0">
+              <ResponsiveDialogTitle className="text-[15px] font-medium leading-snug">
+                {activity.name}
+              </ResponsiveDialogTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">{formatRelativeTime(performedAt)}</p>
+            </div>
           </div>
           <ResponsiveDialogDescription className="sr-only">記録の詳細情報を表示します。</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
-            {/* performedAt */}
-            <div>
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">記録日時</p>
-              <p className="text-foreground text-sm">{formatRelativeTime(performedAt)}</p>
+        <ResponsiveDialogBody className="space-y-3 overflow-y-auto pb-4">
+          {/* Stars */}
+          {stars != null && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((v) => (
+                  <Star
+                    key={v}
+                    className="w-4 h-4"
+                    style={
+                      v <= stars
+                        ? { fill: "#FBBF24", color: "#FBBF24" }
+                        : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
+                    }
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground">{stars}/5</span>
             </div>
+          )}
 
-            {/* Note */}
-            <div>
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">メモ</p>
-              {note ? (
-                <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">{note}</p>
-              ) : (
-                <p className="text-muted-foreground text-sm">なし</p>
-              )}
+          {/* Note */}
+          {note && (
+            <div className="rounded-xl p-3 bg-muted">
+              <p className="text-[13px] text-muted-foreground mb-1">メモ</p>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">{note}</p>
             </div>
+          )}
 
-            {/* Stars */}
-            <div>
-              <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1.5">スター</p>
-              {stars != null ? (
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((v) => (
-                    <Star
-                      key={v}
-                      className="w-4 h-4"
-                      style={
-                        v <= stars
-                          ? { fill: "#FBBF24", color: "#FBBF24" }
-                          : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
-                      }
-                    />
-                  ))}
+          {/* Field values */}
+          {visibleFields.length > 0 && (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+              {visibleFields.map((entry) => (
+                <div key={entry.id} className="min-w-0">
+                  <p className="text-xs text-muted-foreground mb-0.5 truncate">{entry.name}</p>
+                  <p className="text-sm font-medium truncate">{entry.displayValue}</p>
                 </div>
-              ) : (
-                <p className="text-muted-foreground text-sm">なし</p>
-              )}
+              ))}
             </div>
+          )}
 
-            {/* Metadata */}
-            <div className="border-t border-border pt-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">作成日時</span>
-                <span className="text-muted-foreground text-xs tabular-nums">{formatFullDateTime(createdAt)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">更新日時</span>
-                <span className="text-muted-foreground text-xs tabular-nums">{formatFullDateTime(updatedAt)}</span>
-              </div>
-            </div>
-
+          {/* Timestamps */}
+          <div className="border-t border-border pt-3 space-y-1">
+            <p className="text-xs text-muted-foreground">作成 {formatFullDateTime(createdAt)}</p>
+            {isUpdated && <p className="text-xs text-muted-foreground">更新 {formatFullDateTime(updatedAt)}</p>}
+          </div>
         </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
-            閉じる
-          </Button>
-          <Button type="button" onClick={onEditRequest}>
-            <Pencil size={14} />
-            編集する
-          </Button>
+          <div className="flex gap-2 w-full">
+            <button
+              type="button"
+              onClick={onEditRequest}
+              className="flex-1 h-10 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium border border-border hover:bg-muted transition-colors"
+            >
+              <Pencil size={14} />
+              編集
+            </button>
+            <button
+              type="button"
+              onClick={onDelete}
+              className="h-10 px-4 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors shrink-0"
+            >
+              <Trash2 size={14} />
+              削除
+            </button>
+          </div>
         </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </ResponsiveDialog>

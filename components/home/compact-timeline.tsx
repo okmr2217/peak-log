@@ -1,11 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
 import { formatDayFull, formatTime } from "@/lib/date-utils";
 import { getDayType, getDateTextClassName } from "@/lib/day-type";
 import { LogDetailModal } from "@/components/log/log-detail-modal";
 import { EditLogModal } from "@/components/log/edit-log-modal";
+import { deleteLog } from "@/server/actions/log";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   initialItems: HistoryDayItem[];
@@ -18,10 +29,12 @@ type ChipProps = {
 function CompactLogChip({ log }: ChipProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [performedAt, setPerformedAt] = useState(log.performedAt);
   const [stars, setStars] = useState(log.stars ?? null);
   const [note, setNote] = useState(log.note ?? null);
   const [fieldValues, setFieldValues] = useState(log.fieldValues);
+  const [isPending, startTransition] = useTransition();
 
   const color = log.activity.color;
 
@@ -30,6 +43,12 @@ function CompactLogChip({ log }: ChipProps) {
     setStars(data.stars);
     setNote(data.note);
     setFieldValues(data.fieldValues);
+  }
+
+  function handleDelete() {
+    startTransition(async () => {
+      await deleteLog(log.id);
+    });
   }
 
   return (
@@ -60,6 +79,7 @@ function CompactLogChip({ log }: ChipProps) {
         performedAt={performedAt}
         stars={stars}
         note={note}
+        fieldValues={fieldValues}
         createdAt={log.createdAt}
         updatedAt={log.updatedAt}
         isOpen={isDetailOpen}
@@ -67,6 +87,10 @@ function CompactLogChip({ log }: ChipProps) {
         onEditRequest={() => {
           setIsDetailOpen(false);
           setIsEditOpen(true);
+        }}
+        onDelete={() => {
+          setIsDetailOpen(false);
+          setIsDeleteOpen(true);
         }}
       />
 
@@ -81,6 +105,25 @@ function CompactLogChip({ log }: ChipProps) {
         onClose={() => setIsEditOpen(false)}
         onSaved={handleLogEdited}
       />
+
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>この記録を削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>削除した記録は元に戻せません。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPending}>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isPending}
+              className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/20"
+            >
+              {isPending ? "削除中..." : "削除する"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
