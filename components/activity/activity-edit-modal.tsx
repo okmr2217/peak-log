@@ -13,20 +13,12 @@ import {
   ResponsiveDialogBody,
   ResponsiveDialogFooter,
 } from "@/components/ui/responsive-dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
 import { ActivityFieldRow } from "@/components/activity/activity-field-row";
 import { ActivityFieldEditor } from "@/components/activity/activity-field-editor";
+import { ActivityFormFields } from "@/components/activity/activity-form-fields";
 import type { ActivityFieldDTO } from "@/server/queries/activity";
-
-const PRESET_COLORS = [
-  "#7C4DFF", "#00E5FF", "#FF4081", "#FF6D00", "#FFD740",
-  "#69F0AE", "#40C4FF", "#E040FB", "#FF5252", "#CCFF90",
-  "#84FFFF", "#F8BBD0",
-];
 
 interface Activity {
   id: string;
@@ -103,58 +95,18 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
 
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
           <ResponsiveDialogBody className="flex-1 overflow-y-auto space-y-3 pb-3">
-            <div className="space-y-1">
-              <Label htmlFor="edit-activity-name" className="text-muted-foreground text-xs uppercase tracking-wide">
-                名前 *
-              </Label>
-              <Input
-                id="edit-activity-name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="例: 筋トレ"
-                maxLength={20}
-                required
-                autoFocus
-                className="bg-muted border-border rounded-xl px-3.5 py-2 h-auto placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0"
-              />
-            </div>
-            <EmojiPickerField value={emoji} onChange={setEmoji} />
-            <div className="space-y-1">
-              <Label className="text-muted-foreground text-xs uppercase tracking-wide">カラー</Label>
-              <div className="flex flex-wrap gap-2.5">
-                {PRESET_COLORS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setColor(color === c ? "" : c)}
-                    className="w-8 h-8 rounded-full transition-transform focus:outline-none"
-                    style={{
-                      backgroundColor: c,
-                      boxShadow: color === c ? `0 0 0 2px #0A0A0A, 0 0 0 4px ${c}` : "none",
-                      transform: color === c ? "scale(1.15)" : "scale(1)",
-                    }}
-                    aria-label={c}
-                    aria-pressed={color === c}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="edit-activity-description" className="text-muted-foreground text-xs uppercase tracking-wide">
-                説明
-              </Label>
-              <Textarea
-                id="edit-activity-description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="活動の目的やルールなど（任意）"
-                maxLength={200}
-                rows={2}
-                className="bg-muted border-border rounded-xl px-3.5 py-2 placeholder:text-muted-foreground/50 focus-visible:border-primary/60 focus-visible:ring-0 resize-none"
-              />
-              <p className="text-muted-foreground/50 text-xs text-right">{description.length}/200</p>
-            </div>
+            <ActivityFormFields
+              name={name}
+              onNameChange={setName}
+              emoji={emoji}
+              onEmojiChange={setEmoji}
+              color={color}
+              onColorChange={setColor}
+              description={description}
+              onDescriptionChange={setDescription}
+              nameInputId="edit-activity-name"
+              descriptionInputId="edit-activity-description"
+            />
 
             <div className="space-y-2 pt-2 border-t border-border">
               <div className="flex items-center justify-between">
