@@ -129,7 +129,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
           {/* Activity selector */}
           {showActivitySelector && (
             <div>
-              <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">活動を選ぶ</Label>
+              <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">活動</Label>
               <div className="grid grid-cols-2 gap-1.5">
                 {activities!.map((a) => {
                   const isSelected = selectedActivity?.id === a.id;
@@ -202,11 +202,11 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             </div>
           )}
 
-          {/* Date + Time */}
+          {/* Date */}
           <div>
-            <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">日時</Label>
+            <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">日付</Label>
 
-            <div className="flex gap-2 mb-2">
+            <div className="flex gap-2">
               {(["today", "yesterday", "other"] as DateMode[]).map((mode) => (
                 <button
                   key={mode}
@@ -227,7 +227,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
             </div>
 
             {dateMode === "other" && (
-              <div className="bg-muted/50 rounded-2xl p-3 border border-border mb-2">
+              <div className="bg-muted/50 rounded-2xl p-3 border border-border mt-2">
                 <DayPicker
                   mode="single"
                   selected={otherDate}
@@ -247,23 +247,24 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
                 <p className="text-center text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{otherDateLabel}</p>
               </div>
             )}
+          </div>
 
-            <div>
-              <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">時刻</Label>
-              <div className="relative">
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full appearance-none bg-muted rounded-xl px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer border border-border"
-                >
-                  {TIME_OPTIONS.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              </div>
+          {/* Time */}
+          <div>
+            <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">時刻</Label>
+            <div className="relative">
+              <select
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                className="w-full appearance-none bg-muted rounded-xl px-3 py-2 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer border border-border"
+              >
+                {TIME_OPTIONS.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
           </div>
 
@@ -287,7 +288,6 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
               placeholder="体験の余韻を残しておこう..."
               className="bg-muted border-border rounded-xl px-3 py-2 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
             />
-            <p className="text-muted-foreground/50 text-xs text-right mt-1">{note.length}/200</p>
           </div>
 
           {/* Stars */}
