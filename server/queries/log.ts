@@ -300,7 +300,7 @@ export type DailyCount = {
 export type FieldDistribution = {
   fieldId: string;
   fieldName: string;
-  type: "SELECT" | "MULTI_SELECT";
+  type: "SELECT" | "MULTI_SELECT" | "TEXT" | "TEXTAREA";
   distribution: { label: string; count: number }[];
 };
 
@@ -336,8 +336,9 @@ function calcFieldStats(
 ): FieldDistribution[] {
   const result: FieldDistribution[] = [];
   for (const field of fields) {
-    if (field.type !== "SELECT" && field.type !== "MULTI_SELECT") continue;
-    const countMap = new Map<string, number>(field.options.map((o) => [o, 0]));
+    const countMap = new Map<string, number>(
+      field.type === "SELECT" || field.type === "MULTI_SELECT" ? field.options.map((o) => [o, 0]) : []
+    );
     for (const log of logs) {
       const values = log.fieldValues as Record<string, string | string[]> | null;
       if (!values) continue;
@@ -349,14 +350,18 @@ function calcFieldStats(
         for (const v of val) {
           if (countMap.has(v)) countMap.set(v, (countMap.get(v) ?? 0) + 1);
         }
+      } else if ((field.type === "TEXT" || field.type === "TEXTAREA") && typeof val === "string") {
+        const trimmed = val.trim();
+        if (trimmed) countMap.set(trimmed, (countMap.get(trimmed) ?? 0) + 1);
       }
     }
     const distribution = Array.from(countMap.entries())
       .filter(([, count]) => count > 0)
       .map(([label, count]) => ({ label, count }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
     if (distribution.length > 0) {
-      result.push({ fieldId: field.id, fieldName: field.name, type: field.type as "SELECT" | "MULTI_SELECT", distribution });
+      result.push({ fieldId: field.id, fieldName: field.name, type: field.type as FieldDistribution["type"], distribution });
     }
   }
   return result;
