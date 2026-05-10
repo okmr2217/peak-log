@@ -99,7 +99,7 @@ const ResponsiveDialogHeader = ({ className, children, ...props }: ResponsiveDia
   const isDesktop = useMediaQuery(desktop);
   if (isDesktop) {
     return (
-      <DialogHeader className={cn("p-6 pb-2 text-left", className)} {...props}>
+      <DialogHeader className={cn("p-6 pb-4 text-left", className)} {...props}>
         {children}
       </DialogHeader>
     );
@@ -129,7 +129,7 @@ const ResponsiveDialogFooter = ({ className, children, ...props }: ResponsiveDia
   const isDesktop = useMediaQuery(desktop);
   if (isDesktop) {
     return (
-      <DialogFooter className={cn("p-6 pt-2", className)} {...props}>
+      <DialogFooter className={cn("p-6 pt-4", className)} {...props}>
         {children}
       </DialogFooter>
     );

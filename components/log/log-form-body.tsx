@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { format, startOfDay } from "date-fns";
@@ -51,6 +52,20 @@ export function LogFormBody({
 }: LogFormBodyProps) {
   const today = startOfDay(new Date());
   const otherDateLabel = format(otherDate, "M月d日");
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const minHeightRef = useRef(0);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    if (minHeightRef.current === 0) {
+      minHeightRef.current = el.scrollHeight;
+    }
+    el.style.height = "auto";
+    const maxHeight = minHeightRef.current * 2;
+    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
+  }, [note]);
 
   return (
     <>
@@ -172,6 +187,7 @@ export function LogFormBody({
           メモ
         </Label>
         <Textarea
+          ref={textareaRef}
           id={noteInputId}
           value={note}
           onChange={(e) => onNoteChange(e.target.value)}
@@ -184,7 +200,7 @@ export function LogFormBody({
           maxLength={200}
           rows={2}
           placeholder="体験の余韻を残しておこう..."
-          className="bg-muted border-border rounded-xl px-3 py-2 placeholder:text-muted-foreground/50 resize-none focus-visible:ring-primary/50 leading-relaxed"
+          className="bg-muted border-border rounded-xl px-3 py-2 placeholder:text-muted-foreground/50 resize-none overflow-y-auto focus-visible:ring-primary/50 leading-relaxed"
         />
       </div>
 
