@@ -8,25 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { FieldValueInput } from "@/components/log/field-value-input";
 import { StarRating } from "@/components/ui/star-rating";
 import { type DateMode, TIME_OPTIONS, DAY_PICKER_CLASS_NAMES } from "@/lib/date-picker-utils";
-import type { FieldType } from "@prisma/client";
-
-type ActivityField = {
-  id: string;
-  name: string;
-  type: FieldType;
-  options: string[];
-};
-
-type ActivityForForm = {
-  id: string;
-  name: string;
-  emoji: string | null;
-  color: string | null;
-  fields: ActivityField[];
-} | null;
+import type { ActivityForLog } from "@/server/queries/activity";
 
 type LogFormBodyProps = {
-  activity: ActivityForForm;
+  activity: ActivityForLog | null;
   fieldValues: Record<string, string | string[]>;
   onFieldValuesChange: React.Dispatch<React.SetStateAction<Record<string, string | string[]>>>;
   dateMode: DateMode;

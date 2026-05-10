@@ -15,27 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LogFormBody } from "@/components/log/log-form-body";
 import { type DateMode, floorToNearest30 } from "@/lib/date-picker-utils";
-import type { FieldType } from "@prisma/client";
-
-type ActivityField = {
-  id: string;
-  name: string;
-  type: FieldType;
-  options: string[];
-  isArchived: boolean;
-};
-
-type Activity = {
-  id: string;
-  name: string;
-  emoji: string | null;
-  color: string | null;
-  fields: ActivityField[];
-};
+import type { ActivityForLog } from "@/server/queries/activity";
 
 type Props = {
-  activity?: Activity | null;
-  activities?: Activity[];
+  activity?: ActivityForLog | null;
+  activities?: ActivityForLog[];
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (logId: string, hasReflection: boolean) => void;
@@ -43,7 +27,7 @@ type Props = {
 };
 
 export function CreateLogModal({ activity, activities, isOpen, onClose, onSuccess, defaultActivityId }: Props) {
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+  const [selectedActivity, setSelectedActivity] = useState<ActivityForLog | null>(
     () => activities?.find((a) => a.id === defaultActivityId) ?? null,
   );
   const [dateMode, setDateMode] = useState<DateMode>("today");
@@ -58,7 +42,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
   const resolvedActivity = activity ?? selectedActivity;
   const showActivitySelector = !activity && activities && activities.length > 0;
 
-  function handleActivityChange(a: Activity) {
+  function handleActivityChange(a: ActivityForLog) {
     setSelectedActivity(a);
     setFieldValues({});
   }

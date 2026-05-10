@@ -16,14 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { LogFormBody } from "@/components/log/log-form-body";
 import type { LogEditedPayload } from "@/server/queries/log";
-import type { FieldType } from "@prisma/client";
-
-type ActivityField = {
-  id: string;
-  name: string;
-  type: FieldType;
-  options: string[];
-};
+import type { ActivityFieldForLog } from "@/server/queries/activity";
 
 type Props = {
   logId: string;
@@ -35,7 +28,7 @@ type Props = {
     name: string;
     emoji: string | null;
     color: string | null;
-    fields: ActivityField[];
+    fields: ActivityFieldForLog[];
   };
   initialFieldValues?: Record<string, string | string[]> | null;
   isOpen: boolean;

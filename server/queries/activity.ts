@@ -11,6 +11,21 @@ export type ActivityFieldDTO = {
   isArchived: boolean;
 };
 
+export type ActivityFieldForLog = {
+  id: string;
+  name: string;
+  type: FieldType;
+  options: string[];
+};
+
+export type ActivityForLog = {
+  id: string;
+  name: string;
+  emoji: string | null;
+  color: string | null;
+  fields: ActivityFieldForLog[];
+};
+
 export async function getActiveActivitiesForCurrentUser() {
   const userId = await requireUserId();
   return prisma.activity.findMany({

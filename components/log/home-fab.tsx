@@ -4,18 +4,11 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { CreateLogModal } from "@/components/log/create-log-modal";
-
-type Activity = {
-  id: string;
-  name: string;
-  emoji: string | null;
-  color: string | null;
-  fields: { id: string; name: string; type: import("@prisma/client").FieldType; options: string[]; isArchived: boolean }[];
-};
+import type { ActivityForLog } from "@/server/queries/activity";
 
 type Toast = { type: "success" } | { type: "error"; message: string };
 
-export function HomeFab({ activities, defaultActivityId }: { activities: Activity[]; defaultActivityId?: string | null }) {
+export function HomeFab({ activities, defaultActivityId }: { activities: ActivityForLog[]; defaultActivityId?: string | null }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);

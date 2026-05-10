@@ -13,21 +13,14 @@ import {
   ResponsiveDialogFooter,
 } from "@/components/ui/responsive-dialog";
 import { formatRelativeTime, formatFullDateTime } from "@/lib/date-utils";
-import type { FieldType } from "@prisma/client";
-
-type ActivityField = {
-  id: string;
-  name: string;
-  type: FieldType;
-  options: string[];
-};
+import type { ActivityFieldForLog } from "@/server/queries/activity";
 
 type Props = {
   activity: {
     name: string;
     emoji: string | null;
     color: string | null;
-    fields?: ActivityField[];
+    fields?: ActivityFieldForLog[];
   };
   performedAt: Date;
   stars: number | null | undefined;
