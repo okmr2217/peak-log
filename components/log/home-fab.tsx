@@ -3,15 +3,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import { CreateLogModal } from "@/components/log/create-log-modal";
 import type { ActivityForLog } from "@/server/queries/activity";
-
-type Toast = { type: "success" } | { type: "error"; message: string };
 
 export function HomeFab({ activities, defaultActivityId }: { activities: ActivityForLog[]; defaultActivityId?: string | null }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [toast, setToast] = useState<Toast | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -27,8 +25,7 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
 
   const handleSuccess = useCallback(() => {
     router.refresh();
-    setToast({ type: "success" });
-    setTimeout(() => setToast(null), 4000);
+    toast("記録しました");
   }, [router]);
 
   return (
@@ -54,28 +51,6 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
           </div>
         </div>
       </div>
-
-      {/* Toast */}
-      {toast && (
-        <div className="fixed bottom-36 left-4 right-4 z-50 flex justify-center pointer-events-none">
-          <div
-            className={`
-              pointer-events-auto rounded-2xl px-4 py-3.5 shadow-2xl
-              flex items-center justify-between gap-4 max-w-sm w-full
-              ${toast.type === "success" ? "bg-card border border-border" : "bg-red-950/90 border border-red-700/40"}
-            `}
-          >
-            {toast.type === "success" ? (
-              <div className="flex items-center gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                <span className="text-foreground text-sm font-medium">記録しました</span>
-              </div>
-            ) : (
-              <span className="text-red-300 text-sm">{toast.message}</span>
-            )}
-          </div>
-        </div>
-      )}
 
       <CreateLogModal
         key={isOpen ? `open-${defaultActivityId ?? ""}` : "closed"}
