@@ -76,6 +76,18 @@
 
 ---
 
+## 第3回実施コミット（2026-05-11, 5件）
+
+| コミット | 対応項目 | 内容 |
+|---|---|---|
+| `e1cea9d` | 1-9 | ActivityField の Prisma select フラグメント（FIELD_SELECT）を activity.ts に集約し activity-field.ts の重複を解消 |
+| `f454ddc` | 1-8 | ActivityFieldForLog / ActivityForLog 型を server/queries/activity.ts に集約し log-form-body / log-detail-modal / edit-log-modal / create-log-modal / home-fab の重複定義を除去 |
+| `95aa25d` | 1-5 | HomeFab の自前トースト（Toast 型 + useState + setTimeout + JSX）を sonner の toast() 1 行に統一 |
+| `72ee63b` | 4-5 | ActivityFieldEditor の confirm() を AlertDialog に置き換え（handleArchive / handleArchiveConfirm に分離） |
+| `dee48b0` | ユーザー要求 | 記録削除の AlertDialog を DeleteLogAlertDialog コンポーネントに集約（log-card / compact-timeline / 対象ファイル） |
+
+---
+
 ## 補足
 
 - REFACTOR_PLAN.md の「6-3: ResponsiveDialogTrigger 等が未使用」は誤り。grep 確認で activity-create-modal, log-detail-modal, activity-edit-modal, filter-fab, edit-log-modal, create-log-modal の 6 ファイルから実際に import されていた。
