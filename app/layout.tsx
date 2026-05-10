@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP, Roboto } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -15,11 +15,14 @@ const roboto = Roboto({
   variable: "--font-roboto",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#020617",
+};
+
 export const metadata: Metadata = {
   title: "Peak Log",
   description: "楽しかった体験、達成感、エネルギーのある瞬間。あなたのピーク体験を記録して、あとから振り返ることができるログアプリ。",
   applicationName: "Peak Log",
-  themeColor: "#020617",
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
