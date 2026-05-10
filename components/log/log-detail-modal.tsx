@@ -1,6 +1,7 @@
 "use client";
 
 import { Star, Pencil, Trash2 } from "lucide-react";
+import { NoteText } from "./note-text";
 import {
   ResponsiveDialog,
   ResponsiveDialogContent,
@@ -118,7 +119,7 @@ export function LogDetailModal({
           {note && (
             <div className="rounded-xl p-3 bg-muted">
               <p className="text-[13px] text-muted-foreground mb-1">メモ</p>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{note}</p>
+              <NoteText text={note} className="text-sm leading-relaxed" />
             </div>
           )}
 

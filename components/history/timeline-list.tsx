@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { HistoryDayItem, LogEditedPayload, LogItem } from "@/server/queries/log";
-import { TimelineItem } from "./timeline-item";
+import { LogCard } from "@/components/log/log-card";
 
 type Props = {
   initialItems: HistoryDayItem[];
@@ -32,7 +32,7 @@ export function TimelineList({ initialItems }: Props) {
   return (
     <div className="space-y-1.5">
       {allLogs.map((log) => (
-        <TimelineItem key={log.id} log={log} onLogEdited={handleLogEdited} />
+        <LogCard key={log.id} log={log} onLogEdited={handleLogEdited} />
       ))}
     </div>
   );

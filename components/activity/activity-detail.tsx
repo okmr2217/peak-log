@@ -6,7 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import type { ActivityDetail, RecentLog } from "@/server/queries/activity";
 import type { LogEditedPayload } from "@/server/queries/log";
 import { formatLastPerformed, formatPerformedAt } from "@/lib/date-utils";
-import { TimelineItem } from "@/components/history/timeline-item";
+import { LogCard } from "@/components/log/log-card";
 
 function formatAvgInterval(days: number): string {
   const rounded = Math.round(days * 10) / 10;
@@ -118,11 +118,7 @@ export function ActivityDetailView({ detail }: Props) {
           <h2 className="text-muted-foreground text-xs font-medium uppercase tracking-wider mb-4">最近の記録</h2>
           <div className="space-y-3">
             {recentLogs.map((log) => (
-              <TimelineItem
-                key={log.id}
-                log={toLogItem(log)}
-                onLogEdited={handleLogEdited}
-              />
+              <LogCard key={log.id} log={toLogItem(log)} onLogEdited={handleLogEdited} />
             ))}
           </div>
         </div>
