@@ -94,7 +94,7 @@ export function CreateLogModal({ activity, activities, isOpen, onClose, onSucces
           <ResponsiveDialogDescription>アクティビティの実施日時と余韻を記録します。</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
+        <ResponsiveDialogBody className="space-y-4 overflow-y-auto">
           {/* Activity selector */}
           {showActivitySelector && (
             <div>

@@ -113,7 +113,7 @@ export function EditLogModal({ logId, performedAt, initialStars, initialNote, ac
           <ResponsiveDialogDescription>記録の日時・スター数・メモを編集します。</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
+        <ResponsiveDialogBody className="space-y-4 overflow-y-auto">
           {/* Activity indicator */}
           <div
             className="flex items-center gap-2 px-3 py-2 rounded-xl"

@@ -159,7 +159,7 @@ export function FilterFab({
             <ResponsiveDialogDescription>活動・期間・メモで記録を絞り込みます。</ResponsiveDialogDescription>
           </ResponsiveDialogHeader>
 
-          <ResponsiveDialogBody className="space-y-4 overflow-y-auto pb-4">
+          <ResponsiveDialogBody className="space-y-4 overflow-y-auto">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">活動</p>
                 <div className="flex flex-wrap gap-1.5">

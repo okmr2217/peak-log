@@ -80,7 +80,7 @@ export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange
           <ResponsiveDialogDescription className="sr-only">活動の詳細情報を表示します。</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-3 overflow-y-auto pb-4">
+        <ResponsiveDialogBody className="space-y-3 overflow-y-auto">
           {activity.description && (
             <div className="rounded-xl p-3 bg-muted">
               <p className="text-[13px] text-muted-foreground mb-1">説明</p>

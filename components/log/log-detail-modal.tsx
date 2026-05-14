@@ -88,7 +88,7 @@ export function LogDetailModal({
           <ResponsiveDialogDescription className="sr-only">記録の詳細情報を表示します。</ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-3 overflow-y-auto pb-4">
+        <ResponsiveDialogBody className="space-y-3 overflow-y-auto">
           {/* Stars */}
           {stars != null && (
             <div className="flex items-center gap-2">

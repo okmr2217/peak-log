@@ -1,7 +1,6 @@
 import type { Scenario } from 'shot-kit';
 
 const scenarios: Scenario[] = [
-
   {
     name: '記録 カード',
     path: '/',
@@ -42,14 +41,18 @@ const scenarios: Scenario[] = [
     },
   },
   {
-    name: '統計 カテゴリ統計',
-    path: '/stats?tab=category&period=all',
+    name: '統計',
+    path: '/stats',
     device: 'mobile',
   },
   {
-    name: '統計 月次統計',
-    path: '/stats?tab=monthly',
+    name: '統計 活動詳細',
+    path: '/stats',
     device: 'mobile',
+    action: async (page) => {
+      await page.locator('a[href^="/stats/"]').first().click({ timeout: 5000 });
+      await page.waitForLoadState('networkidle');
+    },
   },
   {
     name: '活動',
@@ -66,13 +69,40 @@ const scenarios: Scenario[] = [
     },
   },
   {
-    name: '活動 編集モーダル',
+    name: '活動 詳細モーダル',
     path: '/activities',
     device: 'mobile',
     action: async (page) => {
-      await page.locator('button[aria-label="編集"]').first().click({ timeout: 5000 });
+      await page.locator('div.rounded-2xl.cursor-pointer').first().click({ timeout: 5000 });
       await page.waitForSelector('[role="dialog"]');
     },
+  },
+  {
+    name: '活動 詳細ページ',
+    path: '/activities',
+    device: 'mobile',
+    action: async (page) => {
+      await page.locator('div.rounded-2xl.cursor-pointer').first().click({ timeout: 5000 });
+      await page.waitForSelector('[role="dialog"]');
+      await page.locator('a:has-text("統計を見る")').first().click({ timeout: 5000 });
+      await page.waitForLoadState('networkidle');
+    },
+  },
+  {
+    name: '活動 編集ページ',
+    path: '/activities',
+    device: 'mobile',
+    action: async (page) => {
+      await page.locator('div.rounded-2xl.cursor-pointer').first().click({ timeout: 5000 });
+      await page.waitForSelector('[role="dialog"]');
+      await page.locator('button:has-text("編集")').first().click({ timeout: 5000 });
+      await page.waitForLoadState('networkidle');
+    },
+  },
+  {
+    name: 'メニュー',
+    path: '/menu',
+    device: 'mobile',
   },
   {
     name: '設定',
