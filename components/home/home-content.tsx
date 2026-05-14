@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { format, subDays, parse } from "date-fns";
 import { HomeHeader } from "./home-header";
 import { FilterFab } from "./filter-fab";
+import { MobileHeader } from "@/components/mobile-header";
 import { HomeFab } from "@/components/log/home-fab";
 import { TimelineDayGroup } from "./timeline-day-group";
 import { LogDayCards } from "./log-day-cards";
@@ -105,6 +106,7 @@ export function HomeContent({
 
   return (
     <>
+      <MobileHeader title="記録" />
       <HomeHeader
         selectedActivityId={selectedActivityId}
         noteKeyword={noteKeyword}
@@ -119,7 +121,7 @@ export function HomeContent({
         </div>
       ) : (
         <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
-          <div className="space-y-1.5">
+          <div className="space-y-3">
             {daysWithLogs.map(({ date, logs }) => (
               <TimelineDayGroup key={date} date={date}>
                 {activeTab === "list" ? (

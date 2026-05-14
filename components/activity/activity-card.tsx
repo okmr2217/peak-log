@@ -31,13 +31,13 @@ export function ActivityCard({ activity, onUpdate }: Props) {
       <div
         ref={setNodeRef}
         style={style}
-        className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl border border-border bg-card cursor-pointer animate-in fade-in-0 duration-300 ${activity.isArchived ? "opacity-50 grayscale" : ""}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card cursor-pointer animate-in fade-in-0 duration-300 ${activity.isArchived ? "opacity-50 grayscale" : ""}`}
         onClick={() => setIsDetailOpen(true)}
       >
         <button
           {...attributes}
           {...listeners}
-          className="touch-none cursor-grab active:cursor-grabbing p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors flex-shrink-0"
+          className="touch-none cursor-grab active:cursor-grabbing p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors flex-shrink-0"
           aria-label="ドラッグして並び替え"
           onClick={(e) => e.stopPropagation()}
         >
@@ -45,7 +45,7 @@ export function ActivityCard({ activity, onUpdate }: Props) {
         </button>
 
         <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
           style={{ backgroundColor: color ? `${color}28` : "hsl(var(--primary) / 0.13)" }}
         >
           {activity.emoji ?? "⚡"}

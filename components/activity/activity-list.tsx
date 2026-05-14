@@ -83,7 +83,7 @@ export function ActivityList({ activities: initialActivities }: Props) {
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {activities.map((activity) => (
                 <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} />
               ))}
@@ -92,10 +92,10 @@ export function ActivityList({ activities: initialActivities }: Props) {
 
           <DragOverlay>
             {draggingActivity && (
-              <div className="flex items-center gap-3 px-3.5 py-3 rounded-2xl border border-border bg-card shadow-2xl">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card shadow-2xl">
                 <GripVertical size={16} className="text-muted-foreground flex-shrink-0" />
                 <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
                   style={{ backgroundColor: draggingActivity.color ? `${draggingActivity.color}28` : "hsl(var(--primary) / 0.13)" }}
                 >
                   {draggingActivity.emoji ?? "⚡"}
