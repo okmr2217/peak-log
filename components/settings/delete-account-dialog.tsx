@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { deleteAccount } from "@/server/actions/user";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -70,10 +71,11 @@ export function DeleteAccountDialog() {
               <p className="text-xs text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
             )}
 
-            <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">パスワードを入力して確認</label>
+            <div className="space-y-1.5">
+              <Label htmlFor="delete-account-password" className="text-xs text-muted-foreground">パスワードを入力して確認</Label>
               <div className="relative">
                 <input
+                  id="delete-account-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

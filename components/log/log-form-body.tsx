@@ -89,8 +89,8 @@ export function LogFormBody({
           </div>
 
           {activity.fields.map((field) => (
-            <div key={field.id}>
-              <Label className="text-muted-foreground text-xs mb-1.5 block">
+            <div key={field.id} className="space-y-1.5">
+              <Label className="text-muted-foreground text-xs">
                 {field.name}
                 {field.type === "MULTI_SELECT" && (
                   <span className="ml-1.5 text-[10px] text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">複数選択</span>
@@ -118,8 +118,8 @@ export function LogFormBody({
       )}
 
       {/* Date */}
-      <div>
-        <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">日付</Label>
+      <div className="space-y-1.5">
+        <Label className="text-muted-foreground text-xs tracking-wide uppercase">日付</Label>
         <div className="flex gap-2">
           {(["today", "yesterday", "other"] as DateMode[]).map((mode) => (
             <button
@@ -163,8 +163,8 @@ export function LogFormBody({
       </div>
 
       {/* Time */}
-      <div>
-        <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">時刻</Label>
+      <div className="space-y-1.5">
+        <Label className="text-muted-foreground text-xs tracking-wide uppercase">時刻</Label>
         <div className="relative">
           <select
             value={selectedTime}
@@ -182,8 +182,8 @@ export function LogFormBody({
       </div>
 
       {/* Memo */}
-      <div>
-        <Label htmlFor={noteInputId} className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">
+      <div className="space-y-1.5">
+        <Label htmlFor={noteInputId} className="text-muted-foreground text-xs tracking-wide uppercase">
           メモ
         </Label>
         <Textarea
@@ -205,8 +205,8 @@ export function LogFormBody({
       </div>
 
       {/* Stars */}
-      <div>
-        <Label className="text-muted-foreground text-xs mb-1 block tracking-wide uppercase">スター数</Label>
+      <div className="space-y-1.5">
+        <Label className="text-muted-foreground text-xs tracking-wide uppercase">スター数</Label>
         <StarRating value={stars} onChange={onStarsChange} />
       </div>
 

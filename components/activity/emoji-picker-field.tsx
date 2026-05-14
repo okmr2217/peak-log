@@ -19,7 +19,7 @@ export function EmojiPickerField({ value, onChange }: Props) {
   const { resolvedTheme } = useTheme();
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <Label className="text-muted-foreground text-xs uppercase tracking-wide">絵文字</Label>
 
       <div className="flex items-center gap-3">

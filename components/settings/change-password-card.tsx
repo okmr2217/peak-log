@@ -4,6 +4,7 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { changePasswordSchema } from "@/server/validators/settings";
 import { Eye, EyeOff } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 type FieldErrors = Partial<Record<"currentPassword" | "newPassword" | "confirmPassword", string>>;
 
@@ -83,10 +84,11 @@ export function ChangePasswordCard() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">現在のパスワード</label>
+          <div className="space-y-1.5">
+            <Label htmlFor="current-password" className="text-xs text-muted-foreground">現在のパスワード</Label>
             <div className="relative">
               <input
+                id="current-password"
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
@@ -107,10 +109,11 @@ export function ChangePasswordCard() {
             )}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">新しいパスワード</label>
+          <div className="space-y-1.5">
+            <Label htmlFor="new-password" className="text-xs text-muted-foreground">新しいパスワード</Label>
             <div className="relative">
               <input
+                id="new-password"
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -131,10 +134,11 @@ export function ChangePasswordCard() {
             )}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">新しいパスワード（確認）</label>
+          <div className="space-y-1.5">
+            <Label htmlFor="confirm-password" className="text-xs text-muted-foreground">新しいパスワード（確認）</Label>
             <div className="relative">
               <input
+                id="confirm-password"
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

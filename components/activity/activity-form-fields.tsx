@@ -36,7 +36,7 @@ export function ActivityFormFields({
 }: ActivityFormFieldsProps) {
   return (
     <>
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <Label htmlFor={nameInputId} className="text-muted-foreground text-xs uppercase tracking-wide">
           名前 *
         </Label>
@@ -53,7 +53,7 @@ export function ActivityFormFields({
         />
       </div>
       <EmojiPickerField value={emoji} onChange={onEmojiChange} />
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <Label className="text-muted-foreground text-xs uppercase tracking-wide">カラー</Label>
         <div className="flex flex-wrap gap-2.5">
           {PRESET_COLORS.map((c) => (
@@ -73,7 +73,7 @@ export function ActivityFormFields({
           ))}
         </div>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <Label htmlFor={descriptionInputId} className="text-muted-foreground text-xs uppercase tracking-wide">
           説明
         </Label>
