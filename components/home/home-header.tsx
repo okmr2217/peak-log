@@ -1,7 +1,5 @@
 "use client";
 
-import { PageHeader } from "@/components/layout/page-header";
-
 type Tab = "card" | "list";
 
 type Props = {
@@ -16,7 +14,7 @@ type Props = {
 export function HomeHeader({ currentTab, onTabChange }: Props) {
   return (
     <div className="px-4 pt-4 max-w-lg mx-auto">
-      <PageHeader title="記録" description="ピーク体験を時系列で振り返れます" />
+      <p className="text-xs text-muted-foreground mb-3">ピーク体験を時系列で振り返れます</p>
       <div className="flex gap-1 p-0.5 bg-muted rounded-lg border border-border mb-4 mt-0.5">
         {(["card", "list"] as const).map((t) => (
           <button

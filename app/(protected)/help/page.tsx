@@ -1,11 +1,12 @@
-import { PageHeader } from "@/components/layout/page-header";
+import { MobileHeader } from "@/components/mobile-header";
 import { BookOpen, Zap, Clock, Star, BarChart2, Settings } from "lucide-react";
 
 export default function HelpPage() {
   return (
-    <div className="p-4 max-w-lg mx-auto pb-24">
-      <PageHeader title="ヘルプ" description="Peak Log の使い方" />
-
+    <>
+      <MobileHeader title="ヘルプ" showBack />
+      <div className="p-4 max-w-lg mx-auto pb-24">
+      <p className="text-xs text-muted-foreground mb-4">Peak Log の使い方</p>
       <div className="space-y-8">
         {/* Peak Log とは */}
         <section className="space-y-3">
@@ -123,5 +124,6 @@ export default function HelpPage() {
         </section>
       </div>
     </div>
+    </>
   );
 }

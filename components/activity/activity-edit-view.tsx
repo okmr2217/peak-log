@@ -2,8 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { MobileHeader } from "@/components/mobile-header";
 import { updateActivity } from "@/server/actions/activity";
 import { getActivityFieldsForEdit } from "@/server/queries/activity-field";
 import { Button } from "@/components/ui/button";
@@ -67,17 +66,9 @@ export function ActivityEditView({ activity }: Props) {
   const activeFieldsCount = fields.filter((f) => !f.isArchived).length;
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <Link
-        href="/activities"
-        className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
-      >
-        <ChevronLeft size={16} />
-        活動一覧
-      </Link>
-
-      <h1 className="text-xl font-bold text-foreground mb-6">活動を編集</h1>
-
+    <>
+      <MobileHeader title="活動を編集" showBack />
+      <div className="p-4 max-w-lg mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4">
         <ActivityFormFields
           name={name}
@@ -149,5 +140,6 @@ export function ActivityEditView({ activity }: Props) {
         </div>
       </form>
     </div>
+    </>
   );
 }

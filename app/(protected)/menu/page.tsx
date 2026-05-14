@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Settings, HelpCircle, ChevronRight } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
+import { MobileHeader } from "@/components/mobile-header";
 
 const menuItems = [
   { href: "/settings", label: "設定", description: "アカウント・テーマ・パスワード", icon: Settings },
@@ -9,8 +9,9 @@ const menuItems = [
 
 export default function MenuPage() {
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <PageHeader title="メニュー" />
+    <>
+      <MobileHeader title="メニュー" />
+      <div className="p-4 max-w-lg mx-auto">
       <div className="bg-card rounded-xl divide-y divide-border">
         {menuItems.map(({ href, label, description, icon: Icon }) => (
           <Link key={href} href={href} className="flex items-center gap-3 px-4 py-4 hover:bg-muted/50 transition-colors first:rounded-t-xl last:rounded-b-xl">
@@ -24,5 +25,6 @@ export default function MenuPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

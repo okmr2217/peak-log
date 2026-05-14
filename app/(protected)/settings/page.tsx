@@ -3,15 +3,17 @@ import { LogoutButton } from "@/components/logout-button";
 import { ChangePasswordCard } from "@/components/settings/change-password-card";
 import { ThemeSelector } from "@/components/settings/theme-selector";
 import { APP_VERSION } from "@/lib/app-version";
-import { PageHeader } from "@/components/layout/page-header";
+import { MobileHeader } from "@/components/mobile-header";
 import { DeleteAccountDialog } from "@/components/settings/delete-account-dialog";
 
 export default async function SettingsPage() {
   const user = await requireUser();
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <PageHeader title="設定" description="アカウント設定とアプリ情報を確認できます" />
+    <>
+      <MobileHeader title="設定" showBack />
+      <div className="p-4 max-w-lg mx-auto">
+      <p className="text-xs text-muted-foreground mb-4">アカウント設定とアプリ情報を確認できます</p>
       <div className="space-y-4">
 
       {/* アカウント */}
@@ -79,5 +81,6 @@ export default async function SettingsPage() {
       </section>
       </div>
     </div>
+    </>
   );
 }

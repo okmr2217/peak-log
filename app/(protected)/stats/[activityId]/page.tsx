@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { MobileHeader } from "@/components/mobile-header";
 import { getActivityStatDetailForCurrentUser } from "@/server/queries/log";
 import type { PeriodPreset } from "@/server/queries/log";
 import { PeriodFilter } from "@/components/stats/period-filter";
@@ -69,15 +68,9 @@ export default async function ActivityStatsPage({ params, searchParams }: Props)
   ];
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <Link
-        href={`/stats?period=${period}`}
-        className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
-      >
-        <ChevronLeft size={16} />
-        統計一覧
-      </Link>
-
+    <>
+      <MobileHeader title={activity.name} showBack />
+      <div className="p-4 max-w-lg mx-auto">
       <div className="flex items-center gap-3 mb-5">
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
@@ -126,5 +119,6 @@ export default async function ActivityStatsPage({ params, searchParams }: Props)
         </>
       )}
     </div>
+    </>
   );
 }

@@ -19,7 +19,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { ActivityCard } from "./activity-card";
 import { ActivityCreateModal } from "./activity-create-modal";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/layout/page-header";
+import { MobileHeader } from "@/components/mobile-header";
 import { reorderActivities } from "@/server/actions/activity";
 import type { ActivityWithStats } from "@/server/queries/activity";
 
@@ -71,18 +71,10 @@ export function ActivityList({ activities: initialActivities }: Props) {
   }
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <PageHeader
-        title="活動"
-        description="活動の追加・編集・並び替え・アーカイブができます"
-        action={
-          <Button onClick={() => setShowCreateModal(true)} size="sm" className="gap-1.5 rounded-xl">
-            <Plus size={15} />
-            追加
-          </Button>
-        }
-      />
-
+    <>
+      <MobileHeader title="活動" />
+      <div className="p-4 max-w-lg mx-auto">
+      <p className="text-xs text-muted-foreground mb-3">活動の追加・編集・並び替え・アーカイブができます</p>
       {activities.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-foreground text-sm font-medium mb-1.5">活動を作成しよう</p>
@@ -119,5 +111,6 @@ export function ActivityList({ activities: initialActivities }: Props) {
         <ActivityCreateModal onClose={() => setShowCreateModal(false)} onSuccess={handleCreateSuccess} />
       )}
     </div>
+    </>
   );
 }

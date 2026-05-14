@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { MobileHeader } from "@/components/mobile-header";
 import type { ActivityDetail } from "@/server/queries/activity";
 import { formatLastPerformed, formatPerformedAt } from "@/lib/date-utils";
 
@@ -17,16 +16,9 @@ export function ActivityDetailView({ detail }: Props) {
   const accentColor = detail.color;
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      {/* 戻るボタン */}
-      <Link
-        href="/activities"
-        className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
-      >
-        <ChevronLeft size={16} />
-        活動一覧
-      </Link>
-
+    <>
+      <MobileHeader title={detail.name} showBack />
+      <div className="p-4 max-w-lg mx-auto">
       {/* ヘッダー */}
       <div className="flex items-center gap-3 mb-6">
         <div
@@ -77,5 +69,6 @@ export function ActivityDetailView({ detail }: Props) {
         )}
       </div>
     </div>
+    </>
   );
 }

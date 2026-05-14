@@ -1,6 +1,6 @@
 import { getActivityListStatsForCurrentUser } from "@/server/queries/log";
 import type { PeriodPreset } from "@/server/queries/log";
-import { PageHeader } from "@/components/layout/page-header";
+import { MobileHeader } from "@/components/mobile-header";
 import { PeriodFilter } from "@/components/stats/period-filter";
 import { ActivityStatCard } from "@/components/stats/activity-stat-card";
 
@@ -17,8 +17,10 @@ export default async function StatsPage({ searchParams }: Props) {
   const stats = await getActivityListStatsForCurrentUser(period).catch(() => []);
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
-      <PageHeader title="統計" description="活動ごとの記録を確認できます" />
+    <>
+      <MobileHeader title="統計" />
+      <div className="p-4 max-w-lg mx-auto">
+      <p className="text-xs text-muted-foreground mb-3">活動ごとの記録を確認できます</p>
       <PeriodFilter currentPeriod={period} basePath="/stats" />
 
       {stats.length === 0 ? (
@@ -36,5 +38,6 @@ export default async function StatsPage({ searchParams }: Props) {
         </ul>
       )}
     </div>
+    </>
   );
 }
