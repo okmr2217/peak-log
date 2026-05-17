@@ -3,7 +3,8 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Pencil, Archive, ArchiveRestore, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
+import { Pencil, Archive, ArchiveRestore, ExternalLink, Trash2 } from "lucide-react";
 import {
   ResponsiveDialog,
   ResponsiveDialogContent,
@@ -13,8 +14,9 @@ import {
   ResponsiveDialogBody,
   ResponsiveDialogFooter,
 } from "@/components/ui/responsive-dialog";
-import { archiveActivity } from "@/server/actions/activity";
-import { getActivityFieldsForEdit } from "@/server/queries/activity-field";
+import { ConfirmAlertDialog } from "@/components/ui/confirm-alert-dialog";
+import { archiveActivity, deleteActivity } from "@/server/actions/activity";
+import { getActivityFieldsForEdit, getActivityLogCount } from "@/server/queries/activity-field";
 import { formatFullDateTime } from "@/lib/date-utils";
 import type { ActivityWithStats, ActivityFieldDTO } from "@/server/queries/activity";
 
@@ -30,17 +32,21 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onArchiveChange: (updated: ActivityWithStats) => void;
+  onDelete?: () => void;
 };
 
-export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange }: Props) {
+export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange, onDelete }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [fields, setFields] = useState<ActivityFieldDTO[]>([]);
+  const [logCount, setLogCount] = useState<number | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const color = activity.isArchived ? null : activity.color;
 
   useEffect(() => {
     if (isOpen) {
       getActivityFieldsForEdit(activity.id).then(setFields);
+      getActivityLogCount(activity.id).then(setLogCount);
     }
   }, [isOpen, activity.id]);
 
@@ -53,9 +59,23 @@ export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange
     });
   }
 
+  function handleDelete() {
+    startTransition(async () => {
+      const result = await deleteActivity({ activityId: activity.id });
+      if (result.ok) {
+        setIsDeleteDialogOpen(false);
+        onClose();
+        onDelete?.();
+      } else {
+        toast.error(result.message ?? "削除できませんでした");
+      }
+    });
+  }
+
   const activeFields = fields.filter((f) => !f.isArchived);
 
   return (
+    <>
     <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
@@ -134,9 +154,36 @@ export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange
               {activity.isArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
               {activity.isArchived ? "解除" : "アーカイブ"}
             </button>
+            <button
+              type="button"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              disabled={isPending}
+              className="h-10 w-10 rounded-xl flex items-center justify-center border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors shrink-0 disabled:opacity-50"
+              aria-label="削除"
+            >
+              <Trash2 size={14} />
+            </button>
           </div>
         </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </ResponsiveDialog>
+
+    <ConfirmAlertDialog
+      open={isDeleteDialogOpen}
+      onOpenChange={setIsDeleteDialogOpen}
+      onConfirm={handleDelete}
+      isPending={isPending}
+      title={`「${activity.name}」を削除しますか？`}
+      description={
+        logCount === null
+          ? "この操作は取り消せません。"
+          : logCount > 0
+            ? `紐づくログが ${logCount} 件あります。活動とすべてのログが完全に削除されます。この操作は取り消せません。`
+            : "この操作は取り消せません。"
+      }
+      actionLabel="完全に削除する"
+      pendingLabel="削除中..."
+    />
+    </>
   );
 }

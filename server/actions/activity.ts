@@ -10,10 +10,12 @@ import {
   updateActivitySchema,
   archiveActivitySchema,
   reorderActivitiesSchema,
+  deleteActivitySchema,
   type CreateActivityInput,
   type UpdateActivityInput,
   type ArchiveActivityInput,
   type ReorderActivitiesInput,
+  type DeleteActivityInput,
 } from "@/server/validators/activity";
 
 export async function createActivity(input: CreateActivityInput): Promise<ActionResult> {
@@ -74,6 +76,29 @@ export async function archiveActivity(input: ArchiveActivityInput): Promise<Acti
     return ok();
   } catch (e) {
     return fail(toActionMessage(e, "更新できませんでした"));
+  }
+}
+
+export async function deleteActivity(input: DeleteActivityInput): Promise<ActionResult> {
+  const parsed = deleteActivitySchema.safeParse(input);
+  if (!parsed.success) {
+    return fail("無効なIDです");
+  }
+
+  try {
+    const userId = await requireUserId();
+    const activity = await prisma.activity.findFirst({ where: { id: parsed.data.activityId, userId }, select: { id: true } });
+    if (!activity) return fail("活動が見つかりません");
+
+    await prisma.$transaction([
+      prisma.log.deleteMany({ where: { activityId: parsed.data.activityId, userId } }),
+      prisma.activity.delete({ where: { id: parsed.data.activityId } }),
+    ]);
+    revalidatePath("/");
+    revalidatePath("/activities");
+    return ok();
+  } catch (e) {
+    return fail(toActionMessage(e, "削除できませんでした"));
   }
 }
 

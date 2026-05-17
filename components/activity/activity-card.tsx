@@ -11,9 +11,10 @@ import type { ActivityWithStats } from "@/server/queries/activity";
 interface Props {
   activity: ActivityWithStats;
   onUpdate: (updated: ActivityWithStats) => void;
+  onDelete: (id: string) => void;
 }
 
-export function ActivityCard({ activity, onUpdate }: Props) {
+export function ActivityCard({ activity, onUpdate, onDelete }: Props) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activity.id });
@@ -71,6 +72,7 @@ export function ActivityCard({ activity, onUpdate }: Props) {
           onUpdate(updated);
           setIsDetailOpen(false);
         }}
+        onDelete={() => onDelete(activity.id)}
       />
     </>
   );

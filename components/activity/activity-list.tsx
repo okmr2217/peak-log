@@ -52,6 +52,10 @@ export function ActivityList({ activities: initialActivities }: Props) {
     setActivities((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
   }
 
+  function handleDelete(id: string) {
+    setActivities((prev) => prev.filter((a) => a.id !== id));
+  }
+
   function handleDragStart(event: DragStartEvent) {
     const found = activities.find((a) => a.id === event.active.id);
     setDraggingActivity(found ?? null);
@@ -72,7 +76,18 @@ export function ActivityList({ activities: initialActivities }: Props) {
 
   return (
     <>
-      <MobileHeader title="活動" />
+      <MobileHeader
+        title="活動"
+        rightAction={
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted -mr-2"
+            aria-label="活動を追加"
+          >
+            <Plus size={20} />
+          </button>
+        }
+      />
       <div className="p-4 max-w-lg mx-auto">
       <p className="text-xs text-muted-foreground mb-3">活動の追加・編集・並び替え・アーカイブができます</p>
       {activities.length === 0 ? (
@@ -85,7 +100,7 @@ export function ActivityList({ activities: initialActivities }: Props) {
           <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
             <div className="space-y-1.5">
               {activities.map((activity) => (
-                <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} />
+                <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} onDelete={handleDelete} />
               ))}
             </div>
           </SortableContext>

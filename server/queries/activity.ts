@@ -82,6 +82,7 @@ export async function getActivitiesWithStatsForCurrentUser(): Promise<ActivityWi
   });
 }
 
+
 export async function getActivityForEdit(activityId: string) {
   const userId = await requireUserId();
   return prisma.activity.findFirst({

@@ -24,7 +24,12 @@ export const reorderActivitiesSchema = z.object({
   activityIds: z.array(z.string().min(1)).min(1),
 });
 
+export const deleteActivitySchema = z.object({
+  activityId: z.string().min(1),
+});
+
 export type CreateActivityInput = z.infer<typeof createActivitySchema>;
 export type UpdateActivityInput = z.infer<typeof updateActivitySchema>;
 export type ArchiveActivityInput = z.infer<typeof archiveActivitySchema>;
 export type ReorderActivitiesInput = z.infer<typeof reorderActivitiesSchema>;
+export type DeleteActivityInput = z.infer<typeof deleteActivitySchema>;
