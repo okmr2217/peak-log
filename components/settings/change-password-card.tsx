@@ -74,18 +74,16 @@ export function ChangePasswordCard() {
         </div>
 
         {success && (
-          <p className="text-xs text-emerald-400 bg-emerald-400/10 rounded-lg px-3 py-2">
-            パスワードを変更しました
-          </p>
+          <p className="text-xs text-emerald-400 bg-emerald-400/10 rounded-lg px-3 py-2">パスワードを変更しました</p>
         )}
 
-        {formError && (
-          <p className="text-xs text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{formError}</p>
-        )}
+        {formError && <p className="text-xs text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{formError}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="current-password" className="text-xs text-muted-foreground">現在のパスワード</Label>
+            <Label htmlFor="current-password" className="text-xs text-muted-foreground">
+              現在のパスワード
+            </Label>
             <div className="relative">
               <input
                 id="current-password"
@@ -104,13 +102,13 @@ export function ChangePasswordCard() {
                 {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {fieldErrors.currentPassword && (
-              <p className="text-xs text-red-400">{fieldErrors.currentPassword}</p>
-            )}
+            {fieldErrors.currentPassword && <p className="text-xs text-red-400">{fieldErrors.currentPassword}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="new-password" className="text-xs text-muted-foreground">新しいパスワード</Label>
+            <Label htmlFor="new-password" className="text-xs text-muted-foreground">
+              新しいパスワード
+            </Label>
             <div className="relative">
               <input
                 id="new-password"
@@ -129,13 +127,13 @@ export function ChangePasswordCard() {
                 {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {fieldErrors.newPassword && (
-              <p className="text-xs text-red-400">{fieldErrors.newPassword}</p>
-            )}
+            {fieldErrors.newPassword && <p className="text-xs text-red-400">{fieldErrors.newPassword}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="confirm-password" className="text-xs text-muted-foreground">新しいパスワード（確認）</Label>
+            <Label htmlFor="confirm-password" className="text-xs text-muted-foreground">
+              新しいパスワード（確認）
+            </Label>
             <div className="relative">
               <input
                 id="confirm-password"
@@ -154,9 +152,7 @@ export function ChangePasswordCard() {
                 {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            {fieldErrors.confirmPassword && (
-              <p className="text-xs text-red-400">{fieldErrors.confirmPassword}</p>
-            )}
+            {fieldErrors.confirmPassword && <p className="text-xs text-red-400">{fieldErrors.confirmPassword}</p>}
           </div>
 
           <label className="flex items-center gap-2 cursor-pointer select-none">

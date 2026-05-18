@@ -16,9 +16,7 @@ function groupToHistoryDays(logs: LogItem[]): HistoryDayItem[] {
     if (arr) arr.push(log);
     else map.set(date, [log]);
   }
-  return [...map.entries()]
-    .sort(([a], [b]) => b.localeCompare(a))
-    .map(([date, dayLogs]) => ({ date, logs: dayLogs }));
+  return [...map.entries()].sort(([a], [b]) => b.localeCompare(a)).map(([date, dayLogs]) => ({ date, logs: dayLogs }));
 }
 
 export default async function HomePage({

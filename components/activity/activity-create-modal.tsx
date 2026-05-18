@@ -50,7 +50,9 @@ export function ActivityCreateModal({ onClose, onSuccess }: Props) {
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>活動を追加</ResponsiveDialogTitle>
-          <ResponsiveDialogDescription>新しい活動を作成します。名前、絵文字、カラーを設定してください。</ResponsiveDialogDescription>
+          <ResponsiveDialogDescription>
+            新しい活動を作成します。名前、絵文字、カラーを設定してください。
+          </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">

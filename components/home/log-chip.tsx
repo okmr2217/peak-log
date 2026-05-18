@@ -44,7 +44,7 @@ export function LogChip({ log }: Props) {
       label: f.name,
       value: Array.isArray(fieldValues?.[f.id])
         ? (fieldValues[f.id] as string[]).join("、")
-        : (fieldValues?.[f.id] as string | undefined) ?? null,
+        : ((fieldValues?.[f.id] as string | undefined) ?? null),
     }))
     .filter((f): f is { label: string; value: string } => f.value !== null && f.value !== "");
 
@@ -91,7 +91,11 @@ export function LogChip({ log }: Props) {
                   <Star
                     key={v}
                     className="w-3 h-3"
-                    style={v <= stars ? { fill: "#EF9F27", color: "#EF9F27" } : { fill: "transparent", color: "hsl(var(--muted-foreground))" }}
+                    style={
+                      v <= stars
+                        ? { fill: "#EF9F27", color: "#EF9F27" }
+                        : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
+                    }
                   />
                 ))}
               </div>

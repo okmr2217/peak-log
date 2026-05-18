@@ -27,7 +27,10 @@ export function ActivityStatCard({ stat, rank, period }: Props) {
           </span>
           <span className="text-xs text-muted-foreground">件</span>
           {stat.streak > 0 && (
-            <span className="text-xs font-medium px-1.5 py-0.5 rounded-full" style={{ background: `${color}22`, color }}>
+            <span
+              className="text-xs font-medium px-1.5 py-0.5 rounded-full"
+              style={{ background: `${color}22`, color }}
+            >
               🔥{stat.streak}日
             </span>
           )}

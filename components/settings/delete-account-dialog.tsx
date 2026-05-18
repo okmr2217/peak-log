@@ -67,12 +67,12 @@ export function DeleteAccountDialog() {
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <p className="text-xs text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
-            )}
+            {error && <p className="text-xs text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{error}</p>}
 
             <div className="space-y-1.5">
-              <Label htmlFor="delete-account-password" className="text-xs text-muted-foreground">パスワードを入力して確認</Label>
+              <Label htmlFor="delete-account-password" className="text-xs text-muted-foreground">
+                パスワードを入力して確認
+              </Label>
               <div className="relative">
                 <input
                   id="delete-account-password"

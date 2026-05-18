@@ -136,4 +136,3 @@ export async function archiveActivityField(input: FieldIdInput): Promise<ActionR
     return fail(toActionMessage(e, "更新できませんでした"));
   }
 }
-

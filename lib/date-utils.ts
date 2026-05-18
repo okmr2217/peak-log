@@ -86,4 +86,3 @@ export function formatRelativeTime(date: Date): string {
 export function formatFullDateTime(date: Date): string {
   return formatInTimeZone(date, TZ, "yyyy/MM/dd HH:mm");
 }
-

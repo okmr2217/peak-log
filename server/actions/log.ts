@@ -110,9 +110,7 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
 
     const noteTrimmed = (note ?? "").trim();
     const fieldValuesData =
-      rawFieldValues !== undefined
-        ? normalizeFieldValues(rawFieldValues, existing.activity.fields)
-        : undefined;
+      rawFieldValues !== undefined ? normalizeFieldValues(rawFieldValues, existing.activity.fields) : undefined;
 
     await prisma.log.update({
       where: { id: logId },
@@ -131,4 +129,3 @@ export async function updateLog(input: UpdateLogInput): Promise<ActionResult> {
     return fail(toActionMessage(e, "更新できませんでした"));
   }
 }
-

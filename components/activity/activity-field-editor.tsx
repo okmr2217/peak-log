@@ -78,98 +78,101 @@ export function ActivityFieldEditor({ activityId, field, onSave, onCancel, onArc
 
   return (
     <>
-    <div
-      className="rounded-xl p-3.5 space-y-3"
-      style={{ background: "rgba(124,77,255,0.06)", border: "1px solid rgba(124,77,255,0.3)" }}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-foreground text-sm font-medium">{field ? field.name : "新規フィールド"}</span>
-        <div className="flex items-center gap-1">
-          {field && onArchive && (
-            <button
-              type="button"
-              onClick={handleArchive}
-              disabled={isPending}
-              className="p-1.5 text-muted-foreground hover:text-red-400 transition-colors disabled:opacity-50"
-              aria-label="アーカイブ"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={onCancel}
-            className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="閉じる"
-          >
-            <ChevronUp className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      <div className="space-y-1.5">
-        <Label className="text-muted-foreground text-xs">フィールド名</Label>
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="例: 場所"
-          maxLength={12}
-          className="bg-muted border-border rounded-xl text-sm h-9"
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label className="text-muted-foreground text-xs">タイプ</Label>
-        <div className="grid grid-cols-2 gap-1.5">
-          {TYPES.map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => handleTypeChange(t)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95 ${
-                type === t ? "text-primary-foreground" : "bg-muted text-muted-foreground"
-              }`}
-              style={
-                type === t
-                  ? { background: "linear-gradient(135deg, #7C4DFF, #5533cc)", boxShadow: "0 0 14px 0 rgba(124,77,255,0.35)" }
-                  : undefined
-              }
-            >
-              {TYPE_LABELS[t]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {(type === "SELECT" || type === "MULTI_SELECT") && (
-        <div className="space-y-1.5">
-          <Label className="text-muted-foreground text-xs">選択肢</Label>
-          <OptionsEditor options={options} onChange={setOptions} />
-        </div>
-      )}
-
-      {error && <p className="text-red-400 text-xs">{error}</p>}
-
-      <Button
-        type="button"
-        onClick={handleSave}
-        disabled={isPending}
-        className="w-full rounded-xl h-auto py-2.5 text-sm"
+      <div
+        className="rounded-xl p-3.5 space-y-3"
+        style={{ background: "rgba(124,77,255,0.06)", border: "1px solid rgba(124,77,255,0.3)" }}
       >
-        {isPending ? "保存中..." : "保存する"}
-      </Button>
-    </div>
+        <div className="flex items-center justify-between">
+          <span className="text-foreground text-sm font-medium">{field ? field.name : "新規フィールド"}</span>
+          <div className="flex items-center gap-1">
+            {field && onArchive && (
+              <button
+                type="button"
+                onClick={handleArchive}
+                disabled={isPending}
+                className="p-1.5 text-muted-foreground hover:text-red-400 transition-colors disabled:opacity-50"
+                aria-label="アーカイブ"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onCancel}
+              className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="閉じる"
+            >
+              <ChevronUp className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-    <ConfirmAlertDialog
-      open={isArchiveDialogOpen}
-      onOpenChange={setIsArchiveDialogOpen}
-      onConfirm={handleArchiveConfirm}
-      isPending={isPending}
-      title="フィールドをアーカイブしますか？"
-      description="過去のログに残された値はそのまま保持されます。"
-      actionLabel="アーカイブする"
-      pendingLabel="処理中..."
-    />
+        <div className="space-y-1.5">
+          <Label className="text-muted-foreground text-xs">フィールド名</Label>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="例: 場所"
+            maxLength={12}
+            className="bg-muted border-border rounded-xl text-sm h-9"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-muted-foreground text-xs">タイプ</Label>
+          <div className="grid grid-cols-2 gap-1.5">
+            {TYPES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => handleTypeChange(t)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 active:scale-95 ${
+                  type === t ? "text-primary-foreground" : "bg-muted text-muted-foreground"
+                }`}
+                style={
+                  type === t
+                    ? {
+                        background: "linear-gradient(135deg, #7C4DFF, #5533cc)",
+                        boxShadow: "0 0 14px 0 rgba(124,77,255,0.35)",
+                      }
+                    : undefined
+                }
+              >
+                {TYPE_LABELS[t]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {(type === "SELECT" || type === "MULTI_SELECT") && (
+          <div className="space-y-1.5">
+            <Label className="text-muted-foreground text-xs">選択肢</Label>
+            <OptionsEditor options={options} onChange={setOptions} />
+          </div>
+        )}
+
+        {error && <p className="text-red-400 text-xs">{error}</p>}
+
+        <Button
+          type="button"
+          onClick={handleSave}
+          disabled={isPending}
+          className="w-full rounded-xl h-auto py-2.5 text-sm"
+        >
+          {isPending ? "保存中..." : "保存する"}
+        </Button>
+      </div>
+
+      <ConfirmAlertDialog
+        open={isArchiveDialogOpen}
+        onOpenChange={setIsArchiveDialogOpen}
+        onConfirm={handleArchiveConfirm}
+        isPending={isPending}
+        title="フィールドをアーカイブしますか？"
+        description="過去のログに残された値はそのまま保持されます。"
+        actionLabel="アーカイブする"
+        pendingLabel="処理中..."
+      />
     </>
   );
 }

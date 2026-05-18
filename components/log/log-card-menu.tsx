@@ -39,7 +39,18 @@ type Props = {
   onLogEdited?: (data: LogEditedPayload) => void;
 };
 
-export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt, timeOnly, stars, note, fieldValues, onLogEdited }: Props) {
+export function LogCardMenu({
+  logId,
+  activity,
+  performedAt,
+  createdAt,
+  updatedAt,
+  timeOnly,
+  stars,
+  note,
+  fieldValues,
+  onLogEdited,
+}: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -153,7 +164,13 @@ export function LogCardMenu({ logId, activity, performedAt, createdAt, updatedAt
         performedAt={currentDate}
         initialStars={currentStars}
         initialNote={currentNote}
-        activity={{ id: activity.id, name: activity.name, emoji: activity.emoji, color: activity.color, fields: activity.fields ?? [] }}
+        activity={{
+          id: activity.id,
+          name: activity.name,
+          emoji: activity.emoji,
+          color: activity.color,
+          fields: activity.fields ?? [],
+        }}
         initialFieldValues={fieldValues}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}

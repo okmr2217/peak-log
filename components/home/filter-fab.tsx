@@ -152,7 +152,13 @@ export function FilterFab({
         </button>
       </div>
 
-      <ResponsiveDialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setActiveDateField(null); }}>
+      <ResponsiveDialog
+        open={open}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o) setActiveDateField(null);
+        }}
+      >
         <ResponsiveDialogContent>
           <ResponsiveDialogHeader>
             <ResponsiveDialogTitle>絞り込み</ResponsiveDialogTitle>
@@ -160,87 +166,86 @@ export function FilterFab({
           </ResponsiveDialogHeader>
 
           <ResponsiveDialogBody className="space-y-4 overflow-y-auto">
-              <div>
-                <p className="text-xs text-muted-foreground mb-1.5">活動</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {activities.map((a) => (
-                    <button
-                      key={a.id}
-                      type="button"
-                      onClick={() => handleActivityClick(a.id)}
-                      className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
-                        localActivityId === a.id
-                          ? "border-primary/50 bg-primary/20 text-foreground"
-                          : "border-border bg-muted text-muted-foreground hover:bg-secondary"
-                      }`}
-                    >
-                      {a.emoji && <span>{a.emoji}</span>}
-                      <span>{a.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted-foreground mb-1.5">期間</p>
-                <div className="flex items-center gap-2">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1.5">活動</p>
+              <div className="flex flex-wrap gap-1.5">
+                {activities.map((a) => (
                   <button
+                    key={a.id}
                     type="button"
-                    onClick={() => setActiveDateField(activeDateField === "from" ? null : "from")}
-                    className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
-                      activeDateField === "from"
+                    onClick={() => handleActivityClick(a.id)}
+                    className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
+                      localActivityId === a.id
                         ? "border-primary/50 bg-primary/20 text-foreground"
                         : "border-border bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                   >
-                    {format(localFromDate, "yyyy/MM/dd")}
+                    {a.emoji && <span>{a.emoji}</span>}
+                    <span>{a.name}</span>
                   </button>
-                  <span className="text-xs text-muted-foreground">〜</span>
-                  <button
-                    type="button"
-                    onClick={() => setActiveDateField(activeDateField === "to" ? null : "to")}
-                    className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
-                      activeDateField === "to"
-                        ? "border-primary/50 bg-primary/20 text-foreground"
-                        : "border-border bg-muted text-muted-foreground hover:bg-secondary"
-                    }`}
-                  >
-                    {format(localToDate, "yyyy/MM/dd")}
-                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs text-muted-foreground mb-1.5">期間</p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveDateField(activeDateField === "from" ? null : "from")}
+                  className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
+                    activeDateField === "from"
+                      ? "border-primary/50 bg-primary/20 text-foreground"
+                      : "border-border bg-muted text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {format(localFromDate, "yyyy/MM/dd")}
+                </button>
+                <span className="text-xs text-muted-foreground">〜</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveDateField(activeDateField === "to" ? null : "to")}
+                  className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
+                    activeDateField === "to"
+                      ? "border-primary/50 bg-primary/20 text-foreground"
+                      : "border-border bg-muted text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {format(localToDate, "yyyy/MM/dd")}
+                </button>
+              </div>
+              {activeDateField && (
+                <div className="mt-2 bg-muted/50 rounded-2xl p-3 border border-border">
+                  <DayPicker
+                    mode="single"
+                    selected={activeDateField === "from" ? localFromDate : localToDate}
+                    onSelect={activeDateField === "from" ? handleFromDateSelect : handleToDateSelect}
+                    disabled={activeDateField === "from" ? { after: localToDate } : { before: localFromDate }}
+                    defaultMonth={activeDateField === "from" ? localFromDate : localToDate}
+                    classNames={DAY_PICKER_CLASS_NAMES}
+                    components={{
+                      Chevron: ({ orientation }) =>
+                        orientation === "left" ? (
+                          <ChevronLeft className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        ),
+                    }}
+                  />
                 </div>
-                {activeDateField && (
-                  <div className="mt-2 bg-muted/50 rounded-2xl p-3 border border-border">
-                    <DayPicker
-                      mode="single"
-                      selected={activeDateField === "from" ? localFromDate : localToDate}
-                      onSelect={activeDateField === "from" ? handleFromDateSelect : handleToDateSelect}
-                      disabled={
-                        activeDateField === "from"
-                          ? { after: localToDate }
-                          : { before: localFromDate }
-                      }
-                      defaultMonth={activeDateField === "from" ? localFromDate : localToDate}
-                      classNames={DAY_PICKER_CLASS_NAMES}
-                      components={{
-                        Chevron: ({ orientation }) =>
-                          orientation === "left" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />,
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              )}
+            </div>
 
-              <div>
-                <p className="text-xs text-muted-foreground mb-1.5">メモ</p>
-                <input
-                  type="text"
-                  value={noteLocal}
-                  onChange={(e) => handleNoteChange(e.target.value)}
-                  placeholder="メモの内容で絞り込み..."
-                  className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-                />
-              </div>
-
+            <div>
+              <p className="text-xs text-muted-foreground mb-1.5">メモ</p>
+              <input
+                type="text"
+                value={noteLocal}
+                onChange={(e) => handleNoteChange(e.target.value)}
+                placeholder="メモの内容で絞り込み..."
+                className="w-full bg-muted border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+              />
+            </div>
           </ResponsiveDialogBody>
 
           {hasFilters && (

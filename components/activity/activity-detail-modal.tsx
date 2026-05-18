@@ -76,114 +76,114 @@ export function ActivityDetailModal({ activity, isOpen, onClose, onArchiveChange
 
   return (
     <>
-    <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ResponsiveDialogContent>
-        <ResponsiveDialogHeader>
-          <div className="flex items-start gap-3 pr-6">
-            <span
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl leading-none shrink-0 mt-0.5"
-              style={{ backgroundColor: color ? `${color}28` : "hsl(var(--primary) / 0.13)" }}
-            >
-              {activity.emoji ?? "⚡"}
-            </span>
-            <div className="flex-1 min-w-0">
-              <ResponsiveDialogTitle className="text-[15px] font-medium leading-snug">
-                {activity.name}
-              </ResponsiveDialogTitle>
-              {activity.isArchived && (
-                <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border">
-                  アーカイブ済み
-                </span>
-              )}
+      <ResponsiveDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <ResponsiveDialogContent>
+          <ResponsiveDialogHeader>
+            <div className="flex items-start gap-3 pr-6">
+              <span
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-xl leading-none shrink-0 mt-0.5"
+                style={{ backgroundColor: color ? `${color}28` : "hsl(var(--primary) / 0.13)" }}
+              >
+                {activity.emoji ?? "⚡"}
+              </span>
+              <div className="flex-1 min-w-0">
+                <ResponsiveDialogTitle className="text-[15px] font-medium leading-snug">
+                  {activity.name}
+                </ResponsiveDialogTitle>
+                {activity.isArchived && (
+                  <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border">
+                    アーカイブ済み
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-          <ResponsiveDialogDescription className="sr-only">活動の詳細情報を表示します。</ResponsiveDialogDescription>
-        </ResponsiveDialogHeader>
+            <ResponsiveDialogDescription className="sr-only">活動の詳細情報を表示します。</ResponsiveDialogDescription>
+          </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="space-y-3 overflow-y-auto">
-          {activity.description && (
-            <div className="rounded-xl p-3 bg-muted">
-              <p className="text-[13px] text-muted-foreground mb-1">説明</p>
-              <p className="text-sm leading-relaxed">{activity.description}</p>
+          <ResponsiveDialogBody className="space-y-3 overflow-y-auto">
+            {activity.description && (
+              <div className="rounded-xl p-3 bg-muted">
+                <p className="text-[13px] text-muted-foreground mb-1">説明</p>
+                <p className="text-sm leading-relaxed">{activity.description}</p>
+              </div>
+            )}
+
+            {activeFields.length > 0 && (
+              <div className="grid grid-cols-2 gap-2">
+                {activeFields.map((field) => (
+                  <div key={field.id} className="rounded-xl p-3 bg-muted min-w-0">
+                    <p className="text-xs text-muted-foreground mb-0.5 truncate">{field.name}</p>
+                    <p className="text-sm font-medium truncate">{FIELD_TYPE_LABEL[field.type] ?? field.type}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">作成 {formatFullDateTime(activity.createdAt)}</p>
+              <Link
+                href={`/activities/${activity.id}`}
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                onClick={onClose}
+              >
+                <ExternalLink size={11} />
+                統計を見る
+              </Link>
             </div>
-          )}
+          </ResponsiveDialogBody>
 
-          {activeFields.length > 0 && (
-            <div className="grid grid-cols-2 gap-2">
-              {activeFields.map((field) => (
-                <div key={field.id} className="rounded-xl p-3 bg-muted min-w-0">
-                  <p className="text-xs text-muted-foreground mb-0.5 truncate">{field.name}</p>
-                  <p className="text-sm font-medium truncate">{FIELD_TYPE_LABEL[field.type] ?? field.type}</p>
-                </div>
-              ))}
+          <ResponsiveDialogFooter>
+            <div className="flex gap-2 w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  router.push(`/activities/${activity.id}/edit`);
+                }}
+                className="flex-1 h-10 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium border border-border hover:bg-muted transition-colors"
+              >
+                <Pencil size={14} />
+                編集
+              </button>
+              <button
+                type="button"
+                onClick={handleArchive}
+                disabled={isPending}
+                className="h-10 px-4 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium border border-border hover:bg-muted transition-colors shrink-0 disabled:opacity-50"
+              >
+                {activity.isArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
+                {activity.isArchived ? "解除" : "アーカイブ"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                disabled={isPending}
+                className="h-10 w-10 rounded-xl flex items-center justify-center border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors shrink-0 disabled:opacity-50"
+                aria-label="削除"
+              >
+                <Trash2 size={14} />
+              </button>
             </div>
-          )}
+          </ResponsiveDialogFooter>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
 
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">作成 {formatFullDateTime(activity.createdAt)}</p>
-            <Link
-              href={`/activities/${activity.id}`}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              onClick={onClose}
-            >
-              <ExternalLink size={11} />
-              統計を見る
-            </Link>
-          </div>
-        </ResponsiveDialogBody>
-
-        <ResponsiveDialogFooter>
-          <div className="flex gap-2 w-full">
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                router.push(`/activities/${activity.id}/edit`);
-              }}
-              className="flex-1 h-10 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium border border-border hover:bg-muted transition-colors"
-            >
-              <Pencil size={14} />
-              編集
-            </button>
-            <button
-              type="button"
-              onClick={handleArchive}
-              disabled={isPending}
-              className="h-10 px-4 rounded-xl flex items-center justify-center gap-1.5 text-sm font-medium border border-border hover:bg-muted transition-colors shrink-0 disabled:opacity-50"
-            >
-              {activity.isArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
-              {activity.isArchived ? "解除" : "アーカイブ"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsDeleteDialogOpen(true)}
-              disabled={isPending}
-              className="h-10 w-10 rounded-xl flex items-center justify-center border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors shrink-0 disabled:opacity-50"
-              aria-label="削除"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-        </ResponsiveDialogFooter>
-      </ResponsiveDialogContent>
-    </ResponsiveDialog>
-
-    <ConfirmAlertDialog
-      open={isDeleteDialogOpen}
-      onOpenChange={setIsDeleteDialogOpen}
-      onConfirm={handleDelete}
-      isPending={isPending}
-      title={`「${activity.name}」を削除しますか？`}
-      description={
-        logCount === null
-          ? "この操作は取り消せません。"
-          : logCount > 0
-            ? `紐づくログが ${logCount} 件あります。活動とすべてのログが完全に削除されます。この操作は取り消せません。`
-            : "この操作は取り消せません。"
-      }
-      actionLabel="完全に削除する"
-      pendingLabel="削除中..."
-    />
+      <ConfirmAlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isPending={isPending}
+        title={`「${activity.name}」を削除しますか？`}
+        description={
+          logCount === null
+            ? "この操作は取り消せません。"
+            : logCount > 0
+              ? `紐づくログが ${logCount} 件あります。活動とすべてのログが完全に削除されます。この操作は取り消せません。`
+              : "この操作は取り消せません。"
+        }
+        actionLabel="完全に削除する"
+        pendingLabel="削除中..."
+      />
     </>
   );
 }

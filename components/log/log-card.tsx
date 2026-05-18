@@ -128,7 +128,13 @@ export function LogCard({ log, onLogEdited }: Props) {
         performedAt={currentDate}
         initialStars={stars}
         initialNote={note}
-        activity={{ id: activity.id, name: activity.name, emoji: activity.emoji, color: activity.color, fields: activity.fields }}
+        activity={{
+          id: activity.id,
+          name: activity.name,
+          emoji: activity.emoji,
+          color: activity.color,
+          fields: activity.fields,
+        }}
         initialFieldValues={fieldValues}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}

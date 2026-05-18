@@ -28,10 +28,7 @@ export function CategoryStatsSection({ stats, period }: Props) {
                   href={`/activities/${stat.activityId}`}
                   className="relative bg-card rounded-xl border border-border overflow-hidden flex items-center gap-3 pl-4 pr-4 py-3.5 hover:bg-muted transition-colors"
                 >
-                <div
-                  className="absolute left-0 top-0 bottom-0 w-[3px]"
-                  style={{ background: color ?? "#7C4DFF" }}
-                />
+                  <div className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ background: color ?? "#7C4DFF" }} />
                   <span className="text-xs text-muted-foreground/60 w-5 text-right tabular-nums font-medium shrink-0">
                     {index + 1}
                   </span>

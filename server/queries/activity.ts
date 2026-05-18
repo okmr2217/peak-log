@@ -77,11 +77,19 @@ export async function getActivitiesWithStatsForCurrentUser(): Promise<ActivityWi
 
   return prisma.activity.findMany({
     where: { userId },
-    select: { id: true, name: true, emoji: true, color: true, description: true, sortOrder: true, isArchived: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      emoji: true,
+      color: true,
+      description: true,
+      sortOrder: true,
+      isArchived: true,
+      createdAt: true,
+    },
     orderBy: { sortOrder: "asc" },
   });
 }
-
 
 export async function getActivityForEdit(activityId: string) {
   const userId = await requireUserId();
@@ -160,10 +168,13 @@ export async function getActivityDetailForCurrentUser(activityId: string): Promi
   }
 
   // 最新30件（新しい順）
-  const recentLogs = logs.slice(-30).reverse().map((log) => ({
-    ...log,
-    fieldValues: log.fieldValues as Record<string, string | string[]> | null,
-  }));
+  const recentLogs = logs
+    .slice(-30)
+    .reverse()
+    .map((log) => ({
+      ...log,
+      fieldValues: log.fieldValues as Record<string, string | string[]> | null,
+    }));
 
   return {
     id: activity.id,

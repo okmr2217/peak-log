@@ -4,9 +4,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { EmojiPickerField } from "@/components/activity/emoji-picker-field";
 
 export const PRESET_COLORS = [
-  "#7C4DFF", "#00E5FF", "#FF4081", "#FF6D00", "#FFD740",
-  "#69F0AE", "#40C4FF", "#E040FB", "#FF5252", "#CCFF90",
-  "#84FFFF", "#F8BBD0",
+  "#7C4DFF",
+  "#00E5FF",
+  "#FF4081",
+  "#FF6D00",
+  "#FFD740",
+  "#69F0AE",
+  "#40C4FF",
+  "#E040FB",
+  "#FF5252",
+  "#CCFF90",
+  "#84FFFF",
+  "#F8BBD0",
 ];
 
 type ActivityFormFieldsProps = {

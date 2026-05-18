@@ -20,16 +20,18 @@ export function BottomNav() {
       <ul className="flex items-stretch justify-around h-14 max-w-lg mx-auto">
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive =
-            href === "/" ? pathname === "/" :
-            href === "/menu" ? pathname.startsWith("/menu") || pathname.startsWith("/settings") || pathname.startsWith("/help") :
-            pathname.startsWith(href);
+            href === "/"
+              ? pathname === "/"
+              : href === "/menu"
+                ? pathname.startsWith("/menu") || pathname.startsWith("/settings") || pathname.startsWith("/help")
+                : pathname.startsWith(href);
           return (
             <li key={href} className="flex-1">
               <Link
                 href={href}
                 className={clsx(
                   "relative flex flex-col items-center justify-center gap-1 h-full transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {isActive && (

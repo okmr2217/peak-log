@@ -36,7 +36,6 @@ export function MonthlySummarySection({ summary }: Props) {
               </ul>
             </div>
           )}
-
         </>
       )}
     </section>

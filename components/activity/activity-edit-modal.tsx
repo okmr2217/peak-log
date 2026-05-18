@@ -90,7 +90,9 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>活動を編集</ResponsiveDialogTitle>
-          <ResponsiveDialogDescription>活動の名前、絵文字、カラー、カスタムフィールドを編集します。</ResponsiveDialogDescription>
+          <ResponsiveDialogDescription>
+            活動の名前、絵文字、カラー、カスタムフィールドを編集します。
+          </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
@@ -110,9 +112,7 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
 
             <div className="space-y-2 pt-2 border-t border-border">
               <div className="flex items-center justify-between">
-                <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-                  カスタムフィールド
-                </Label>
+                <Label className="text-muted-foreground text-xs uppercase tracking-wide">カスタムフィールド</Label>
                 <span className="text-muted-foreground/50 text-xs">{activeFieldsCount} / 8</span>
               </div>
 
@@ -130,11 +130,7 @@ export function ActivityEditModal({ activity, onClose, onSuccess }: Props) {
                         onArchive={handleFieldChange}
                       />
                     ) : (
-                      <ActivityFieldRow
-                        key={field.id}
-                        field={field}
-                        onClick={() => setExpandedFieldId(field.id)}
-                      />
+                      <ActivityFieldRow key={field.id} field={field} onClick={() => setExpandedFieldId(field.id)} />
                     ),
                   )}
 

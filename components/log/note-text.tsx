@@ -25,7 +25,7 @@ export function NoteText({ text, singleLine = false, className }: Props) {
       </a>
     ) : (
       <span key={i}>{segment.value}</span>
-    )
+    ),
   );
 
   if (singleLine) {

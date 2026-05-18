@@ -19,56 +19,60 @@ export function ActivityDetailView({ detail }: Props) {
     <>
       <MobileHeader title={detail.name} showBack />
       <div className="p-4 max-w-lg mx-auto">
-      {/* ヘッダー */}
-      <div className="flex items-center gap-3 mb-6">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-          style={{ backgroundColor: accentColor ? `${accentColor}18` : "#7C4DFF18" }}
-        >
-          {detail.emoji ?? "⚡"}
+        {/* ヘッダー */}
+        <div className="flex items-center gap-3 mb-6">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+            style={{ backgroundColor: accentColor ? `${accentColor}18` : "#7C4DFF18" }}
+          >
+            {detail.emoji ?? "⚡"}
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">{detail.name}</h1>
+            {detail.isArchived ? (
+              <span className="text-xs text-muted-foreground/60 mt-1.5 block">アーカイブ済み</span>
+            ) : (
+              <span className="text-xs text-muted-foreground mt-1.5 block">
+                この Activity の記録と統計を確認できます
+              </span>
+            )}
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-foreground">{detail.name}</h1>
-          {detail.isArchived ? (
-            <span className="text-xs text-muted-foreground/60 mt-1.5 block">アーカイブ済み</span>
+
+        {/* 統計カード */}
+        <div className="bg-card rounded-2xl border border-border p-4 mb-6">
+          {stats.totalCount === 0 ? (
+            <p className="text-muted-foreground text-sm text-center py-2">まだ記録がありません</p>
           ) : (
-            <span className="text-xs text-muted-foreground mt-1.5 block">この Activity の記録と統計を確認できます</span>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              <div>
+                <p className="text-muted-foreground/60 text-[11px] mb-0.5">累計</p>
+                <p className="text-foreground font-semibold text-lg tabular-nums">
+                  {stats.totalCount}
+                  <span className="text-muted-foreground text-sm font-normal ml-0.5">回</span>
+                </p>
+              </div>
+              {stats.lastPerformedAt && (
+                <div>
+                  <p className="text-muted-foreground/60 text-[11px] mb-0.5">最後の記録</p>
+                  <p className="text-foreground font-semibold text-lg">
+                    {formatLastPerformed(stats.lastPerformedAt)}
+                    <span className="text-muted-foreground text-xs font-normal ml-1.5">
+                      {formatPerformedAt(stats.lastPerformedAt)}
+                    </span>
+                  </p>
+                </div>
+              )}
+              {stats.avgIntervalDays != null && (
+                <div>
+                  <p className="text-muted-foreground/60 text-[11px] mb-0.5">だいたいの間隔</p>
+                  <p className="text-foreground font-semibold text-lg">{formatAvgInterval(stats.avgIntervalDays)}</p>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
-
-      {/* 統計カード */}
-      <div className="bg-card rounded-2xl border border-border p-4 mb-6">
-        {stats.totalCount === 0 ? (
-          <p className="text-muted-foreground text-sm text-center py-2">まだ記録がありません</p>
-        ) : (
-          <div className="flex flex-wrap gap-x-6 gap-y-3">
-            <div>
-              <p className="text-muted-foreground/60 text-[11px] mb-0.5">累計</p>
-              <p className="text-foreground font-semibold text-lg tabular-nums">
-                {stats.totalCount}
-                <span className="text-muted-foreground text-sm font-normal ml-0.5">回</span>
-              </p>
-            </div>
-            {stats.lastPerformedAt && (
-              <div>
-                <p className="text-muted-foreground/60 text-[11px] mb-0.5">最後の記録</p>
-                <p className="text-foreground font-semibold text-lg">
-                  {formatLastPerformed(stats.lastPerformedAt)}
-                  <span className="text-muted-foreground text-xs font-normal ml-1.5">{formatPerformedAt(stats.lastPerformedAt)}</span>
-                </p>
-              </div>
-            )}
-            {stats.avgIntervalDays != null && (
-              <div>
-                <p className="text-muted-foreground/60 text-[11px] mb-0.5">だいたいの間隔</p>
-                <p className="text-foreground font-semibold text-lg">{formatAvgInterval(stats.avgIntervalDays)}</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
     </>
   );
 }

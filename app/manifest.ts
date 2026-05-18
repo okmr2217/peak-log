@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Peak Log",
     short_name: "Peak Log",
-    description: "楽しかった体験、達成感、エネルギーのある瞬間。あなたのピーク体験を記録して、あとから振り返ることができるログアプリ。",
+    description:
+      "楽しかった体験、達成感、エネルギーのある瞬間。あなたのピーク体験を記録して、あとから振り返ることができるログアプリ。",
     start_url: "/",
     display: "standalone",
     background_color: "#020617",

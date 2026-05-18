@@ -9,9 +9,16 @@ export const fieldTypeSchema = z.enum(["TEXT", "TEXTAREA", "SELECT", "MULTI_SELE
 export const createActivityFieldSchema = z
   .object({
     activityId: z.string().min(1),
-    name: z.string().trim().min(1, "名前を入力してください").max(FIELD_NAME_MAX, `名前は${FIELD_NAME_MAX}文字以内で入力してください`),
+    name: z
+      .string()
+      .trim()
+      .min(1, "名前を入力してください")
+      .max(FIELD_NAME_MAX, `名前は${FIELD_NAME_MAX}文字以内で入力してください`),
     type: fieldTypeSchema,
-    options: z.array(z.string().trim().min(1).max(OPTION_MAX_LENGTH, `選択肢は${OPTION_MAX_LENGTH}文字以内で入力してください`)).max(OPTIONS_MAX_COUNT).default([]),
+    options: z
+      .array(z.string().trim().min(1).max(OPTION_MAX_LENGTH, `選択肢は${OPTION_MAX_LENGTH}文字以内で入力してください`))
+      .max(OPTIONS_MAX_COUNT)
+      .default([]),
   })
   .refine((data) => (data.type === "SELECT" || data.type === "MULTI_SELECT" ? data.options.length > 0 : true), {
     message: "選択肢を1つ以上追加してください",

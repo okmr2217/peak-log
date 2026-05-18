@@ -64,7 +64,13 @@ export function LogGraph({ dailyData, color }: Props) {
       </div>
       <ResponsiveContainer width="100%" height={120}>
         <BarChart data={chartData} margin={{ top: 4, right: 0, left: -28, bottom: 0 }}>
-          <XAxis dataKey="label" tick={{ fontSize: 9, fill: "#666" }} interval="preserveStartEnd" tickLine={false} axisLine={false} />
+          <XAxis
+            dataKey="label"
+            tick={{ fontSize: 9, fill: "#666" }}
+            interval="preserveStartEnd"
+            tickLine={false}
+            axisLine={false}
+          />
           <YAxis tick={{ fontSize: 9, fill: "#666" }} tickLine={false} axisLine={false} allowDecimals={false} />
           <Tooltip
             contentStyle={{ background: "#1A1A1A", border: "1px solid #333", borderRadius: 8, fontSize: 12 }}

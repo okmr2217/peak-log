@@ -87,7 +87,10 @@ export async function deleteActivity(input: DeleteActivityInput): Promise<Action
 
   try {
     const userId = await requireUserId();
-    const activity = await prisma.activity.findFirst({ where: { id: parsed.data.activityId, userId }, select: { id: true } });
+    const activity = await prisma.activity.findFirst({
+      where: { id: parsed.data.activityId, userId },
+      select: { id: true },
+    });
     if (!activity) return fail("活動が見つかりません");
 
     await prisma.$transaction([
@@ -118,9 +121,7 @@ export async function reorderActivities(input: ReorderActivitiesInput): Promise<
       return fail("権限がありません");
     }
     await prisma.$transaction(
-      parsed.data.activityIds.map((id, index) =>
-        prisma.activity.update({ where: { id }, data: { sortOrder: index } }),
-      ),
+      parsed.data.activityIds.map((id, index) => prisma.activity.update({ where: { id }, data: { sortOrder: index } })),
     );
     revalidatePath("/");
     revalidatePath("/activities");

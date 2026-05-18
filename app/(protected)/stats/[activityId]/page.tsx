@@ -26,7 +26,9 @@ function formatAvgInterval(days: number): string {
 export default async function ActivityStatsPage({ params, searchParams }: Props) {
   const { activityId } = await params;
   const { period: periodParam } = await searchParams;
-  const period: PeriodPreset = VALID_PERIODS.includes(periodParam as PeriodPreset) ? (periodParam as PeriodPreset) : "thisMonth";
+  const period: PeriodPreset = VALID_PERIODS.includes(periodParam as PeriodPreset)
+    ? (periodParam as PeriodPreset)
+    : "thisMonth";
 
   const detail = await getActivityStatDetailForCurrentUser(activityId, period);
   if (!detail) notFound();
@@ -71,54 +73,54 @@ export default async function ActivityStatsPage({ params, searchParams }: Props)
     <>
       <MobileHeader title={activity.name} showBack />
       <div className="p-4 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 mb-5">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
-          style={{ backgroundColor: `${color}18` }}
-        >
-          {activity.emoji ?? "⚡"}
+        <div className="flex items-center gap-3 mb-5">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
+            style={{ backgroundColor: `${color}18` }}
+          >
+            {activity.emoji ?? "⚡"}
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">{activity.name}</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">詳細統計</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-foreground">{activity.name}</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">詳細統計</p>
-        </div>
-      </div>
 
-      <PeriodFilter currentPeriod={period} basePath={`/stats/${activityId}`} />
+        <PeriodFilter currentPeriod={period} basePath={`/stats/${activityId}`} />
 
-      {detail.totalCount === 0 ? (
-        <div className="bg-card rounded-xl p-6 text-center border border-border">
-          <p className="text-muted-foreground text-sm">この期間の記録はありません</p>
-        </div>
-      ) : (
-        <>
-          <div className="bg-card rounded-2xl border border-border p-4 mb-4">
-            <div className="grid grid-cols-3 gap-x-4 gap-y-4">
-              {metrics.map((m) => (
-                <div key={m.label}>
-                  <p className="text-[11px] text-muted-foreground/60 mb-0.5">{m.label}</p>
-                  {m.unit && m.unit !== null && !["—"].includes(m.value) ? (
-                    <p className="text-foreground font-semibold text-base tabular-nums leading-tight">
-                      {m.value}
-                      <span className="text-muted-foreground text-xs font-normal ml-0.5">{m.unit}</span>
-                    </p>
-                  ) : (
-                    <p className="text-foreground font-semibold text-base tabular-nums leading-tight">{m.value}</p>
-                  )}
-                </div>
-              ))}
+        {detail.totalCount === 0 ? (
+          <div className="bg-card rounded-xl p-6 text-center border border-border">
+            <p className="text-muted-foreground text-sm">この期間の記録はありません</p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-card rounded-2xl border border-border p-4 mb-4">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-4">
+                {metrics.map((m) => (
+                  <div key={m.label}>
+                    <p className="text-[11px] text-muted-foreground/60 mb-0.5">{m.label}</p>
+                    {m.unit && m.unit !== null && !["—"].includes(m.value) ? (
+                      <p className="text-foreground font-semibold text-base tabular-nums leading-tight">
+                        {m.value}
+                        <span className="text-muted-foreground text-xs font-normal ml-0.5">{m.unit}</span>
+                      </p>
+                    ) : (
+                      <p className="text-foreground font-semibold text-base tabular-nums leading-tight">{m.value}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="bg-card rounded-2xl border border-border p-4 mb-4">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">記録グラフ</h2>
-            <LogGraph dailyData={dailyData} color={activity.color} />
-          </div>
+            <div className="bg-card rounded-2xl border border-border p-4 mb-4">
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">記録グラフ</h2>
+              <LogGraph dailyData={dailyData} color={activity.color} />
+            </div>
 
-          <FieldDistributionSection fieldStats={fieldStats} color={activity.color} />
-        </>
-      )}
-    </div>
+            <FieldDistributionSection fieldStats={fieldStats} color={activity.color} />
+          </>
+        )}
+      </div>
     </>
   );
 }

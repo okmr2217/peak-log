@@ -22,7 +22,9 @@ export function HomeHeader({ currentTab, onTabChange }: Props) {
             type="button"
             onClick={() => onTabChange(t)}
             className={`flex-1 text-xs py-1.5 rounded-md transition-all font-medium ${
-              currentTab === t ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              currentTab === t
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t === "card" ? "カード" : "リスト"}

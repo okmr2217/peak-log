@@ -39,9 +39,7 @@ export function ActivityFieldRow({ field, onClick }: Props) {
             </span>
           )}
         </div>
-        {hasOptions && (
-          <p className="text-muted-foreground/60 text-xs mt-0.5 truncate">{field.options.join(" ・ ")}</p>
-        )}
+        {hasOptions && <p className="text-muted-foreground/60 text-xs mt-0.5 truncate">{field.options.join(" ・ ")}</p>}
       </div>
       <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
     </button>

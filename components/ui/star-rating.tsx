@@ -17,7 +17,11 @@ export function StarRating({ value, onChange, size = "lg" }: StarRatingProps) {
         const icon = (
           <Star
             className={dim}
-            style={filled ? { fill: "#FBBF24", color: "#FBBF24" } : { fill: "transparent", color: "hsl(var(--muted-foreground))" }}
+            style={
+              filled
+                ? { fill: "#FBBF24", color: "#FBBF24" }
+                : { fill: "transparent", color: "hsl(var(--muted-foreground))" }
+            }
           />
         );
         if (!onChange) {

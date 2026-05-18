@@ -20,20 +20,20 @@ Peak Log は **自分を高揚させる体験を記録するログアプリ**。
 
 ### 思想
 
-| 思想 | 内容 |
-|------|------|
-| 記録は軽く | Activity タップ一回でログが作れる |
-| 余韻は後から | Reflection（余韻）は後から任意で追加できる |
+| 思想             | 内容                                              |
+| ---------------- | ------------------------------------------------- |
+| 記録は軽く       | Activity タップ一回でログが作れる                 |
+| 余韻は後から     | Reflection（余韻）は後から任意で追加できる        |
 | 振り返りが楽しい | Home のタイムラインで自分のピーク体験を一覧できる |
 
 ---
 
 ## コア概念
 
-| 概念 | 説明 | 例 |
-|------|------|-----|
-| **Activity** | 何をしたかの種類（ユーザー定義） | 💪筋トレ、📚勉強、❤️デート |
-| **Log** | いつ何をしたかの事実 | 筋トレ @ 2026-03-14 19:10 |
+| 概念                   | 説明                               | 例                             |
+| ---------------------- | ---------------------------------- | ------------------------------ |
+| **Activity**           | 何をしたかの種類（ユーザー定義）   | 💪筋トレ、📚勉強、❤️デート     |
+| **Log**                | いつ何をしたかの事実               | 筋トレ @ 2026-03-14 19:10      |
 | **Reflection（余韻）** | 体験の感想・評価（任意・後追い可） | 高揚度5、達成感4、またやりたい |
 
 ### Reflection の項目
@@ -63,36 +63,36 @@ Reflection 入力
 
 ## UI 文言トーン
 
-| 概念 | UI 文言 |
-|------|---------|
-| Reflection | 余韻 |
-| Add reflection | 余韻を追加 |
-| Recent logs | 最近のピーク |
-| Quick log | ピークを記録 |
-| Empty state (Home) | 最初の活動を作ろう |
+| 概念                  | UI 文言                  |
+| --------------------- | ------------------------ |
+| Reflection            | 余韻                     |
+| Add reflection        | 余韻を追加               |
+| Recent logs           | 最近のピーク             |
+| Quick log             | ピークを記録             |
+| Empty state (Home)    | 最初の活動を作ろう       |
 | Empty state (History) | 最初のピークを記録しよう |
 
 ---
 
 ## 技術スタック
 
-| カテゴリ | 技術 |
-|---------|------|
-| フレームワーク | Next.js 15（App Router）|
-| UI ライブラリ | React 19 |
-| 言語 | TypeScript |
-| ORM | Prisma 6 |
-| DB | Supabase PostgreSQL |
-| 認証 | Better Auth 1.5 |
-| スタイリング | Tailwind CSS 3 |
-| バリデーション | Zod 4 |
-| 日付処理 | date-fns / date-fns-tz |
-| D&D | @dnd-kit/core / @dnd-kit/sortable |
-| アイコン | Lucide React |
-| Toast | Sonner |
+| カテゴリ        | 技術                                        |
+| --------------- | ------------------------------------------- |
+| フレームワーク  | Next.js 15（App Router）                    |
+| UI ライブラリ   | React 19                                    |
+| 言語            | TypeScript                                  |
+| ORM             | Prisma 6                                    |
+| DB              | Supabase PostgreSQL                         |
+| 認証            | Better Auth 1.5                             |
+| スタイリング    | Tailwind CSS 3                              |
+| バリデーション  | Zod 4                                       |
+| 日付処理        | date-fns / date-fns-tz                      |
+| D&D             | @dnd-kit/core / @dnd-kit/sortable           |
+| アイコン        | Lucide React                                |
+| Toast           | Sonner                                      |
 | UI プリミティブ | Radix UI（Dialog・Popover・AlertDialog 等） |
-| カレンダー | react-day-picker |
-| 絵文字ピッカー | emoji-picker-react |
+| カレンダー      | react-day-picker                            |
+| 絵文字ピッカー  | emoji-picker-react                          |
 
 ---
 
@@ -208,12 +208,12 @@ model Reflection {
 
 ## デザインシステム
 
-| 要素 | 値 |
-|------|-----|
-| Primary | `#7C4DFF`（紫） |
-| Accent | `#00E5FF`（シアン） |
-| Background | `#0A0A0A`（ほぼ黒） |
-| Card | `#1A1A1A`（ダークグレー） |
+| 要素       | 値                        |
+| ---------- | ------------------------- |
+| Primary    | `#7C4DFF`（紫）           |
+| Accent     | `#00E5FF`（シアン）       |
+| Background | `#0A0A0A`（ほぼ黒）       |
+| Card       | `#1A1A1A`（ダークグレー） |
 
 - Activity ごとにカラーを持ち、LogCard・ActivityButton にグラデーション・グローで反映
 - Tailwind CSS のみ使用（CSS-in-JS なし）

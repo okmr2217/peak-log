@@ -1,8 +1,8 @@
-import type { ShotKitProjectConfig } from 'shot-kit';
+import type { ShotKitProjectConfig } from "shot-kit";
 
 const config: ShotKitProjectConfig = {
-  projectName: process.env['SHOT_KIT_PROJECT_NAME'] ?? 'my-project',
-  baseUrl: process.env['SHOT_KIT_BASE_URL'] ?? 'http://localhost:3000',
+  projectName: process.env["SHOT_KIT_PROJECT_NAME"] ?? "my-project",
+  baseUrl: process.env["SHOT_KIT_BASE_URL"] ?? "http://localhost:3000",
 
   // 出力先を変えたい場合:
   // outputDir: 'screenshots',

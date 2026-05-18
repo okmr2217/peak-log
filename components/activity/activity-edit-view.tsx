@@ -69,77 +69,83 @@ export function ActivityEditView({ activity }: Props) {
     <>
       <MobileHeader title="活動を編集" showBack />
       <div className="p-4 max-w-lg mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <ActivityFormFields
-          name={name}
-          onNameChange={setName}
-          emoji={emoji}
-          onEmojiChange={setEmoji}
-          color={color}
-          onColorChange={setColor}
-          description={description}
-          onDescriptionChange={setDescription}
-          nameInputId="edit-activity-name"
-          descriptionInputId="edit-activity-description"
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <ActivityFormFields
+            name={name}
+            onNameChange={setName}
+            emoji={emoji}
+            onEmojiChange={setEmoji}
+            color={color}
+            onColorChange={setColor}
+            description={description}
+            onDescriptionChange={setDescription}
+            nameInputId="edit-activity-name"
+            descriptionInputId="edit-activity-description"
+          />
 
-        <div className="space-y-2 pt-2 border-t border-border">
-          <div className="flex items-center justify-between">
-            <Label className="text-muted-foreground text-xs uppercase tracking-wide">カスタムフィールド</Label>
-            <span className="text-muted-foreground/50 text-xs">{activeFieldsCount} / 8</span>
-          </div>
+          <div className="space-y-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-between">
+              <Label className="text-muted-foreground text-xs uppercase tracking-wide">カスタムフィールド</Label>
+              <span className="text-muted-foreground/50 text-xs">{activeFieldsCount} / 8</span>
+            </div>
 
-          <div className="space-y-2">
-            {fields
-              .filter((f) => !f.isArchived)
-              .map((field) =>
-                expandedFieldId === field.id ? (
-                  <ActivityFieldEditor
-                    key={field.id}
-                    activityId={activity.id}
-                    field={field}
-                    onSave={handleFieldChange}
-                    onCancel={() => setExpandedFieldId(null)}
-                    onArchive={handleFieldChange}
-                  />
-                ) : (
-                  <ActivityFieldRow key={field.id} field={field} onClick={() => setExpandedFieldId(field.id)} />
-                ),
+            <div className="space-y-2">
+              {fields
+                .filter((f) => !f.isArchived)
+                .map((field) =>
+                  expandedFieldId === field.id ? (
+                    <ActivityFieldEditor
+                      key={field.id}
+                      activityId={activity.id}
+                      field={field}
+                      onSave={handleFieldChange}
+                      onCancel={() => setExpandedFieldId(null)}
+                      onArchive={handleFieldChange}
+                    />
+                  ) : (
+                    <ActivityFieldRow key={field.id} field={field} onClick={() => setExpandedFieldId(field.id)} />
+                  ),
+                )}
+
+              {expandedFieldId === "new" ? (
+                <ActivityFieldEditor
+                  activityId={activity.id}
+                  field={null}
+                  onSave={handleFieldChange}
+                  onCancel={() => setExpandedFieldId(null)}
+                />
+              ) : (
+                activeFieldsCount < 8 && (
+                  <button
+                    type="button"
+                    onClick={() => setExpandedFieldId("new")}
+                    className="w-full rounded-xl py-2.5 text-sm border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors active:scale-[0.99]"
+                  >
+                    + フィールドを追加
+                  </button>
+                )
               )}
-
-            {expandedFieldId === "new" ? (
-              <ActivityFieldEditor
-                activityId={activity.id}
-                field={null}
-                onSave={handleFieldChange}
-                onCancel={() => setExpandedFieldId(null)}
-              />
-            ) : (
-              activeFieldsCount < 8 && (
-                <button
-                  type="button"
-                  onClick={() => setExpandedFieldId("new")}
-                  className="w-full rounded-xl py-2.5 text-sm border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors active:scale-[0.99]"
-                >
-                  + フィールドを追加
-                </button>
-              )
-            )}
+            </div>
           </div>
-        </div>
 
-        {error && <p className="text-red-400 text-xs">{error}</p>}
+          {error && <p className="text-red-400 text-xs">{error}</p>}
 
-        <div className="flex gap-2 pt-2">
-          <Button type="button" variant="outline" onClick={() => router.push("/activities")} disabled={isPending} className="flex-1">
-            キャンセル
-          </Button>
-          <Button type="submit" disabled={isPending} className="flex-1">
-            {isPending ? "保存中..." : "保存する"}
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className="flex gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/activities")}
+              disabled={isPending}
+              className="flex-1"
+            >
+              キャンセル
+            </Button>
+            <Button type="submit" disabled={isPending} className="flex-1">
+              {isPending ? "保存中..." : "保存する"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </>
   );
 }

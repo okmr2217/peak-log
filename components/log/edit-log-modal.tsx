@@ -46,7 +46,17 @@ function getInitialDateMode(performedAt: Date): DateMode {
   return "other";
 }
 
-export function EditLogModal({ logId, performedAt, initialStars, initialNote, activity, initialFieldValues, isOpen, onClose, onSaved }: Props) {
+export function EditLogModal({
+  logId,
+  performedAt,
+  initialStars,
+  initialNote,
+  activity,
+  initialFieldValues,
+  isOpen,
+  onClose,
+  onSaved,
+}: Props) {
   const [dateMode, setDateMode] = useState<DateMode>(() => getInitialDateMode(performedAt));
   const [otherDate, setOtherDate] = useState<Date>(() => startOfDay(performedAt));
   const [selectedTime, setSelectedTime] = useState(() => floorToNearest30(performedAt));

@@ -69,8 +69,8 @@ async function main() {
     activitiesData.map((a) =>
       prisma.activity.create({
         data: { ...a, userId },
-      })
-    )
+      }),
+    ),
   );
 
   const [peak, social, outing, creative, exercise, study, entertainment] = activities;
@@ -114,7 +114,10 @@ async function main() {
     {
       activityId: peak.id,
       performedAt: daysAgo(2),
-      reflection: { stars: 5, note: "初めてのクライミングジム体験。難しかったけど課題をクリアした瞬間の達成感がすごい！" },
+      reflection: {
+        stars: 5,
+        note: "初めてのクライミングジム体験。難しかったけど課題をクリアした瞬間の達成感がすごい！",
+      },
     },
     {
       activityId: outing.id,

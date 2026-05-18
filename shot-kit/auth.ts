@@ -1,4 +1,4 @@
-import type { AuthHandler } from 'shot-kit';
+import type { AuthHandler } from "shot-kit";
 
 /**
  * 認証が必要なシナリオで一度だけ呼び出されます。
@@ -17,10 +17,10 @@ import type { AuthHandler } from 'shot-kit';
 const authHandler: AuthHandler = async (page, config) => {
   // --- Email / Password 認証の例 ---
   await page.goto(`${config.baseUrl}/login`);
-  await page.fill('input[type="email"]',    process.env['SEED_DEMO_EMAIL'] ?? '');
-  await page.fill('input[type="password"]', process.env['SEED_DEMO_PASSWORD'] ?? '');
+  await page.fill('input[type="email"]', process.env["SEED_DEMO_EMAIL"] ?? "");
+  await page.fill('input[type="password"]', process.env["SEED_DEMO_PASSWORD"] ?? "");
   await page.click('button[type="submit"]');
-  await page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 15000 });
+  await page.waitForURL((url) => !url.pathname.includes("/login"), { timeout: 15000 });
 
   // --- Cookie / LocalStorage にトークンをセットする例 ---
   // await page.goto(config.baseUrl);

@@ -54,7 +54,9 @@ export function ActivityCard({ activity, onUpdate, onDelete }: Props) {
 
         <div className="flex-1 min-w-0">
           <span className="text-foreground text-sm font-semibold block truncate">{activity.name}</span>
-          <span className="text-[11px] text-muted-foreground/60 tabular-nums">{formatFullDateTime(activity.createdAt)} 作成</span>
+          <span className="text-[11px] text-muted-foreground/60 tabular-nums">
+            {formatFullDateTime(activity.createdAt)} 作成
+          </span>
         </div>
 
         {activity.isArchived && (

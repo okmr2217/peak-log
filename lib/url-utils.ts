@@ -1,5 +1,5 @@
 export function splitTextWithUrls(
-  text: string
+  text: string,
 ): Array<{ type: "text"; value: string } | { type: "url"; value: string }> {
   const URL_REGEX = /https?:\/\/[^\s　、。！）」』"'<>]+/g;
   const segments: Array<{ type: "text"; value: string } | { type: "url"; value: string }> = [];

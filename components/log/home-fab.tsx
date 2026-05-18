@@ -7,7 +7,13 @@ import { toast } from "sonner";
 import { CreateLogModal } from "@/components/log/create-log-modal";
 import type { ActivityForLog } from "@/server/queries/activity";
 
-export function HomeFab({ activities, defaultActivityId }: { activities: ActivityForLog[]; defaultActivityId?: string | null }) {
+export function HomeFab({
+  activities,
+  defaultActivityId,
+}: {
+  activities: ActivityForLog[];
+  defaultActivityId?: string | null;
+}) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,7 +21,13 @@ export function HomeFab({ activities, defaultActivityId }: { activities: Activit
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "n" && e.key !== "N") return;
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable) return;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable
+      )
+        return;
       if (isOpen) return;
       setIsOpen(true);
     };

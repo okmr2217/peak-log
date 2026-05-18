@@ -56,7 +56,10 @@ export default function LoginPage() {
           <div className="flex mb-6 bg-background rounded-xl p-1 gap-1">
             <button
               type="button"
-              onClick={() => { setMode("signin"); setError(""); }}
+              onClick={() => {
+                setMode("signin");
+                setError("");
+              }}
               className={`flex-1 py-2 text-sm rounded-lg font-medium transition-all ${
                 mode === "signin" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
@@ -65,7 +68,10 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => { setMode("signup"); setError(""); }}
+              onClick={() => {
+                setMode("signup");
+                setError("");
+              }}
               className={`flex-1 py-2 text-sm rounded-lg font-medium transition-all ${
                 mode === "signup" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
@@ -124,11 +130,7 @@ export default function LoginPage() {
 
             {error && <p className="text-red-400 text-xs bg-red-400/5 px-3 py-2 rounded-lg">{error}</p>}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl h-auto py-3.5 mt-1"
-            >
+            <Button type="submit" disabled={loading} className="w-full rounded-xl h-auto py-3.5 mt-1">
               {loading ? "処理中..." : mode === "signin" ? "ログイン" : "アカウントを作成"}
             </Button>
           </form>

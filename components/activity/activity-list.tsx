@@ -18,7 +18,6 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { ActivityCard } from "./activity-card";
 import { ActivityCreateModal } from "./activity-create-modal";
-import { Button } from "@/components/ui/button";
 import { MobileHeader } from "@/components/mobile-header";
 import { reorderActivities } from "@/server/actions/activity";
 import type { ActivityWithStats } from "@/server/queries/activity";
@@ -89,43 +88,52 @@ export function ActivityList({ activities: initialActivities }: Props) {
         }
       />
       <div className="p-4 max-w-lg mx-auto">
-      <p className="text-xs text-muted-foreground mb-3">活動の追加・編集・並び替え・アーカイブができます</p>
-      {activities.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-foreground text-sm font-medium mb-1.5">活動を作成しよう</p>
-          <p className="text-muted-foreground text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
-        </div>
-      ) : (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-1.5">
-              {activities.map((activity) => (
-                <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} onDelete={handleDelete} />
-              ))}
-            </div>
-          </SortableContext>
-
-          <DragOverlay>
-            {draggingActivity && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card shadow-2xl">
-                <GripVertical size={16} className="text-muted-foreground flex-shrink-0" />
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
-                  style={{ backgroundColor: draggingActivity.color ? `${draggingActivity.color}28` : "hsl(var(--primary) / 0.13)" }}
-                >
-                  {draggingActivity.emoji ?? "⚡"}
-                </div>
-                <span className="text-foreground text-sm font-semibold truncate">{draggingActivity.name}</span>
+        <p className="text-xs text-muted-foreground mb-3">活動の追加・編集・並び替え・アーカイブができます</p>
+        {activities.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <p className="text-foreground text-sm font-medium mb-1.5">活動を作成しよう</p>
+            <p className="text-muted-foreground text-xs">筋トレ、勉強、デートなど、記録したいことを追加できます</p>
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={activities.map((a) => a.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-1.5">
+                {activities.map((activity) => (
+                  <ActivityCard key={activity.id} activity={activity} onUpdate={handleUpdate} onDelete={handleDelete} />
+                ))}
               </div>
-            )}
-          </DragOverlay>
-        </DndContext>
-      )}
+            </SortableContext>
 
-      {showCreateModal && (
-        <ActivityCreateModal onClose={() => setShowCreateModal(false)} onSuccess={handleCreateSuccess} />
-      )}
-    </div>
+            <DragOverlay>
+              {draggingActivity && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border bg-card shadow-2xl">
+                  <GripVertical size={16} className="text-muted-foreground flex-shrink-0" />
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
+                    style={{
+                      backgroundColor: draggingActivity.color
+                        ? `${draggingActivity.color}28`
+                        : "hsl(var(--primary) / 0.13)",
+                    }}
+                  >
+                    {draggingActivity.emoji ?? "⚡"}
+                  </div>
+                  <span className="text-foreground text-sm font-semibold truncate">{draggingActivity.name}</span>
+                </div>
+              )}
+            </DragOverlay>
+          </DndContext>
+        )}
+
+        {showCreateModal && (
+          <ActivityCreateModal onClose={() => setShowCreateModal(false)} onSuccess={handleCreateSuccess} />
+        )}
+      </div>
     </>
   );
 }

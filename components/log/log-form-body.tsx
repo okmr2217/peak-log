@@ -93,7 +93,9 @@ export function LogFormBody({
               <Label className="text-muted-foreground text-xs">
                 {field.name}
                 {field.type === "MULTI_SELECT" && (
-                  <span className="ml-1.5 text-[10px] text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">複数選択</span>
+                  <span className="ml-1.5 text-[10px] text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded">
+                    複数選択
+                  </span>
                 )}
               </Label>
               <FieldValueInput
@@ -131,7 +133,10 @@ export function LogFormBody({
               }`}
               style={
                 dateMode === mode
-                  ? { background: "linear-gradient(135deg, #7C4DFF, #5533cc)", boxShadow: "0 0 14px 0 rgba(124,77,255,0.35)" }
+                  ? {
+                      background: "linear-gradient(135deg, #7C4DFF, #5533cc)",
+                      boxShadow: "0 0 14px 0 rgba(124,77,255,0.35)",
+                    }
                   : undefined
               }
             >
@@ -150,14 +155,12 @@ export function LogFormBody({
               classNames={DAY_PICKER_CLASS_NAMES}
               components={{
                 Chevron: ({ orientation }) =>
-                  orientation === "left" ? (
-                    <ChevronLeft className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  ),
+                  orientation === "left" ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />,
               }}
             />
-            <p className="text-center text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{otherDateLabel}</p>
+            <p className="text-center text-xs text-muted-foreground mt-2 pt-2 border-t border-border">
+              {otherDateLabel}
+            </p>
           </div>
         )}
       </div>

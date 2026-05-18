@@ -332,12 +332,12 @@ function generateDailyRange(startStr: string, endStr: string, dateCounts: Map<st
 
 function calcFieldStats(
   fields: { id: string; name: string; type: FieldType; options: string[] }[],
-  logs: { fieldValues: unknown }[]
+  logs: { fieldValues: unknown }[],
 ): FieldDistribution[] {
   const result: FieldDistribution[] = [];
   for (const field of fields) {
     const countMap = new Map<string, number>(
-      field.type === "SELECT" || field.type === "MULTI_SELECT" ? field.options.map((o) => [o, 0]) : []
+      field.type === "SELECT" || field.type === "MULTI_SELECT" ? field.options.map((o) => [o, 0]) : [],
     );
     for (const log of logs) {
       const values = log.fieldValues as Record<string, string | string[]> | null;
@@ -361,7 +361,12 @@ function calcFieldStats(
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
     if (distribution.length > 0) {
-      result.push({ fieldId: field.id, fieldName: field.name, type: field.type as FieldDistribution["type"], distribution });
+      result.push({
+        fieldId: field.id,
+        fieldName: field.name,
+        type: field.type as FieldDistribution["type"],
+        distribution,
+      });
     }
   }
   return result;
@@ -369,7 +374,7 @@ function calcFieldStats(
 
 export async function getActivityStatDetailForCurrentUser(
   activityId: string,
-  period: PeriodPreset
+  period: PeriodPreset,
 ): Promise<ActivityStatDetail | null> {
   const userId = await requireUserId();
   const now = new Date();
@@ -564,4 +569,3 @@ export async function getCategoryStatsForCurrentUser(period: PeriodPreset): Prom
       };
     });
 }
-

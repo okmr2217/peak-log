@@ -17,7 +17,13 @@ type Activity = {
   name: string;
   emoji: string | null;
   color: string | null;
-  fields: { id: string; name: string; type: import("@prisma/client").FieldType; options: string[]; isArchived: boolean }[];
+  fields: {
+    id: string;
+    name: string;
+    type: import("@prisma/client").FieldType;
+    options: string[];
+    isArchived: boolean;
+  }[];
 };
 type Tab = "card" | "list";
 
@@ -70,7 +76,13 @@ export function HomeContent({
         ...day,
         logs: day.logs.map((log): LogItem => {
           if (log.id !== logId) return log;
-          return { ...log, performedAt: data.newDate, stars: data.stars, note: data.note, fieldValues: data.fieldValues };
+          return {
+            ...log,
+            performedAt: data.newDate,
+            stars: data.stars,
+            note: data.note,
+            fieldValues: data.fieldValues,
+          };
         }),
       })),
     );
@@ -120,7 +132,9 @@ export function HomeContent({
           <p className="text-sm text-muted-foreground">条件に一致するピークがありません</p>
         </div>
       ) : (
-        <div className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}>
+        <div
+          className={`px-4 pb-6 max-w-lg mx-auto transition-opacity duration-150 ${isLoading ? "opacity-40 pointer-events-none" : ""}`}
+        >
           <div className="space-y-3">
             {daysWithLogs.map(({ date, logs }) => (
               <TimelineDayGroup key={date} date={date}>

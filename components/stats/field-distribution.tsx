@@ -24,11 +24,18 @@ export function FieldDistributionSection({ fieldStats, color }: Props) {
                   const pct = total > 0 ? (d.count / total) * 100 : 0;
                   return (
                     <div key={d.label} className="flex items-center gap-2">
-                      <span className="text-xs text-foreground w-28 truncate shrink-0" title={d.label}>{d.label}</span>
+                      <span className="text-xs text-foreground w-28 truncate shrink-0" title={d.label}>
+                        {d.label}
+                      </span>
                       <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: barColor, opacity: 0.7 }} />
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${pct}%`, background: barColor, opacity: 0.7 }}
+                        />
                       </div>
-                      <span className="text-xs tabular-nums text-muted-foreground w-8 text-right shrink-0">{d.count}</span>
+                      <span className="text-xs tabular-nums text-muted-foreground w-8 text-right shrink-0">
+                        {d.count}
+                      </span>
                     </div>
                   );
                 })}
