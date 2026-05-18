@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -8,9 +9,10 @@ type Props = {
   title: string;
   showBack?: boolean;
   className?: string;
+  rightAction?: React.ReactNode;
 };
 
-export function MobileHeader({ title, showBack = false, className }: Props) {
+export function MobileHeader({ title, showBack = false, className, rightAction }: Props) {
   const router = useRouter();
 
   return (
@@ -26,6 +28,7 @@ export function MobileHeader({ title, showBack = false, className }: Props) {
           </button>
         )}
         <span className="text-base font-semibold text-foreground translate-y-[1px]">{title}</span>
+        {rightAction && <div className="ml-auto">{rightAction}</div>}
       </div>
     </header>
   );
